@@ -611,9 +611,7 @@ class Table(DialectKWArgs, SchemaItem, TableClause):
         # calling the superclass constructor.
 
     def _init(self, name, metadata, *args, **kwargs):
-        super().__init__(
-            quoted_name(name, kwargs.pop("quote", None))
-        )
+        super().__init__(quoted_name(name, kwargs.pop("quote", None)))
         self.metadata = metadata
 
         self.schema = kwargs.pop("schema", None)
@@ -4322,9 +4320,7 @@ class MetaData(SchemaItem):
                 fk._remove_from_metadata(self)
         if self._schemas:
             self._schemas = {
-                    t.schema
-                    for t in self.tables.values()
-                    if t.schema is not None
+                t.schema for t in self.tables.values() if t.schema is not None
             }
 
     def __getstate__(self):

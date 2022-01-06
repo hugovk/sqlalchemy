@@ -1349,20 +1349,18 @@ class ReflectionTest(fixtures.TestBase, ComparesTables):
             m2 = MetaData()
 
             m2.reflect(connection, views=False)
-            eq_(
-                set(m2.tables), {"users", "email_addresses", "dingalings"}
-            )
+            eq_(set(m2.tables), {"users", "email_addresses", "dingalings"})
 
             m2 = MetaData()
             m2.reflect(connection, views=True)
             eq_(
                 set(m2.tables),
                 {
-                        "email_addresses_v",
-                        "users_v",
-                        "users",
-                        "dingalings",
-                        "email_addresses",
+                    "email_addresses_v",
+                    "users_v",
+                    "users",
+                    "dingalings",
+                    "email_addresses",
                 },
             )
         finally:
@@ -1618,9 +1616,7 @@ class UnicodeReflectionTest(fixtures.TablesTest):
     @testing.requires.unicode_connections
     def test_get_names(self, connection):
         inspector = inspect(connection)
-        names = {
-            tname: (cname, ixname) for tname, cname, ixname in self.names
-        }
+        names = {tname: (cname, ixname) for tname, cname, ixname in self.names}
         for tname in inspector.get_table_names():
             assert tname in names
             eq_(
@@ -1682,8 +1678,8 @@ class SchemaTest(fixtures.TestBase):
         eq_(
             set(meta2.tables),
             {
-                    "some_other_table",
-                    "%s.some_table" % testing.config.test_schema,
+                "some_other_table",
+                "%s.some_table" % testing.config.test_schema,
             },
         )
 
@@ -1776,9 +1772,9 @@ class SchemaTest(fixtures.TestBase):
         eq_(
             set(m2.tables),
             {
-                    "%s.dingalings" % testing.config.test_schema,
-                    "%s.users" % testing.config.test_schema,
-                    "%s.email_addresses" % testing.config.test_schema,
+                "%s.dingalings" % testing.config.test_schema,
+                "%s.users" % testing.config.test_schema,
+                "%s.email_addresses" % testing.config.test_schema,
             },
         )
 

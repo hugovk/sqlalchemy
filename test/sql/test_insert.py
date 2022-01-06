@@ -1376,10 +1376,10 @@ class MultirowTest(_InsertTestBase, fixtures.TablesTest, AssertsCompiledSQL):
 
         eq_(
             {
-                    k: v.type._type_affinity
-                    for (k, v) in stmt.compile(
-                        dialect=postgresql.dialect()
-                    ).binds.items()
+                k: v.type._type_affinity
+                for (k, v) in stmt.compile(
+                    dialect=postgresql.dialect()
+                ).binds.items()
             },
             {
                 "foo": Integer,
@@ -1520,10 +1520,10 @@ class MultirowTest(_InsertTestBase, fixtures.TablesTest, AssertsCompiledSQL):
         stmt = table.insert().values(values)
         eq_(
             {
-                    k: v.type._type_affinity
-                    for (k, v) in stmt.compile(
-                        dialect=postgresql.dialect()
-                    ).binds.items()
+                k: v.type._type_affinity
+                for (k, v) in stmt.compile(
+                    dialect=postgresql.dialect()
+                ).binds.items()
             },
             {
                 "foo": Integer,

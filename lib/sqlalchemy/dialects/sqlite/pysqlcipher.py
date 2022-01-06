@@ -147,9 +147,7 @@ class SQLiteDialect_pysqlcipher(SQLiteDialect_pysqlite):
     def create_connect_args(self, url):
         plain_url = url._replace(password=None)
         plain_url = plain_url.difference_update_query(self.pragmas)
-        return super().create_connect_args(
-            plain_url
-        )
+        return super().create_connect_args(plain_url)
 
 
 dialect = SQLiteDialect_pysqlcipher

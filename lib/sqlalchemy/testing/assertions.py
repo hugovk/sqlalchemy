@@ -297,7 +297,9 @@ not_in_ = not_in
 
 def startswith_(a, fragment, msg=None):
     """Assert a.startswith(fragment), with repr messaging on failure."""
-    assert a.startswith(fragment), msg or "{!r} does not start with {!r}".format(
+    assert a.startswith(
+        fragment
+    ), msg or "{!r} does not start with {!r}".format(
         a,
         fragment,
     )
@@ -381,7 +383,9 @@ def _expect_raises(except_cls, msg=None, check_context=False):
             # I'm often pdbing here, and "err" above isn't
             # in scope, so assign the string explicitly
             error_as_string = str(err)
-            assert re.search(msg, error_as_string, re.UNICODE), "{!r} !~ {}".format(
+            assert re.search(
+                msg, error_as_string, re.UNICODE
+            ), "{!r} !~ {}".format(
                 msg,
                 error_as_string,
             )

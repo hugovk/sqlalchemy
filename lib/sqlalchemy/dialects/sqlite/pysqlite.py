@@ -496,9 +496,7 @@ class SQLiteDialect_pysqlite(SQLiteDialect):
             dbapi_connection.isolation_level = None
         else:
             dbapi_connection.isolation_level = ""
-            return super().set_isolation_level(
-                dbapi_connection, level
-            )
+            return super().set_isolation_level(dbapi_connection, level)
 
     def on_connect(self):
         def regexp(a, b):
@@ -577,8 +575,7 @@ class SQLiteDialect_pysqlite(SQLiteDialect):
                 # sorting of keys is for unit test support
                 filename += "?" + (
                     "&".join(
-                        f"{key}={uri_opts[key]}"
-                        for key in sorted(uri_opts)
+                        f"{key}={uri_opts[key]}" for key in sorted(uri_opts)
                     )
                 )
         else:

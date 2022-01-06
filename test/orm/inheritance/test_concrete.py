@@ -180,8 +180,8 @@ class ConcreteTest(fixtures.MappedTest):
         session.flush()
         session.expunge_all()
         assert {repr(x) for x in session.query(Employee)} == {
-                "Engineer Karina knows how to hack",
-                "Manager Sally knows how to manage things",
+            "Engineer Karina knows how to hack",
+            "Manager Sally knows how to manage things",
         }
         assert {repr(x) for x in session.query(Manager)} == {
             "Manager Sally knows how to manage things"
@@ -301,16 +301,16 @@ class ConcreteTest(fixtures.MappedTest):
             == "Manager Sally knows how to manage things"
         )
         assert {repr(x) for x in session.query(Employee).all()} == {
-                "Engineer Jenn knows how to program",
-                "Manager Sally knows how to manage things",
-                "Hacker Karina 'Badass' knows how to hack",
+            "Engineer Jenn knows how to program",
+            "Manager Sally knows how to manage things",
+            "Hacker Karina 'Badass' knows how to hack",
         }
         assert {repr(x) for x in session.query(Manager).all()} == {
             "Manager Sally knows how to manage things"
         }
         assert {repr(x) for x in session.query(Engineer).all()} == {
-                "Engineer Jenn knows how to program",
-                "Hacker Karina 'Badass' knows how to hack",
+            "Engineer Jenn knows how to program",
+            "Hacker Karina 'Badass' knows how to hack",
         }
         assert {repr(x) for x in session.query(Hacker).all()} == {
             "Hacker Karina 'Badass' knows how to hack"
@@ -480,16 +480,16 @@ class ConcreteTest(fixtures.MappedTest):
             == 3
         )
         assert {repr(x) for x in session.query(Employee)} == {
-                "Engineer Jenn knows how to program",
-                "Manager Sally knows how to manage things",
-                "Hacker Karina 'Badass' knows how to hack",
+            "Engineer Jenn knows how to program",
+            "Manager Sally knows how to manage things",
+            "Hacker Karina 'Badass' knows how to hack",
         }
         assert {repr(x) for x in session.query(Manager)} == {
             "Manager Sally knows how to manage things"
         }
         assert {repr(x) for x in session.query(Engineer)} == {
-                "Engineer Jenn knows how to program",
-                "Hacker Karina 'Badass' knows how to hack",
+            "Engineer Jenn knows how to program",
+            "Hacker Karina 'Badass' knows how to hack",
         }
         assert {repr(x) for x in session.query(Hacker)} == {
             "Hacker Karina 'Badass' knows how to hack"
@@ -824,8 +824,8 @@ class ConcreteTest(fixtures.MappedTest):
         def go():
             c2 = session.get(Company, c.id)
             assert {repr(x) for x in c2.employees} == {
-                    "Engineer Karina knows how to hack",
-                    "Manager Sally knows how to manage things",
+                "Engineer Karina knows how to hack",
+                "Manager Sally knows how to manage things",
             }
 
         self.assert_sql_count(testing.db, go, 2)
@@ -836,8 +836,8 @@ class ConcreteTest(fixtures.MappedTest):
                 Company, c.id, options=[joinedload(Company.employees)]
             )
             assert {repr(x) for x in c2.employees} == {
-                    "Engineer Karina knows how to hack",
-                    "Manager Sally knows how to manage things",
+                "Engineer Karina knows how to hack",
+                "Manager Sally knows how to manage things",
             }
 
         self.assert_sql_count(testing.db, go, 1)

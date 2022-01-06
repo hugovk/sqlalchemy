@@ -219,9 +219,7 @@ class MySQLDialect_mysqldb(MySQLDialect):
             ]
         else:
             additional_tests = []
-        return super()._check_unicode_returns(
-            connection, additional_tests
-        )
+        return super()._check_unicode_returns(connection, additional_tests)
 
     def create_connect_args(self, url, _translate_args=None):
         if _translate_args is None:
@@ -322,9 +320,7 @@ class MySQLDialect_mysqldb(MySQLDialect):
             dbapi_connection.autocommit(True)
         else:
             dbapi_connection.autocommit(False)
-            super().set_isolation_level(
-                dbapi_connection, level
-            )
+            super().set_isolation_level(dbapi_connection, level)
 
 
 dialect = MySQLDialect_mysqldb

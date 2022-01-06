@@ -1078,9 +1078,7 @@ class EnumSetTest(
         )
 
         set_table.create(connection)
-        connection.execute(
-            set_table.insert(), {"data": {"réveillé", "drôle"}}
-        )
+        connection.execute(set_table.insert(), {"data": {"réveillé", "drôle"}})
 
         row = connection.execute(set_table.select()).first()
 

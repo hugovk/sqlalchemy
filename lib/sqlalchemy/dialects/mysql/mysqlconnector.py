@@ -166,11 +166,11 @@ class MySQLDialect_mysqlconnector(MySQLDialect):
         return rp.fetchone()
 
     _isolation_lookup = {
-            "SERIALIZABLE",
-            "READ UNCOMMITTED",
-            "READ COMMITTED",
-            "REPEATABLE READ",
-            "AUTOCOMMIT",
+        "SERIALIZABLE",
+        "READ UNCOMMITTED",
+        "READ COMMITTED",
+        "REPEATABLE READ",
+        "AUTOCOMMIT",
     }
 
     def _set_isolation_level(self, connection, level):
@@ -178,9 +178,7 @@ class MySQLDialect_mysqlconnector(MySQLDialect):
             connection.autocommit = True
         else:
             connection.autocommit = False
-            super()._set_isolation_level(
-                connection, level
-            )
+            super()._set_isolation_level(connection, level)
 
 
 dialect = MySQLDialect_mysqlconnector

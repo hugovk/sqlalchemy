@@ -2124,35 +2124,30 @@ class Mapper(
     @HasMemoized.memoized_attribute
     def _insert_cols_evaluating_none(self):
         return {
-                table:
-                frozenset(
-                    col for col in columns if col.type.should_evaluate_none
-                )
+            table: frozenset(
+                col for col in columns if col.type.should_evaluate_none
+            )
             for table, columns in self._cols_by_table.items()
         }
 
     @HasMemoized.memoized_attribute
     def _insert_cols_as_none(self):
         return {
-                table:
-                frozenset(
-                    col.key
-                    for col in columns
-                    if not col.primary_key
-                    and not col.server_default
-                    and not col.default
-                    and not col.type.should_evaluate_none
-                )
+            table: frozenset(
+                col.key
+                for col in columns
+                if not col.primary_key
+                and not col.server_default
+                and not col.default
+                and not col.type.should_evaluate_none
+            )
             for table, columns in self._cols_by_table.items()
         }
 
     @HasMemoized.memoized_attribute
     def _propkey_to_col(self):
         return {
-                table:
-                {
-                    self._columntoproperty[col].key: col for col in columns
-                }
+            table: {self._columntoproperty[col].key: col for col in columns}
             for table, columns in self._cols_by_table.items()
         }
 
@@ -2166,22 +2161,16 @@ class Mapper(
     @HasMemoized.memoized_attribute
     def _pk_attr_keys_by_table(self):
         return {
-                table:
-                frozenset(self._columntoproperty[col].key for col in pks)
+            table: frozenset(self._columntoproperty[col].key for col in pks)
             for table, pks in self._pks_by_table.items()
         }
 
     @HasMemoized.memoized_attribute
     def _server_default_cols(self):
         return {
-                table:
-                frozenset(
-                    
-                        col.key
-                        for col in columns
-                        if col.server_default is not None
-                    
-                )
+            table: frozenset(
+                col.key for col in columns if col.server_default is not None
+            )
             for table, columns in self._cols_by_table.items()
         }
 
@@ -2202,14 +2191,9 @@ class Mapper(
     @HasMemoized.memoized_attribute
     def _server_onupdate_default_cols(self):
         return {
-                table:
-                frozenset(
-                    
-                        col.key
-                        for col in columns
-                        if col.server_onupdate is not None
-                    
-                )
+            table: frozenset(
+                col.key for col in columns if col.server_onupdate is not None
+            )
             for table, columns in self._cols_by_table.items()
         }
 
@@ -2820,10 +2804,8 @@ class Mapper(
         return (
             self._identity_class,
             tuple(
-                
-                    manager[prop.key].impl.get(state, dict_, passive)
-                    for prop in self._identity_key_props
-                
+                manager[prop.key].impl.get(state, dict_, passive)
+                for prop in self._identity_key_props
             ),
             state.identity_token,
         )

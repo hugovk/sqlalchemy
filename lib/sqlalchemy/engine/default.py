@@ -1141,20 +1141,18 @@ class DefaultExecutionContext(interfaces.ExecutionContext):
             use_server_side = self.execution_options.get(
                 "stream_results", True
             ) and (
-                    self.compiled
-                    and isinstance(
-                        self.compiled.statement, expression.Selectable
-                    )
-                    or (
-                        (
-                            not self.compiled
-                            or isinstance(
-                                self.compiled.statement, expression.TextClause
-                            )
+                self.compiled
+                and isinstance(self.compiled.statement, expression.Selectable)
+                or (
+                    (
+                        not self.compiled
+                        or isinstance(
+                            self.compiled.statement, expression.TextClause
                         )
-                        and self.unicode_statement
-                        and SERVER_SIDE_CURSOR_RE.match(self.unicode_statement)
                     )
+                    and self.unicode_statement
+                    and SERVER_SIDE_CURSOR_RE.match(self.unicode_statement)
+                )
             )
         else:
             use_server_side = self.execution_options.get(
@@ -1550,10 +1548,9 @@ class DefaultExecutionContext(interfaces.ExecutionContext):
             )
         else:
             parameters = {
-                    key:
-                    processors[key](compiled_params[key])
-                    if key in processors
-                    else compiled_params[key]
+                key: processors[key](compiled_params[key])
+                if key in processors
+                else compiled_params[key]
                 for key in compiled_params
             }
         return self._execute_scalar(

@@ -1100,8 +1100,8 @@ class CursorResultTest(fixtures.TablesTest):
 
         eq_(
             {
-                    users.c.user_id in row._mapping,
-                    addresses.c.user_id in row._mapping,
+                users.c.user_id in row._mapping,
+                addresses.c.user_id in row._mapping,
             },
             {True},
         )

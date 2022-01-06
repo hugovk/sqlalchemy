@@ -1327,9 +1327,7 @@ class CollectionsTest(OrderedDictFixture, fixtures.ORMTest):
         obj.attr = like_me
         self.assertTrue(obj.attr is not direct)
         self.assertTrue(obj.attr is not like_me)
-        self.assertTrue(
-            set(collections.collection_adapter(obj.attr)) == {e2}
-        )
+        self.assertTrue(set(collections.collection_adapter(obj.attr)) == {e2})
         self.assertTrue(e1 in canary.removed)
         self.assertTrue(e2 in canary.added)
 
@@ -1405,7 +1403,9 @@ class CollectionsTest(OrderedDictFixture, fixtures.ORMTest):
         self._test_dict(MyEasyDict)
         self._test_dict_bulk(MyEasyDict)
         self._test_dict_wo_mutation(MyEasyDict)
-        self.assertTrue(getattr(MyEasyDict, "_sa_instrumented") == id(MyEasyDict))
+        self.assertTrue(
+            getattr(MyEasyDict, "_sa_instrumented") == id(MyEasyDict)
+        )
 
     def test_dict_subclass3(self, ordered_dict_mro):
         class MyOrdered(ordered_dict_mro):
@@ -1419,7 +1419,9 @@ class CollectionsTest(OrderedDictFixture, fixtures.ORMTest):
         self._test_dict(MyOrdered)
         self._test_dict_bulk(MyOrdered)
         self._test_dict_wo_mutation(MyOrdered)
-        self.assertTrue(getattr(MyOrdered, "_sa_instrumented") == id(MyOrdered))
+        self.assertTrue(
+            getattr(MyOrdered, "_sa_instrumented") == id(MyOrdered)
+        )
 
     def test_dict_duck(self):
         class DictLike:
@@ -1958,9 +1960,7 @@ class DictHelpersTest(OrderedDictFixture, fixtures.MappedTest):
 
         p = session.get(Parent, pid)
 
-        self.assertTrue(
-            set(p.children.keys()) == {("foo", "1"), ("foo", "2")}
-        )
+        self.assertTrue(set(p.children.keys()) == {("foo", "1"), ("foo", "2")})
         cid = p.children[("foo", "1")].id
 
         collections.collection_adapter(p.children).append_with_event(
@@ -1972,9 +1972,7 @@ class DictHelpersTest(OrderedDictFixture, fixtures.MappedTest):
 
         p = session.get(Parent, pid)
 
-        self.assertTrue(
-            set(p.children.keys()) == {("foo", "1"), ("foo", "2")}
-        )
+        self.assertTrue(set(p.children.keys()) == {("foo", "1"), ("foo", "2")})
         self.assertTrue(p.children[("foo", "1")].id != cid)
 
         self.assertTrue(

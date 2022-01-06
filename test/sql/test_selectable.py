@@ -116,15 +116,11 @@ class SelectableTest(
 
         eq_(
             s1.selected_columns.foo.proxy_set,
-            {
-                s1.selected_columns.foo, scalar_select, scalar_select.element
-            },
+            {s1.selected_columns.foo, scalar_select, scalar_select.element},
         )
         eq_(
             s2.selected_columns.foo.proxy_set,
-            {
-                s2.selected_columns.foo, scalar_select, scalar_select.element
-            },
+            {s2.selected_columns.foo, scalar_select, scalar_select.element},
         )
 
         assert (
@@ -2395,9 +2391,9 @@ class ReduceTest(fixtures.TestBase, AssertsExecutionResults):
         eq_(
             set(s1.selected_columns),
             {
-                    s1.selected_columns.x,
-                    s1.selected_columns.y,
-                    s1.selected_columns.q,
+                s1.selected_columns.x,
+                s1.selected_columns.y,
+                s1.selected_columns.q,
             },
         )
 

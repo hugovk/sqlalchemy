@@ -2024,10 +2024,7 @@ class SelectTest(fixtures.TestBase, AssertsCompiledSQL):
     def test_custom_order_by_clause(self):
         class CustomCompiler(PGCompiler):
             def order_by_clause(self, select, **kw):
-                return (
-                    super().order_by_clause(select, **kw)
-                    + " CUSTOMIZED"
-                )
+                return super().order_by_clause(select, **kw) + " CUSTOMIZED"
 
         class CustomDialect(PGDialect):
             name = "custom"
@@ -2044,10 +2041,7 @@ class SelectTest(fixtures.TestBase, AssertsCompiledSQL):
     def test_custom_group_by_clause(self):
         class CustomCompiler(PGCompiler):
             def group_by_clause(self, select, **kw):
-                return (
-                    super().group_by_clause(select, **kw)
-                    + " CUSTOMIZED"
-                )
+                return super().group_by_clause(select, **kw) + " CUSTOMIZED"
 
         class CustomDialect(PGDialect):
             name = "custom"
@@ -3251,9 +3245,7 @@ class SelectTest(fixtures.TestBase, AssertsCompiledSQL):
             eq_(list(s1.subquery().c.keys()), [key])
 
             if lbl:
-                self.assert_compile(
-                    s1, f"SELECT {expr} AS {lbl} FROM mytable"
-                )
+                self.assert_compile(s1, f"SELECT {expr} AS {lbl} FROM mytable")
             else:
                 self.assert_compile(s1, f"SELECT {expr} FROM mytable")
 
@@ -6338,9 +6330,7 @@ class ResultMapTest(fixtures.TestBase):
                         )
                         self._add_to_result_map("k1", "k1", (1, 2, 3), int_)
                 else:
-                    text = super().visit_select(
-                        stmt, *arg, **kw
-                    )
+                    text = super().visit_select(stmt, *arg, **kw)
                     self._add_to_result_map("k2", "k2", (3, 4, 5), int_)
                 return text
 

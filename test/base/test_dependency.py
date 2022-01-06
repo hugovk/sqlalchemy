@@ -126,12 +126,12 @@ class DependencySortTest(fixtures.TestBase):
             eq_(
                 err.edges,
                 {
-                        ("node3", "node1"),
-                        ("node4", "node1"),
-                        ("node2", "node3"),
-                        ("node1", "node2"),
-                        ("node4", "node5"),
-                        ("node5", "node4"),
+                    ("node3", "node1"),
+                    ("node4", "node1"),
+                    ("node2", "node3"),
+                    ("node1", "node2"),
+                    ("node4", "node5"),
+                    ("node5", "node4"),
                 },
             )
 
@@ -161,11 +161,11 @@ class DependencySortTest(fixtures.TestBase):
             eq_(
                 err.edges,
                 {
-                        ("node3", "node1"),
-                        ("node2", "node3"),
-                        ("node3", "node2"),
-                        ("node1", "node2"),
-                        ("node2", "node4"),
+                    ("node3", "node1"),
+                    ("node2", "node3"),
+                    ("node3", "node2"),
+                    ("node1", "node2"),
+                    ("node2", "node4"),
                 },
             )
 
@@ -249,19 +249,27 @@ class DependencySortTest(fixtures.TestBase):
             (node3, node2),
         ]
         allnodes = {
-            node1, node2, node3, node4, node5, node6, node7, node8, node9
+            node1,
+            node2,
+            node3,
+            node4,
+            node5,
+            node6,
+            node7,
+            node8,
+            node9,
         }
         eq_(
             topological.find_cycles(tuples, allnodes),
             {
-                    "node8",
-                    "node1",
-                    "node2",
-                    "node5",
-                    "node4",
-                    "node7",
-                    "node6",
-                    "node9",
+                "node8",
+                "node1",
+                "node2",
+                "node5",
+                "node4",
+                "node7",
+                "node6",
+                "node9",
             },
         )
 
@@ -345,19 +353,19 @@ class DependencySortTest(fixtures.TestBase):
         eq_(
             topological.find_cycles(tuples, allnodes),
             {
-                    "node11",
-                    "node10",
-                    "node13",
-                    "node15",
-                    "node14",
-                    "node17",
-                    "node19",
-                    "node20",
-                    "node8",
-                    "node1",
-                    "node3",
-                    "node2",
-                    "node4",
-                    "node6",
+                "node11",
+                "node10",
+                "node13",
+                "node15",
+                "node14",
+                "node17",
+                "node19",
+                "node20",
+                "node8",
+                "node1",
+                "node3",
+                "node2",
+                "node4",
+                "node6",
             },
         )

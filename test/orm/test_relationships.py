@@ -1398,8 +1398,8 @@ class CompositeSelfRefFKTest(fixtures.MappedTest, AssertsCompiledSQL):
         eq_(
             set(Employee.employees.property.local_remote_pairs),
             {
-                    (employee_t.c.company_id, employee_t.c.company_id),
-                    (employee_t.c.emp_id, employee_t.c.reports_to_id),
+                (employee_t.c.company_id, employee_t.c.company_id),
+                (employee_t.c.emp_id, employee_t.c.reports_to_id),
             },
         )
         eq_(
@@ -1409,8 +1409,8 @@ class CompositeSelfRefFKTest(fixtures.MappedTest, AssertsCompiledSQL):
         eq_(
             set(Employee.reports_to.property.local_remote_pairs),
             {
-                    (employee_t.c.company_id, employee_t.c.company_id),
-                    (employee_t.c.reports_to_id, employee_t.c.emp_id),
+                (employee_t.c.company_id, employee_t.c.company_id),
+                (employee_t.c.reports_to_id, employee_t.c.emp_id),
             },
         )
 

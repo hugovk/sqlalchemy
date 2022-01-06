@@ -738,9 +738,9 @@ class NumericTest(_LiteralRoundTripFixture, fixtures.TestBase):
     @testing.requires.precision_numerics_general
     def test_precision_decimal(self, do_numeric_test):
         numbers = {
-                decimal.Decimal("54.234246451650"),
-                decimal.Decimal("0.004354"),
-                decimal.Decimal("900.0"),
+            decimal.Decimal("54.234246451650"),
+            decimal.Decimal("0.004354"),
+            decimal.Decimal("900.0"),
         }
 
         do_numeric_test(Numeric(precision=18, scale=12), numbers, numbers)
@@ -755,18 +755,18 @@ class NumericTest(_LiteralRoundTripFixture, fixtures.TestBase):
         """
 
         numbers = {
-                decimal.Decimal("1E-2"),
-                decimal.Decimal("1E-3"),
-                decimal.Decimal("1E-4"),
-                decimal.Decimal("1E-5"),
-                decimal.Decimal("1E-6"),
-                decimal.Decimal("1E-7"),
-                decimal.Decimal("1E-8"),
-                decimal.Decimal("0.01000005940696"),
-                decimal.Decimal("0.00000005940696"),
-                decimal.Decimal("0.00000000000696"),
-                decimal.Decimal("0.70000000000696"),
-                decimal.Decimal("696E-12"),
+            decimal.Decimal("1E-2"),
+            decimal.Decimal("1E-3"),
+            decimal.Decimal("1E-4"),
+            decimal.Decimal("1E-5"),
+            decimal.Decimal("1E-6"),
+            decimal.Decimal("1E-7"),
+            decimal.Decimal("1E-8"),
+            decimal.Decimal("0.01000005940696"),
+            decimal.Decimal("0.00000005940696"),
+            decimal.Decimal("0.00000000000696"),
+            decimal.Decimal("0.70000000000696"),
+            decimal.Decimal("696E-12"),
         }
         do_numeric_test(Numeric(precision=18, scale=14), numbers, numbers)
 
@@ -775,19 +775,19 @@ class NumericTest(_LiteralRoundTripFixture, fixtures.TestBase):
         """test exceedingly large decimals."""
 
         numbers = {
-                decimal.Decimal("4E+8"),
-                decimal.Decimal("5748E+15"),
-                decimal.Decimal("1.521E+15"),
-                decimal.Decimal("00000000000000.1E+12"),
+            decimal.Decimal("4E+8"),
+            decimal.Decimal("5748E+15"),
+            decimal.Decimal("1.521E+15"),
+            decimal.Decimal("00000000000000.1E+12"),
         }
         do_numeric_test(Numeric(precision=25, scale=2), numbers, numbers)
 
     @testing.requires.precision_numerics_many_significant_digits
     def test_many_significant_digits(self, do_numeric_test):
         numbers = {
-                decimal.Decimal("31943874831932418390.01"),
-                decimal.Decimal("319438950232418390.273596"),
-                decimal.Decimal("87673.594069654243"),
+            decimal.Decimal("31943874831932418390.01"),
+            decimal.Decimal("319438950232418390.273596"),
+            decimal.Decimal("87673.594069654243"),
         }
         do_numeric_test(Numeric(precision=38, scale=12), numbers, numbers)
 

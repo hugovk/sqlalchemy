@@ -808,9 +808,7 @@ class MultipleDialectShardTest(ShardTest, fixtures.MappedTest):
         e2 = testing_engine()
         with e2.begin() as conn:
             for i in [2, 4]:
-                conn.exec_driver_sql(
-                    f"CREATE SCHEMA IF NOT EXISTS shard{i}"
-                )
+                conn.exec_driver_sql(f"CREATE SCHEMA IF NOT EXISTS shard{i}")
 
         db1 = e1.execution_options(schema_translate_map={"changeme": "shard1"})
         db2 = e2.execution_options(schema_translate_map={"changeme": "shard2"})

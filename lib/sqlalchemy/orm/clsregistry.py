@@ -166,9 +166,9 @@ class _MultipleClassMarker:
         # asynchronous garbage collection calling _remove_item,
         # [ticket:3208]
         modules = {
-                cls.__module__
-                for cls in [ref() for ref in self.contents]
-                if cls is not None
+            cls.__module__
+            for cls in [ref() for ref in self.contents]
+            if cls is not None
         }
         if item.__module__ in modules:
             util.warn(

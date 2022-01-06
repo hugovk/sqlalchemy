@@ -2662,9 +2662,7 @@ class JoinCondition:
         log.info(
             "%s synchronize pairs [%s]",
             self.prop,
-            ",".join(
-                f"({l} => {r})" for (l, r) in self.synchronize_pairs
-            ),
+            ",".join(f"({l} => {r})" for (l, r) in self.synchronize_pairs),
         )
         log.info(
             "%s secondary synchronize pairs [%s]",
@@ -2677,9 +2675,7 @@ class JoinCondition:
         log.info(
             "%s local/remote pairs [%s]",
             self.prop,
-            ",".join(
-                f"({l} / {r})" for (l, r) in self.local_remote_pairs
-            ),
+            ",".join(f"({l} / {r})" for (l, r) in self.local_remote_pairs),
         )
         log.info(
             "%s remote columns [%s]",
@@ -3286,11 +3282,11 @@ class JoinCondition:
                 # 2. columns that are FK but are not remote (e.g. local)
                 # suggest manytoone.
                 manytoone_local = {
-                        c
-                        for c in self._gather_columns_with_annotation(
-                            self.primaryjoin, "foreign"
-                        )
-                        if "remote" not in c._annotations
+                    c
+                    for c in self._gather_columns_with_annotation(
+                        self.primaryjoin, "foreign"
+                    )
+                    if "remote" not in c._annotations
                 }
 
                 # 3. if both collections are present, remove columns that
@@ -3502,9 +3498,9 @@ class JoinCondition:
     def _gather_columns_with_annotation(self, clause, *annotation):
         annotation = set(annotation)
         return {
-                col
-                for col in visitors.iterate(clause, {})
-                if annotation.issubset(col._annotations)
+            col
+            for col in visitors.iterate(clause, {})
+            if annotation.issubset(col._annotations)
         }
 
     def join_targets(

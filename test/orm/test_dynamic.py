@@ -408,9 +408,9 @@ class DynamicTest(_DynamicFixture, _fixtures.FixtureTest, AssertsCompiledSQL):
         eq_(
             set(u.addresses.order_by(None)),
             {
-                    Address(email_address="ed@bettyboop.com"),
-                    Address(email_address="ed@lala.com"),
-                    Address(email_address="ed@wood.com"),
+                Address(email_address="ed@bettyboop.com"),
+                Address(email_address="ed@lala.com"),
+                Address(email_address="ed@wood.com"),
             },
         )
 

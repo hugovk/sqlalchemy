@@ -187,7 +187,9 @@ class AdaptTest(fixtures.TestBase):
         except NotImplementedError:
             return
 
-        assert compiled in expected, "{!r} matches none of {!r} for dialect {}".format(
+        assert (
+            compiled in expected
+        ), "{!r} matches none of {!r} for dialect {}".format(
             compiled,
             expected,
             dialect.name,
@@ -502,9 +504,9 @@ class _UserDefinedTypeFixture:
             cache_ok = True
 
             def bind_processor(self, dialect):
-                impl_processor = super().bind_processor(
-                    dialect
-                ) or (lambda value: value)
+                impl_processor = super().bind_processor(dialect) or (
+                    lambda value: value
+                )
 
                 def process(value):
                     if value is None:
@@ -568,9 +570,9 @@ class _UserDefinedTypeFixture:
             cache_ok = True
 
             def bind_processor(self, dialect):
-                impl_processor = super().bind_processor(
-                    dialect
-                ) or (lambda value: value)
+                impl_processor = super().bind_processor(dialect) or (
+                    lambda value: value
+                )
 
                 def process(value):
                     if value is None:

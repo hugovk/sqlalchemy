@@ -2642,24 +2642,20 @@ class HistoryTest(fixtures.TestBase):
         f.someattr["there"] = there
         eq_(
             tuple(
-                
-                    set(x)
-                    for x in attributes.get_state_history(
-                        attributes.instance_state(f), "someattr"
-                    )
-                
+                set(x)
+                for x in attributes.get_state_history(
+                    attributes.instance_state(f), "someattr"
+                )
             ),
             ({hi, there}, set(), set()),
         )
         self._commit_someattr(f)
         eq_(
             tuple(
-                
-                    set(x)
-                    for x in attributes.get_state_history(
-                        attributes.instance_state(f), "someattr"
-                    )
-                
+                set(x)
+                for x in attributes.get_state_history(
+                    attributes.instance_state(f), "someattr"
+                )
             ),
             (set(), {hi, there}, set()),
         )

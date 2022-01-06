@@ -848,12 +848,10 @@ class PGDialect_asyncpg(PGDialect):
     def _dbapi_version(self):
         if self.dbapi and hasattr(self.dbapi, "__version__"):
             return tuple(
-                
-                    int(x)
-                    for x in re.findall(
-                        r"(\d+)(?:[-\.]?|$)", self.dbapi.__version__
-                    )
-                
+                int(x)
+                for x in re.findall(
+                    r"(\d+)(?:[-\.]?|$)", self.dbapi.__version__
+                )
             )
         else:
             return (99, 99, 99)

@@ -68,9 +68,7 @@ class MySQLDialect_pymysql(MySQLDialect_mysqldb):
         )
 
     def is_disconnect(self, e, connection, cursor):
-        if super().is_disconnect(
-            e, connection, cursor
-        ):
+        if super().is_disconnect(e, connection, cursor):
             return True
         elif isinstance(e, self.dbapi.Error):
             str_e = str(e).lower()

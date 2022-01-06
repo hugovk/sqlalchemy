@@ -1439,9 +1439,7 @@ class TypeDecorator(ExternalType, SchemaEventTarget, TypeEngine):
     def _set_parent_with_dispatch(self, parent):
         """Support SchemaEventTarget"""
 
-        super()._set_parent_with_dispatch(
-            parent, outer=True
-        )
+        super()._set_parent_with_dispatch(parent, outer=True)
 
         if isinstance(self.impl, SchemaEventTarget):
             self.impl._set_parent_with_dispatch(parent)

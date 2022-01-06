@@ -297,9 +297,7 @@ class MySQLDialect_aiomysql(MySQLDialect_pymysql):
         )
 
     def is_disconnect(self, e, connection, cursor):
-        if super().is_disconnect(
-            e, connection, cursor
-        ):
+        if super().is_disconnect(e, connection, cursor):
             return True
         else:
             str_e = str(e).lower()

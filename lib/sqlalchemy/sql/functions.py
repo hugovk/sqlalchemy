@@ -130,9 +130,7 @@ class FunctionElement(Executable, ColumnElement, FromClause, Generative):
 
     @property
     def _proxy_key(self):
-        return super()._proxy_key or getattr(
-            self, "name", None
-        )
+        return super()._proxy_key or getattr(self, "name", None)
 
     def _execute_on_connection(
         self, connection, distilled_params, execution_options

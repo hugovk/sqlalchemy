@@ -276,8 +276,8 @@ class _JoinFixtures:
             self.composite_selfref,
             self.composite_selfref,
             remote_side={
-                    self.composite_selfref.c.id,
-                    self.composite_selfref.c.group_id,
+                self.composite_selfref.c.id,
+                self.composite_selfref.c.group_id,
             },
             **kw,
         )
@@ -843,8 +843,8 @@ class ColumnCollectionsTest(
         eq_(
             joincond.remote_columns,
             {
-                    self.composite_selfref.c.id,
-                    self.composite_selfref.c.group_id,
+                self.composite_selfref.c.id,
+                self.composite_selfref.c.group_id,
             },
         )
 

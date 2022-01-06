@@ -338,8 +338,8 @@ def expand_column_list_from_order_by(collist, order_by):
 
     """
     cols_already_present = {
-            col.element if col._order_by_label_element is not None else col
-            for col in collist
+        col.element if col._order_by_label_element is not None else col
+        for col in collist
     }
 
     to_look_for = list(chain(*[unwrap_order_by(o) for o in order_by]))
@@ -570,8 +570,7 @@ class _repr_params(_repr_base):
         if typ is self._DICT:
             return "{%s}" % (
                 ", ".join(
-                    f"{key!r}: {trunc(value)}"
-                    for key, value in params.items()
+                    f"{key!r}: {trunc(value)}" for key, value in params.items()
                 )
             )
         elif typ is self._TUPLE:

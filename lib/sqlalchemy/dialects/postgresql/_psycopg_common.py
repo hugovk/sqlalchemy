@@ -56,9 +56,7 @@ class _PsycopgHStore(HSTORE):
         if dialect._has_native_hstore:
             return None
         else:
-            return super().result_processor(
-                dialect, coltype
-            )
+            return super().result_processor(dialect, coltype)
 
 
 class _PsycopgUUID(UUID):

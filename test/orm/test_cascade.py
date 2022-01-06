@@ -154,12 +154,12 @@ class CascadeArgTest(fixtures.MappedTest):
         eq_(
             rel.cascade,
             {
-                    "delete",
-                    "delete-orphan",
-                    "expunge",
-                    "merge",
-                    "refresh-expire",
-                    "save-update",
+                "delete",
+                "delete-orphan",
+                "expunge",
+                "merge",
+                "refresh-expire",
+                "save-update",
             },
         )
 

@@ -716,9 +716,7 @@ def _do_skips(cls):
     if getattr(cls, "__skip_if__", False):
         for c in getattr(cls, "__skip_if__"):
             if c():
-                config.skip_test(
-                    f"'{cls.__name__}' skipped by {c.__name__}"
-                )
+                config.skip_test(f"'{cls.__name__}' skipped by {c.__name__}")
 
     if not all_configs:
         msg = "'{}.{}' unsupported on any DB implementation {}{}".format(

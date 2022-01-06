@@ -46,100 +46,100 @@ from .. import exc
 from .. import util
 
 RESERVED_WORDS = {
-        "all",
-        "analyse",
-        "analyze",
-        "and",
-        "any",
-        "array",
-        "as",
-        "asc",
-        "asymmetric",
-        "authorization",
-        "between",
-        "binary",
-        "both",
-        "case",
-        "cast",
-        "check",
-        "collate",
-        "column",
-        "constraint",
-        "create",
-        "cross",
-        "current_date",
-        "current_role",
-        "current_time",
-        "current_timestamp",
-        "current_user",
-        "default",
-        "deferrable",
-        "desc",
-        "distinct",
-        "do",
-        "else",
-        "end",
-        "except",
-        "false",
-        "for",
-        "foreign",
-        "freeze",
-        "from",
-        "full",
-        "grant",
-        "group",
-        "having",
-        "ilike",
-        "in",
-        "initially",
-        "inner",
-        "intersect",
-        "into",
-        "is",
-        "isnull",
-        "join",
-        "leading",
-        "left",
-        "like",
-        "limit",
-        "localtime",
-        "localtimestamp",
-        "natural",
-        "new",
-        "not",
-        "notnull",
-        "null",
-        "off",
-        "offset",
-        "old",
-        "on",
-        "only",
-        "or",
-        "order",
-        "outer",
-        "overlaps",
-        "placing",
-        "primary",
-        "references",
-        "right",
-        "select",
-        "session_user",
-        "set",
-        "similar",
-        "some",
-        "symmetric",
-        "table",
-        "then",
-        "to",
-        "trailing",
-        "true",
-        "union",
-        "unique",
-        "user",
-        "using",
-        "verbose",
-        "when",
-        "where",
+    "all",
+    "analyse",
+    "analyze",
+    "and",
+    "any",
+    "array",
+    "as",
+    "asc",
+    "asymmetric",
+    "authorization",
+    "between",
+    "binary",
+    "both",
+    "case",
+    "cast",
+    "check",
+    "collate",
+    "column",
+    "constraint",
+    "create",
+    "cross",
+    "current_date",
+    "current_role",
+    "current_time",
+    "current_timestamp",
+    "current_user",
+    "default",
+    "deferrable",
+    "desc",
+    "distinct",
+    "do",
+    "else",
+    "end",
+    "except",
+    "false",
+    "for",
+    "foreign",
+    "freeze",
+    "from",
+    "full",
+    "grant",
+    "group",
+    "having",
+    "ilike",
+    "in",
+    "initially",
+    "inner",
+    "intersect",
+    "into",
+    "is",
+    "isnull",
+    "join",
+    "leading",
+    "left",
+    "like",
+    "limit",
+    "localtime",
+    "localtimestamp",
+    "natural",
+    "new",
+    "not",
+    "notnull",
+    "null",
+    "off",
+    "offset",
+    "old",
+    "on",
+    "only",
+    "or",
+    "order",
+    "outer",
+    "overlaps",
+    "placing",
+    "primary",
+    "references",
+    "right",
+    "select",
+    "session_user",
+    "set",
+    "similar",
+    "some",
+    "symmetric",
+    "table",
+    "then",
+    "to",
+    "trailing",
+    "true",
+    "union",
+    "unique",
+    "user",
+    "using",
+    "verbose",
+    "when",
+    "where",
 }
 
 LEGAL_CHARACTERS = re.compile(r"^[A-Z0-9_$]+$", re.I)
@@ -346,8 +346,7 @@ class FromLinter(collections.namedtuple("FromLinter", ["froms", "edges"])):
                     "between each element to resolve."
                 )
                 froms_str = ", ".join(
-                    f'"{self.froms[from_]}"'
-                    for from_ in froms
+                    f'"{self.froms[from_]}"' for from_ in froms
                 )
                 message = template.format(
                     froms=froms_str, start=self.froms[start_with]
@@ -1204,8 +1203,7 @@ class SQLCompiler(Compiled):
                 tok = m.group(2).split("~~")
                 be_left, be_right = tok[1], tok[3]
                 expr = ", ".join(
-                    f"{be_left}{exp}{be_right}"
-                    for exp in expr.split(", ")
+                    f"{be_left}{exp}{be_right}" for exp in expr.split(", ")
                 )
             return expr
 
@@ -2117,8 +2115,7 @@ class SQLCompiler(Compiled):
             )
         else:
             to_update = [
-                (f"{name}_{i}", value)
-                for i, value in enumerate(values, 1)
+                (f"{name}_{i}", value) for i, value in enumerate(values, 1)
             ]
             replacement_expression = ", ".join(
                 _render_bindtemplate(key) for key, value in to_update
@@ -3426,11 +3423,10 @@ class SQLCompiler(Compiled):
 
     def _setup_select_hints(self, select):
         byfrom = {
-                    from_:
-                    hinttext
-                    % {"name": from_._compiler_dispatch(self, ashint=True)}
-                for (from_, dialect), hinttext in select._hints.items()
-                if dialect in ("*", self.dialect.name)
+            from_: hinttext
+            % {"name": from_._compiler_dispatch(self, ashint=True)}
+            for (from_, dialect), hinttext in select._hints.items()
+            if dialect in ("*", self.dialect.name)
         }
         hint_text = self.get_select_hint_text(byfrom)
         return hint_text, byfrom
@@ -3781,9 +3777,9 @@ class SQLCompiler(Compiled):
 
     def _setup_crud_hints(self, stmt, table_text):
         dialect_hints = {
-                table: hint_text
-                for (table, dialect), hint_text in stmt._hints.items()
-                if dialect in ("*", self.dialect.name)
+            table: hint_text
+            for (table, dialect), hint_text in stmt._hints.items()
+            if dialect in ("*", self.dialect.name)
         }
         if stmt.table in dialect_hints:
             table_text = self.format_from_hint_text(
@@ -4228,9 +4224,7 @@ class StrSQLCompiler(SQLCompiler):
             if not isinstance(compiler, StrSQLCompiler):
                 return compiler.process(element)
 
-        return super().visit_unsupported_compilation(
-            element, err
-        )
+        return super().visit_unsupported_compilation(element, err)
 
     def visit_getitem_binary(self, binary, operator, **kw):
         return "{}[{}]".format(

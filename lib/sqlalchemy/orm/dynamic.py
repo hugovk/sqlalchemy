@@ -79,9 +79,7 @@ class DynamicAttributeImpl(attributes.AttributeImpl):
         query_class=None,
         **kw,
     ):
-        super().__init__(
-            class_, key, typecallable, dispatch, **kw
-        )
+        super().__init__(class_, key, typecallable, dispatch, **kw)
         self.target_mapper = target_mapper
         if order_by:
             self.order_by = tuple(order_by)

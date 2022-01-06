@@ -1934,9 +1934,7 @@ class DisposedStates(fixtures.MappedTest):
 class SessionInterface(fixtures.MappedTest):
     """Bogus args to Session methods produce actionable exceptions."""
 
-    _class_methods = {
-        "connection", "execute", "get_bind", "scalar", "scalars"
-    }
+    _class_methods = {"connection", "execute", "get_bind", "scalar", "scalars"}
 
     def _public_session_methods(self):
         Session = sa.orm.session.Session
@@ -2021,9 +2019,9 @@ class SessionInterface(fixtures.MappedTest):
             self._public_session_methods()
             - self._class_methods
             - {
-                    "bulk_update_mappings",
-                    "bulk_insert_mappings",
-                    "bulk_save_objects",
+                "bulk_update_mappings",
+                "bulk_insert_mappings",
+                "bulk_save_objects",
             }
         )
 

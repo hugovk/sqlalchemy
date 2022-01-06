@@ -248,7 +248,9 @@ class DialectSQL(CompiledSQL):
         return received_stmt == stmt
 
     def _received_statement(self, execute_observed):
-        received_stmt, received_params = super()._received_statement(execute_observed)
+        received_stmt, received_params = super()._received_statement(
+            execute_observed
+        )
 
         # TODO: why do we need this part?
         for real_stmt in execute_observed.statements:

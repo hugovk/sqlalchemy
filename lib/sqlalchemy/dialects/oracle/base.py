@@ -607,9 +607,7 @@ class NUMBER(sqltypes.Numeric, sqltypes.Integer):
         if asdecimal is None:
             asdecimal = bool(scale and scale > 0)
 
-        super().__init__(
-            precision=precision, scale=scale, asdecimal=asdecimal
-        )
+        super().__init__(precision=precision, scale=scale, asdecimal=asdecimal)
 
     def adapt(self, impltype):
         ret = super().adapt(impltype)
@@ -931,9 +929,7 @@ class OracleCompiler(compiler.SQLCompiler):
         return text
 
     def visit_table_valued_column(self, element, **kw):
-        text = super().visit_table_valued_column(
-            element, **kw
-        )
+        text = super().visit_table_valued_column(element, **kw)
         text = "COLUMN_VALUE " + text
         return text
 
@@ -1363,9 +1359,7 @@ class OracleDDLCompiler(compiler.DDLCompiler):
         return "".join(table_opts)
 
     def get_identity_options(self, identity_options):
-        text = super().get_identity_options(
-            identity_options
-        )
+        text = super().get_identity_options(identity_options)
         text = text.replace("NO MINVALUE", "NOMINVALUE")
         text = text.replace("NO MAXVALUE", "NOMAXVALUE")
         text = text.replace("NO CYCLE", "NOCYCLE")
@@ -1418,9 +1412,7 @@ class OracleIdentifierPreparer(compiler.IdentifierPreparer):
 
     def format_savepoint(self, savepoint):
         name = savepoint.ident.lstrip("_")
-        return super().format_savepoint(
-            savepoint, name
-        )
+        return super().format_savepoint(savepoint, name)
 
 
 class OracleExecutionContext(default.DefaultExecutionContext):

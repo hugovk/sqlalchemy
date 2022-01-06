@@ -265,10 +265,8 @@ class HasPrefixes:
 
     def _setup_prefixes(self, prefixes, dialect=None):
         self._prefixes = self._prefixes + tuple(
-            
-                (coercions.expect(roles.StatementOptionRole, p), dialect)
-                for p in prefixes
-            
+            (coercions.expect(roles.StatementOptionRole, p), dialect)
+            for p in prefixes
         )
 
 
@@ -320,10 +318,8 @@ class HasSuffixes:
 
     def _setup_suffixes(self, suffixes, dialect=None):
         self._suffixes = self._suffixes + tuple(
-            
-                (coercions.expect(roles.StatementOptionRole, p), dialect)
-                for p in suffixes
-            
+            (coercions.expect(roles.StatementOptionRole, p), dialect)
+            for p in suffixes
         )
 
 
@@ -5243,9 +5239,7 @@ class Select(
         # correlate_except, setup_joins, these clone normally.  For
         # column-expression oriented things like raw_columns, where_criteria,
         # order by, we get this from the new froms.
-        super()._copy_internals(
-            clone=clone, omit_attrs=("_from_obj",), **kw
-        )
+        super()._copy_internals(clone=clone, omit_attrs=("_from_obj",), **kw)
 
         self._reset_memoizations()
 

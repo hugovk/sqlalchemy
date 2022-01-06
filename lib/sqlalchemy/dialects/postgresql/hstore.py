@@ -423,9 +423,7 @@ def _serialize_hstore(val):
         elif isinstance(s, str):
             return '"%s"' % s.replace("\\", "\\\\").replace('"', r"\"")
         else:
-            raise ValueError(
-                f"{s!r} in {position} position is not a string."
-            )
+            raise ValueError(f"{s!r} in {position} position is not a string.")
 
     return ", ".join(
         "{}=>{}".format(esc(k, "key"), esc(v, "value")) for k, v in val.items()

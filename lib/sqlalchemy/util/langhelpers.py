@@ -355,9 +355,7 @@ class PluginLoader:
                 self.impls[name] = impl.load
                 return impl.load()
 
-        raise exc.NoSuchModuleError(
-            f"Can't load plugin: {self.group}:{name}"
-        )
+        raise exc.NoSuchModuleError(f"Can't load plugin: {self.group}:{name}")
 
     def register(self, name, modulepath, objname):
         def load():
@@ -732,23 +730,17 @@ def create_proxy_methods(
 
         for meth in methods:
             if hasattr(cls, meth):
-                raise TypeError(
-                    f"class {cls} already has a method {meth}"
-                )
+                raise TypeError(f"class {cls} already has a method {meth}")
             setattr(cls, meth, instrument(meth))
 
         for prop in attributes:
             if hasattr(cls, prop):
-                raise TypeError(
-                    f"class {cls} already has a method {prop}"
-                )
+                raise TypeError(f"class {cls} already has a method {prop}")
             setattr(cls, prop, makeprop(prop))
 
         for prop in classmethods:
             if hasattr(cls, prop):
-                raise TypeError(
-                    f"class {cls} already has a method {prop}"
-                )
+                raise TypeError(f"class {cls} already has a method {prop}")
             setattr(cls, prop, instrument(prop, clslevel=True))
 
         return cls

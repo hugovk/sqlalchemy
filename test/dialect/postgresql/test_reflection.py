@@ -266,9 +266,7 @@ class MaterializedViewReflectionTest(
 
     def test_get_view_names_plain(self, connection):
         insp = inspect(connection)
-        eq_(
-            set(insp.get_view_names(include=("plain",))), {"test_regview"}
-        )
+        eq_(set(insp.get_view_names(include=("plain",))), {"test_regview"})
 
     def test_get_view_names_plain_string(self, connection):
         insp = inspect(connection)
@@ -283,9 +281,7 @@ class MaterializedViewReflectionTest(
 
     def test_get_view_names_reflection_cache_ok(self, connection):
         insp = inspect(connection)
-        eq_(
-            set(insp.get_view_names(include=("plain",))), {"test_regview"}
-        )
+        eq_(set(insp.get_view_names(include=("plain",))), {"test_regview"})
         eq_(
             set(insp.get_view_names(include=("materialized",))),
             {"test_mview"},
@@ -889,8 +885,8 @@ class ReflectionTest(
         eq_(
             set(meta3.tables),
             {
-                    "test_schema_2.some_other_table",
-                    "test_schema.some_table",
+                "test_schema_2.some_other_table",
+                "test_schema.some_table",
             },
         )
 

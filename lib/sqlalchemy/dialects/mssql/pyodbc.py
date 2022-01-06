@@ -590,9 +590,7 @@ class MSDialect_pyodbc(PyODBCConnector, MSDialect):
     def do_executemany(self, cursor, statement, parameters, context=None):
         if self.fast_executemany:
             cursor.fast_executemany = True
-        super().do_executemany(
-            cursor, statement, parameters, context=context
-        )
+        super().do_executemany(cursor, statement, parameters, context=context)
 
     def is_disconnect(self, e, connection, cursor):
         if isinstance(e, self.dbapi.Error):
@@ -610,9 +608,7 @@ class MSDialect_pyodbc(PyODBCConnector, MSDialect):
                 "10054",
             }:
                 return True
-        return super().is_disconnect(
-            e, connection, cursor
-        )
+        return super().is_disconnect(e, connection, cursor)
 
 
 dialect = MSDialect_pyodbc

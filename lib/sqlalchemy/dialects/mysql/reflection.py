@@ -189,9 +189,7 @@ class MySQLTableDefinitionParser:
         try:
             col_type = self.dialect.ischema_names[type_]
         except KeyError:
-            util.warn(
-                f"Did not recognize type '{type_}' of column '{name}'"
-            )
+            util.warn(f"Did not recognize type '{type_}' of column '{name}'")
             col_type = sqltypes.NullType
 
         # Column type positional arguments eg. varchar(32)

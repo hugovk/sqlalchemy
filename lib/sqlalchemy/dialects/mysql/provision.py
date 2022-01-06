@@ -27,9 +27,9 @@ def generate_driver_url(url, driver, query_str):
         if dialect_cls._is_mariadb_from_url(url):
             backend = "mariadb"
 
-    new_url = url.set(
-        drivername=f"{backend}+{driver}"
-    ).update_query_string(query_str)
+    new_url = url.set(drivername=f"{backend}+{driver}").update_query_string(
+        query_str
+    )
 
     try:
         new_url.get_dialect()

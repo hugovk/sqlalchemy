@@ -188,6 +188,4 @@ class PyODBCConnector(Connector):
             dbapi_connection.autocommit = True
         else:
             dbapi_connection.autocommit = False
-            super().set_isolation_level(
-                dbapi_connection, level
-            )
+            super().set_isolation_level(dbapi_connection, level)

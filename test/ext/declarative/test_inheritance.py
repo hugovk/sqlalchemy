@@ -697,19 +697,19 @@ class ConcreteExtensionConfigTest(
                     A(
                         data="a1",
                         collection={
-                                B(data="a1b1", b_data="a1b1"),
-                                C(data="a1b2", c_data="a1c1"),
-                                B(data="a1b2", b_data="a1b2"),
-                                C(data="a1c2", c_data="a1c2"),
+                            B(data="a1b1", b_data="a1b1"),
+                            C(data="a1b2", c_data="a1c1"),
+                            B(data="a1b2", b_data="a1b2"),
+                            C(data="a1c2", c_data="a1c2"),
                         },
                     ),
                     A(
                         data="a2",
                         collection={
-                                B(data="a2b1", b_data="a2b1"),
-                                C(data="a2c1", c_data="a2c1"),
-                                B(data="a2b2", b_data="a2b2"),
-                                C(data="a2c2", c_data="a2c2"),
+                            B(data="a2b1", b_data="a2b1"),
+                            C(data="a2c1", c_data="a2c1"),
+                            B(data="a2b2", b_data="a2b2"),
+                            C(data="a2c2", c_data="a2c2"),
                         },
                     ),
                 ]
@@ -723,10 +723,10 @@ class ConcreteExtensionConfigTest(
                     A(
                         data="a2",
                         collection={
-                                B(data="a2b1", b_data="a2b1"),
-                                B(data="a2b2", b_data="a2b2"),
-                                C(data="a2c1", c_data="a2c1"),
-                                C(data="a2c2", c_data="a2c2"),
+                            B(data="a2b1", b_data="a2b1"),
+                            B(data="a2b2", b_data="a2b2"),
+                            C(data="a2c1", c_data="a2c1"),
+                            C(data="a2c2", c_data="a2c2"),
                         },
                     )
                 ],

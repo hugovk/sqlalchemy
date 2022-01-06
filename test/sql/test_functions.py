@@ -472,7 +472,9 @@ class CompileTest(fixtures.TestBase, AssertsCompiledSQL):
                     sqltypes.DateTime,
                 ),
             ]:
-                assert isinstance(fn(*args).type, type_), "{} / {!r} != {}".format(
+                assert isinstance(
+                    fn(*args).type, type_
+                ), "{} / {!r} != {}".format(
                     fn(),
                     fn(*args).type,
                     type_,

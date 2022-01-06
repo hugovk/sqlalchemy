@@ -1189,9 +1189,11 @@ class MySQLCompiler(compiler.SQLCompiler):
 
         # for non-JSON, MySQL doesn't handle JSON null at all so it has to
         # be explicit
-        case_expression = "CASE JSON_EXTRACT({}, {}) WHEN 'null' THEN NULL".format(
-            self.process(binary.left, **kw),
-            self.process(binary.right, **kw),
+        case_expression = (
+            "CASE JSON_EXTRACT({}, {}) WHEN 'null' THEN NULL".format(
+                self.process(binary.left, **kw),
+                self.process(binary.right, **kw),
+            )
         )
 
         if binary.type._type_affinity is sqltypes.Integer:
@@ -1908,9 +1910,7 @@ class MySQLDDLCompiler(compiler.DDLCompiler):
         return text
 
     def visit_primary_key_constraint(self, constraint):
-        text = super().visit_primary_key_constraint(
-            constraint
-        )
+        text = super().visit_primary_key_constraint(constraint)
         using = constraint.dialect_options["mysql"]["using"]
         if using:
             text += " USING %s" % (self.preparer.quote(using))
@@ -2092,9 +2092,7 @@ class MySQLTypeCompiler(compiler.GenericTypeCompiler):
                 type_, f"FLOAT({type_.precision}, {type_.scale})"
             )
         elif type_.precision is not None:
-            return self._extend_numeric(
-                type_, f"FLOAT({type_.precision})"
-            )
+            return self._extend_numeric(type_, f"FLOAT({type_.precision})")
         else:
             return self._extend_numeric(type_, "FLOAT")
 
@@ -2204,9 +2202,7 @@ class MySQLTypeCompiler(compiler.GenericTypeCompiler):
 
     def visit_CHAR(self, type_, **kw):
         if type_.length:
-            return self._extend_string(
-                type_, {}, f"CHAR({type_.length})"
-            )
+            return self._extend_string(type_, {}, f"CHAR({type_.length})")
         else:
             return self._extend_string(type_, {}, "CHAR")
 
@@ -2293,9 +2289,7 @@ class MySQLIdentifierPreparer(compiler.IdentifierPreparer):
         else:
             quote = '"'
 
-        super().__init__(
-            dialect, initial_quote=quote, escape_quote=quote
-        )
+        super().__init__(dialect, initial_quote=quote, escape_quote=quote)
 
     def _quote_free_identifiers(self, *ids):
         """Unilaterally identifier-quote any number of strings."""

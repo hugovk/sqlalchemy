@@ -185,11 +185,9 @@ class ClassManager(HasMemoized, dict):
     @HasMemoized.memoized_attribute
     def _scalar_loader_impls(self):
         return frozenset(
-            
-                attr.impl
-                for attr in self.values()
-                if attr.impl.accepts_scalar_loader
-            
+            attr.impl
+            for attr in self.values()
+            if attr.impl.accepts_scalar_loader
         )
 
     @HasMemoized.memoized_attribute

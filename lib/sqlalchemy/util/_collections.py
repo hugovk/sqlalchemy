@@ -83,9 +83,7 @@ class Properties:
         return iter(list(self._data.values()))
 
     def __dir__(self):
-        return dir(super()) + [
-            str(k) for k in self._data.keys()
-        ]
+        return dir(super()) + [str(k) for k in self._data.keys()]
 
     def __add__(self, other):
         return list(self) + list(other)

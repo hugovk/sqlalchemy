@@ -188,10 +188,8 @@ class LambdaElement(elements.ClauseElement):
         if parent_closure_cache_key is not traversals.NO_CACHE:
             anon_map = traversals.anon_map()
             cache_key = tuple(
-                
-                    getter(closure, opts, anon_map, bindparams)
-                    for getter in tracker.closure_trackers
-                
+                getter(closure, opts, anon_map, bindparams)
+                for getter in tracker.closure_trackers
             )
 
             if traversals.NO_CACHE not in anon_map:

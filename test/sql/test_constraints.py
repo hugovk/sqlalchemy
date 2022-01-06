@@ -707,10 +707,10 @@ class ConstraintGenTest(fixtures.TestBase, AssertsExecutionResults):
         eq_(
             {ix.name for ix in events.indexes},
             {
-                    "ix_events_name",
-                    "ix_events_location",
-                    "sport_announcer",
-                    "idx_winners",
+                "ix_events_name",
+                "ix_events_location",
+                "sport_announcer",
+                "idx_winners",
             },
         )
 

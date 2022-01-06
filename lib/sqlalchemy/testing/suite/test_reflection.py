@@ -1033,9 +1033,9 @@ class ComponentReflectionTest(fixtures.TablesTest):
         # of Oracle).  make sure # they aren't duplicated.
         idx_names = {idx.name for idx in reflected.indexes}
         uq_names = {
-                uq.name
-                for uq in reflected.constraints
-                if isinstance(uq, sa.UniqueConstraint)
+            uq.name
+            for uq in reflected.constraints
+            if isinstance(uq, sa.UniqueConstraint)
         }.difference(["unique_c_a_b"])
 
         assert not idx_names.intersection(uq_names)

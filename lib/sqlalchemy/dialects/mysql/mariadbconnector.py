@@ -80,12 +80,10 @@ class MySQLDialect_mariadbconnector(MySQLDialect):
     def _dbapi_version(self):
         if self.dbapi and hasattr(self.dbapi, "__version__"):
             return tuple(
-                
-                    int(x)
-                    for x in re.findall(
-                        r"(\d+)(?:[-\.]?|$)", self.dbapi.__version__
-                    )
-                
+                int(x)
+                for x in re.findall(
+                    r"(\d+)(?:[-\.]?|$)", self.dbapi.__version__
+                )
             )
         else:
             return (99, 99, 99)
@@ -106,9 +104,7 @@ class MySQLDialect_mariadbconnector(MySQLDialect):
         return __import__("mariadb")
 
     def is_disconnect(self, e, connection, cursor):
-        if super().is_disconnect(
-            e, connection, cursor
-        ):
+        if super().is_disconnect(e, connection, cursor):
             return True
         elif isinstance(e, self.dbapi.Error):
             str_e = str(e).lower()
@@ -164,11 +160,11 @@ class MySQLDialect_mariadbconnector(MySQLDialect):
         return "utf8mb4"
 
     _isolation_lookup = {
-            "SERIALIZABLE",
-            "READ UNCOMMITTED",
-            "READ COMMITTED",
-            "REPEATABLE READ",
-            "AUTOCOMMIT",
+        "SERIALIZABLE",
+        "READ UNCOMMITTED",
+        "READ COMMITTED",
+        "REPEATABLE READ",
+        "AUTOCOMMIT",
     }
 
     def _set_isolation_level(self, connection, level):
@@ -176,9 +172,7 @@ class MySQLDialect_mariadbconnector(MySQLDialect):
             connection.autocommit = True
         else:
             connection.autocommit = False
-            super()._set_isolation_level(
-                connection, level
-            )
+            super()._set_isolation_level(connection, level)
 
     def do_begin_twophase(self, connection, xid):
         connection.execute(

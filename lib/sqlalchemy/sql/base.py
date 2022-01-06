@@ -189,9 +189,7 @@ def _cloned_intersection(a, b):
 
     """
     all_overlap = set(_expand_cloned(a)).intersection(_expand_cloned(b))
-    return {
-        elem for elem in a if all_overlap.intersection(elem._cloned_set)
-    }
+    return {elem for elem in a if all_overlap.intersection(elem._cloned_set)}
 
 
 def _cloned_difference(a, b):

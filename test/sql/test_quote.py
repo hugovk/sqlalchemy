@@ -840,9 +840,7 @@ class PreparerTest(fixtures.TestBase):
     def test_unformat_custom(self):
         class Custom(compiler.IdentifierPreparer):
             def __init__(self, dialect):
-                super().__init__(
-                    dialect, initial_quote="`", final_quote="`"
-                )
+                super().__init__(dialect, initial_quote="`", final_quote="`")
 
             def _escape_identifier(self, value):
                 return value.replace("`", "``")

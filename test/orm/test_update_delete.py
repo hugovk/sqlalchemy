@@ -1636,12 +1636,12 @@ class UpdateDeleteFromTest(fixtures.MappedTest):
         eq_(
             set(s.query(Document.id, Document.flag)),
             {
-                    (1, True),
-                    (2, None),
-                    (3, None),
-                    (4, True),
-                    (5, True),
-                    (6, None),
+                (1, True),
+                (2, None),
+                (3, None),
+                (4, True),
+                (5, True),
+                (6, None),
             },
         )
 
@@ -1723,12 +1723,12 @@ class UpdateDeleteFromTest(fixtures.MappedTest):
         eq_(
             set(s.query(Document.id, Document.flag)),
             {
-                    (1, True),
-                    (2, None),
-                    (3, None),
-                    (4, True),
-                    (5, True),
-                    (6, None),
+                (1, True),
+                (2, None),
+                (3, None),
+                (4, True),
+                (5, True),
+                (6, None),
             },
         )
 
@@ -1755,12 +1755,12 @@ class UpdateDeleteFromTest(fixtures.MappedTest):
         eq_(
             set(s.query(Document.id, Document.flag)),
             {
-                    (1, True),
-                    (2, False),
-                    (3, False),
-                    (4, True),
-                    (5, True),
-                    (6, False),
+                (1, True),
+                (2, False),
+                (3, False),
+                (4, True),
+                (5, True),
+                (6, False),
             },
         )
 

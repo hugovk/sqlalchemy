@@ -217,9 +217,7 @@ class _ImperativeMapperConfig(_MapperConfig):
         table,
         mapper_kw,
     ):
-        super().__init__(
-            registry, cls_, mapper_kw
-        )
+        super().__init__(registry, cls_, mapper_kw)
 
         self.dict_ = {}
         self.local_table = self.set_cls_attribute("__table__", table)
@@ -959,9 +957,9 @@ class _ClassScanMapperConfig(_MapperConfig):
 
             if "exclude_properties" not in mapper_args:
                 mapper_args["exclude_properties"] = exclude_properties = {
-                        c.key
-                        for c in inherited_table.c
-                        if c not in inherited_mapper._columntoproperty
+                    c.key
+                    for c in inherited_table.c
+                    if c not in inherited_mapper._columntoproperty
                 }.union(inherited_mapper.exclude_properties or ())
                 exclude_properties.difference_update(
                     [c.key for c in self.declared_columns]

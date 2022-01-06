@@ -262,10 +262,8 @@ class HasCacheKey:
                         result += (
                             attrname,
                             tuple(
-                                
-                                    elem._gen_cache_key(anon_map, bindparams)
-                                    for elem in obj
-                                
+                                elem._gen_cache_key(anon_map, bindparams)
+                                for elem in obj
                             ),
                         )
                     else:
@@ -617,10 +615,8 @@ class _CacheKey(ExtendedInternalTraversal):
         return (
             attrname,
             tuple(
-                
-                    (clause._gen_cache_key(anon_map, bindparams), strval)
-                    for clause, strval in obj
-                
+                (clause._gen_cache_key(anon_map, bindparams), strval)
+                for clause, strval in obj
             ),
         )
 
@@ -656,14 +652,12 @@ class _CacheKey(ExtendedInternalTraversal):
         return (
             attrname,
             tuple(
-                
-                    (
-                        clause._gen_cache_key(anon_map, bindparams),
-                        dialect_name,
-                        text,
-                    )
-                    for (clause, dialect_name), text in obj.items()
-                
+                (
+                    clause._gen_cache_key(anon_map, bindparams),
+                    dialect_name,
+                    text,
+                )
+                for (clause, dialect_name), text in obj.items()
             ),
         )
 
@@ -679,10 +673,8 @@ class _CacheKey(ExtendedInternalTraversal):
                 (
                     dialect_name,
                     tuple(
-                        
-                            (key, obj[dialect_name][key])
-                            for key in sorted(obj[dialect_name])
-                        
+                        (key, obj[dialect_name][key])
+                        for key in sorted(obj[dialect_name])
                     ),
                 )
                 for dialect_name in sorted(obj)
@@ -853,9 +845,7 @@ class _CopyInternals(InternalTraversal):
     def visit_string_clauseelement_dict(
         self, attrname, parent, element, clone=_clone, **kw
     ):
-        return {
-            key: clone(value, **kw) for key, value in element.items()
-        }
+        return {key: clone(value, **kw) for key, value in element.items()}
 
     def visit_setup_join_tuple(
         self, attrname, parent, element, clone=_clone, **kw

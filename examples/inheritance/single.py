@@ -127,7 +127,11 @@ c = session.query(Company).get(1)
 for e in c.employees:
     print(e, inspect(e).key, e.company)
 assert {e.name for e in c.employees} == {
-    "pointy haired boss", "dilbert", "joesmith", "wally", "jsmith"
+    "pointy haired boss",
+    "dilbert",
+    "joesmith",
+    "wally",
+    "jsmith",
 }
 print("\n")
 

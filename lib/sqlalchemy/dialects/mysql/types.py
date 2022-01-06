@@ -41,9 +41,7 @@ class _FloatType(_NumericType, sqltypes.Float):
                 "You must specify both precision and scale or omit "
                 "both altogether."
             )
-        super().__init__(
-            precision=precision, asdecimal=asdecimal, **kw
-        )
+        super().__init__(precision=precision, asdecimal=asdecimal, **kw)
         self.scale = scale
 
     def __repr__(self):

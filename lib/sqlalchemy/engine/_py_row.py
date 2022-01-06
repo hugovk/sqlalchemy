@@ -26,10 +26,8 @@ class BaseRow:
                 self,
                 "_data",
                 tuple(
-                    
-                        proc(value) if proc else value
-                        for proc, value in zip(processors, data)
-                    
+                    proc(value) if proc else value
+                    for proc, value in zip(processors, data)
                 ),
             )
         else:

@@ -111,9 +111,7 @@ class ObjectNotExecutableError(ArgumentError):
     """
 
     def __init__(self, target):
-        super().__init__(
-            "Not an executable object: %r" % target
-        )
+        super().__init__("Not an executable object: %r" % target)
         self.target = target
 
     def __reduce__(self):
