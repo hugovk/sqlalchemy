@@ -227,8 +227,7 @@ def visit_binary_product(fn, expr):
             if isinstance(element, ColumnClause):
                 yield element
             for elem in element.get_children():
-                for e in visit(elem):
-                    yield e
+                yield from visit(elem)
 
     list(visit(expr))
     visit = None  # remove gc cycles
@@ -338,12 +337,10 @@ def expand_column_list_from_order_by(collist, order_by):
     in the collist.
 
     """
-    cols_already_present = set(
-        [
+    cols_already_present = {
             col.element if col._order_by_label_element is not None else col
             for col in collist
-        ]
-    )
+    }
 
     to_look_for = list(chain(*[unwrap_order_by(o) for o in order_by]))
 
@@ -368,13 +365,10 @@ def clause_is_present(clause, search):
 
 def tables_from_leftmost(clause):
     if isinstance(clause, Join):
-        for t in tables_from_leftmost(clause.left):
-            yield t
-        for t in tables_from_leftmost(clause.right):
-            yield t
+        yield from tables_from_leftmost(clause.left)
+        yield from tables_from_leftmost(clause.right)
     elif isinstance(clause, FromGrouping):
-        for t in tables_from_leftmost(clause.element):
-            yield t
+        yield from tables_from_leftmost(clause.element)
     else:
         yield clause
 
@@ -495,7 +489,7 @@ class _repr_row(_repr_base):
 
     def __repr__(self):
         trunc = self.trunc
-        return "(%s%s)" % (
+        return "({}{})".format(
             ", ".join(trunc(value) for value in self.row),
             "," if len(self.row) == 1 else "",
         )
@@ -576,12 +570,12 @@ class _repr_params(_repr_base):
         if typ is self._DICT:
             return "{%s}" % (
                 ", ".join(
-                    "%r: %s" % (key, trunc(value))
+                    f"{key!r}: {trunc(value)}"
                     for key, value in params.items()
                 )
             )
         elif typ is self._TUPLE:
-            return "(%s%s)" % (
+            return "({}{})".format(
                 ", ".join(trunc(value) for value in params),
                 "," if len(params) == 1 else "",
             )

@@ -52,8 +52,7 @@ def sort(tuples, allitems, deterministic_order=True):
     """
 
     for set_ in sort_as_subsets(tuples, allitems):
-        for s in set_:
-            yield s
+        yield from set_
 
 
 def find_cycles(tuples, allitems):
@@ -97,4 +96,4 @@ def find_cycles(tuples, allitems):
 
 
 def _gen_edges(edges):
-    return set([(right, left) for left in edges for right in edges[left]])
+    return {(right, left) for left in edges for right in edges[left]}

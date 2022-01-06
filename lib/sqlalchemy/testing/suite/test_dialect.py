@@ -1,5 +1,3 @@
-#! coding: utf-8
-
 from . import testing
 from .. import assert_raises
 from .. import config

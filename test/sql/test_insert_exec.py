@@ -142,7 +142,7 @@ class InsertExecTest(fixtures.TablesTest):
             eq_(getattr(ipk, col.key), assertvalues[col.key])
             eq_(ipk._mapping[col.key], assertvalues[col.key])
 
-        eq_(ipk._fields, tuple([col.key for col in table_.primary_key]))
+        eq_(ipk._fields, tuple(col.key for col in table_.primary_key))
 
     @testing.requires.supports_autoincrement_w_composite_pk
     @testing.combinations(

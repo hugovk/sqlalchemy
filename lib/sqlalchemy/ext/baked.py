@@ -522,15 +522,13 @@ class Result:
             # None present in ident - turn those comparisons
             # into "IS NULL"
             if None in primary_key_identity:
-                nones = set(
-                    [
+                nones = {
                         _get_params[col].key
                         for col, value in zip(
                             mapper.primary_key, primary_key_identity
                         )
                         if value is None
-                    ]
-                )
+                }
                 _lcl_get_clause = sql_util.adapt_criterion_to_null(
                     _lcl_get_clause, nones
                 )
@@ -559,14 +557,12 @@ class Result:
             setup, tuple(elem is None for elem in primary_key_identity)
         )
 
-        params = dict(
-            [
-                (_get_params[primary_key].key, id_val)
+        params = {
+                _get_params[primary_key].key: id_val
                 for id_val, primary_key in zip(
                     primary_key_identity, mapper.primary_key
                 )
-            ]
-        )
+        }
 
         result = list(bq.for_session(self.session).params(**params))
         l = len(result)

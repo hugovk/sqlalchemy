@@ -28,7 +28,7 @@ def generate_driver_url(url, driver, query_str):
             backend = "mariadb"
 
     new_url = url.set(
-        drivername="%s+%s" % (backend, driver)
+        drivername=f"{backend}+{driver}"
     ).update_query_string(query_str)
 
     try:

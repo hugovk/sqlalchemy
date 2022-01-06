@@ -182,7 +182,7 @@ def instance_logger(instance, echoflag=None):
     """create a logger for an instance that implements :class:`.Identified`."""
 
     if instance.logging_name:
-        name = "%s.%s" % (
+        name = "{}.{}".format(
             _qual_logger_name_for_cls(instance.__class__),
             instance.logging_name,
         )

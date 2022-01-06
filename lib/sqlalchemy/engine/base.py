@@ -122,7 +122,7 @@ class Connection(ConnectionEventsTarget):
     def _message_formatter(self):
         if "logging_token" in self._execution_options:
             token = self._execution_options["logging_token"]
-            return lambda msg: "[%s] %s" % (token, msg)
+            return lambda msg: f"[{token}] {msg}"
         else:
             return None
 
@@ -2247,7 +2247,7 @@ class TwoPhaseTransaction(RootTransaction):
     def __init__(self, connection, xid):
         self._is_prepared = False
         self.xid = xid
-        super(TwoPhaseTransaction, self).__init__(connection)
+        super().__init__(connection)
 
     def prepare(self):
         """Prepare this :class:`.TwoPhaseTransaction`.
@@ -2483,7 +2483,7 @@ class Engine(ConnectionEventsTarget, log.Identified):
     echo = log.echo_property()
 
     def __repr__(self):
-        return "Engine(%r)" % (self.url,)
+        return f"Engine({self.url!r})"
 
     def dispose(self):
         """Dispose of the connection pool used by this

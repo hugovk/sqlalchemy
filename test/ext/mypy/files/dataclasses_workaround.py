@@ -32,10 +32,10 @@ class User:
         Column("nickname", String(12)),
     )
     id: int = field(init=False)
-    name: Optional[str] = None
-    fullname: Optional[str] = None
-    nickname: Optional[str] = None
-    addresses: List[Address] = field(default_factory=list)
+    name: str | None = None
+    fullname: str | None = None
+    nickname: str | None = None
+    addresses: list[Address] = field(default_factory=list)
 
     if TYPE_CHECKING:
         _mypy_mapped_attrs = [id, name, fullname, nickname, addresses]
@@ -58,7 +58,7 @@ class Address:
 
     id: int = field(init=False)
     user_id: int = field(init=False)
-    email_address: Optional[str] = None
+    email_address: str | None = None
 
     if TYPE_CHECKING:
         _mypy_mapped_attrs = [id, user_id, email_address]

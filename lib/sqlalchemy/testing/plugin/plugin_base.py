@@ -567,7 +567,7 @@ def generate_sub_tests(cls, module):
 
             alpha_name = re.sub(r"[_\[\]\.]+", "_", cfg.name)
             alpha_name = re.sub(r"_+$", "", alpha_name)
-            name = "%s_%s" % (cls.__name__, alpha_name)
+            name = f"{cls.__name__}_{alpha_name}"
             subcls = type(
                 name,
                 (cls,),
@@ -629,7 +629,7 @@ def before_test(test, test_module_name, test_class, test_name):
 
     name = getattr(test_class, "_sa_orig_cls_name", test_class.__name__)
 
-    id_ = "%s.%s.%s" % (test_module_name, name, test_name)
+    id_ = f"{test_module_name}.{name}.{test_name}"
 
     profiling._start_current_test(id_)
 
@@ -717,11 +717,11 @@ def _do_skips(cls):
         for c in getattr(cls, "__skip_if__"):
             if c():
                 config.skip_test(
-                    "'%s' skipped by %s" % (cls.__name__, c.__name__)
+                    f"'{cls.__name__}' skipped by {c.__name__}"
                 )
 
     if not all_configs:
-        msg = "'%s.%s' unsupported on any DB implementation %s%s" % (
+        msg = "'{}.{}' unsupported on any DB implementation {}{}".format(
             cls.__module__,
             cls.__name__,
             ", ".join(

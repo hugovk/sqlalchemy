@@ -143,7 +143,7 @@ class LambdaElement(elements.ClauseElement):
     parent_lambda = None
 
     def __repr__(self):
-        return "%s(%r)" % (self.__class__.__name__, self.fn.__code__)
+        return f"{self.__class__.__name__}({self.fn.__code__!r})"
 
     def __init__(
         self, fn, role, opts=LambdaOptions, apply_propagate_attrs=None
@@ -188,10 +188,10 @@ class LambdaElement(elements.ClauseElement):
         if parent_closure_cache_key is not traversals.NO_CACHE:
             anon_map = traversals.anon_map()
             cache_key = tuple(
-                [
+                
                     getter(closure, opts, anon_map, bindparams)
                     for getter in tracker.closure_trackers
-                ]
+                
             )
 
             if traversals.NO_CACHE not in anon_map:
@@ -363,7 +363,7 @@ class DeferredLambdaElement(LambdaElement):
 
     def __init__(self, fn, role, opts=LambdaOptions, lambda_args=()):
         self.lambda_args = lambda_args
-        super(DeferredLambdaElement, self).__init__(fn, role, opts)
+        super().__init__(fn, role, opts)
 
     def _invoke_user_fn(self, fn, *arg):
         return fn(*self.lambda_args)
@@ -406,7 +406,7 @@ class DeferredLambdaElement(LambdaElement):
     def _copy_internals(
         self, clone=_clone, deferred_copy_internals=None, **kw
     ):
-        super(DeferredLambdaElement, self)._copy_internals(
+        super()._copy_internals(
             clone=clone,
             deferred_copy_internals=deferred_copy_internals,  # **kw
             opts=kw,
@@ -1098,7 +1098,7 @@ class AnalyzedFunction:
 
         code = "def make_cells():\n"
         if cell_values:
-            code += "    (%s) = (%s)\n" % (
+            code += "    ({}) = ({})\n".format(
                 ", ".join("i%d" % i for i in argrange),
                 ", ".join("o%d" % i for i in argrange),
             )

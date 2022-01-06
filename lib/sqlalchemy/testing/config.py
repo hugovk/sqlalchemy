@@ -127,9 +127,9 @@ class Config:
         suffix = "_async" if db.dialect.is_async else ""
         if db.dialect.server_version_info:
             svi = ".".join(str(tok) for tok in db.dialect.server_version_info)
-            self.name = "%s+%s%s_[%s]" % (db.name, db.driver, suffix, svi)
+            self.name = f"{db.name}+{db.driver}{suffix}_[{svi}]"
         else:
-            self.name = "%s+%s%s" % (db.name, db.driver, suffix)
+            self.name = f"{db.name}+{db.driver}{suffix}"
 
     @classmethod
     def register(cls, db, db_opts, options, file_config):

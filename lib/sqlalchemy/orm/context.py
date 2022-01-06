@@ -874,14 +874,11 @@ class ORMSelectCompileState(ORMCompileState, SelectState):
             ):
                 ens = element._annotations["entity_namespace"]
                 if not ens.is_mapper and not ens.is_aliased_class:
-                    for elem in _select_iterables([element]):
-                        yield elem
+                    yield from _select_iterables([element])
                 else:
-                    for elem in _select_iterables(ens._all_column_expressions):
-                        yield elem
+                    yield from _select_iterables(ens._all_column_expressions)
             else:
-                for elem in _select_iterables([element]):
-                    yield elem
+                yield from _select_iterables([element])
 
     @classmethod
     def get_columns_clause_froms(cls, statement):

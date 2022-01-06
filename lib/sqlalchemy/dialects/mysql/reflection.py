@@ -158,7 +158,7 @@ class MySQLTableDefinitionParser:
             options.pop(nope, None)
 
         for opt, val in options.items():
-            state.table_options["%s_%s" % (self.dialect.name, opt)] = val
+            state.table_options[f"{self.dialect.name}_{opt}"] = val
 
     def _parse_column(self, line, state):
         """Extract column details.
@@ -190,7 +190,7 @@ class MySQLTableDefinitionParser:
             col_type = self.dialect.ischema_names[type_]
         except KeyError:
             util.warn(
-                "Did not recognize type '%s' of column '%s'" % (type_, name)
+                f"Did not recognize type '{type_}' of column '{name}'"
             )
             col_type = sqltypes.NullType
 
@@ -277,9 +277,9 @@ class MySQLTableDefinitionParser:
 
         buffer = []
         for row in columns:
-            (name, col_type, nullable, default, extra) = [
+            (name, col_type, nullable, default, extra) = (
                 row[i] for i in (0, 1, 2, 4, 5)
-            ]
+            )
 
             line = [" "]
             line.append(self.preparer.quote_identifier(name))

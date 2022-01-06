@@ -1,4 +1,3 @@
-# coding: utf-8
 import datetime
 import decimal
 import importlib
@@ -188,7 +187,7 @@ class AdaptTest(fixtures.TestBase):
         except NotImplementedError:
             return
 
-        assert compiled in expected, "%r matches none of %r for dialect %s" % (
+        assert compiled in expected, "{!r} matches none of {!r} for dialect {}".format(
             compiled,
             expected,
             dialect.name,
@@ -196,7 +195,7 @@ class AdaptTest(fixtures.TestBase):
 
         assert (
             str(types.to_instance(type_)) in expected
-        ), "default str() of type %r not expected, %r" % (type_, expected)
+        ), f"default str() of type {type_!r} not expected, {expected!r}"
 
     def _adaptions():
         for typ in _all_types(omit_special_types=True):
@@ -204,7 +203,7 @@ class AdaptTest(fixtures.TestBase):
             # up adapt from LowerCase to UPPERCASE,
             # as well as to all non-sqltypes
             up_adaptions = [typ] + typ.__subclasses__()
-            yield "%s.%s" % (
+            yield "{}.{}".format(
                 typ.__module__,
                 typ.__name__,
             ), False, typ, up_adaptions
@@ -214,7 +213,7 @@ class AdaptTest(fixtures.TestBase):
                     and typ is not TypeDecorator
                     and "sqlalchemy" in subcl.__module__
                 ):
-                    yield "%s.%s" % (
+                    yield "{}.{}".format(
                         subcl.__module__,
                         subcl.__name__,
                     ), True, subcl, [typ]
@@ -361,7 +360,7 @@ class TypeAffinityTest(fixtures.TestBase):
         id_="rra",
     )
     def test_compare_type_affinity(self, t1, t2, comp):
-        eq_(t1._compare_type_affinity(t2), comp, "%s %s" % (t1, t2))
+        eq_(t1._compare_type_affinity(t2), comp, f"{t1} {t2}")
 
     def test_decorator_doesnt_cache(self):
         from sqlalchemy.dialects import postgresql
@@ -503,7 +502,7 @@ class _UserDefinedTypeFixture:
             cache_ok = True
 
             def bind_processor(self, dialect):
-                impl_processor = super(MyDecoratedType, self).bind_processor(
+                impl_processor = super().bind_processor(
                     dialect
                 ) or (lambda value: value)
 
@@ -515,7 +514,7 @@ class _UserDefinedTypeFixture:
                 return process
 
             def result_processor(self, dialect, coltype):
-                impl_processor = super(MyDecoratedType, self).result_processor(
+                impl_processor = super().result_processor(
                     dialect, coltype
                 ) or (lambda value: value)
 
@@ -569,7 +568,7 @@ class _UserDefinedTypeFixture:
             cache_ok = True
 
             def bind_processor(self, dialect):
-                impl_processor = super(MyUnicodeType, self).bind_processor(
+                impl_processor = super().bind_processor(
                     dialect
                 ) or (lambda value: value)
 
@@ -582,7 +581,7 @@ class _UserDefinedTypeFixture:
                 return process
 
             def result_processor(self, dialect, coltype):
-                impl_processor = super(MyUnicodeType, self).result_processor(
+                impl_processor = super().result_processor(
                     dialect, coltype
                 ) or (lambda value: value)
 
@@ -932,7 +931,7 @@ class UserDefinedTest(
                 if dialect.name == "sqlite":
                     return String(50)
                 else:
-                    return super(MyType, self).load_dialect_impl(dialect)
+                    return super().load_dialect_impl(dialect)
 
         sl = dialects.sqlite.dialect()
         pg = dialects.postgresql.dialect()
@@ -1005,7 +1004,7 @@ class UserDefinedTest(
     def test_user_defined_dialect_specific_args(self):
         class MyType(types.UserDefinedType):
             def __init__(self, foo="foo", **kwargs):
-                super(MyType, self).__init__()
+                super().__init__()
                 self.foo = foo
                 self.dialect_specific_args = kwargs
 

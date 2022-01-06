@@ -217,7 +217,7 @@ class _ImperativeMapperConfig(_MapperConfig):
         table,
         mapper_kw,
     ):
-        super(_ImperativeMapperConfig, self).__init__(
+        super().__init__(
             registry, cls_, mapper_kw
         )
 
@@ -298,7 +298,7 @@ class _ClassScanMapperConfig(_MapperConfig):
         mapper_kw,
     ):
 
-        super(_ClassScanMapperConfig, self).__init__(registry, cls_, mapper_kw)
+        super().__init__(registry, cls_, mapper_kw)
 
         self.dict_ = dict(dict_) if dict_ else {}
         self.persist_selectable = None
@@ -958,13 +958,11 @@ class _ClassScanMapperConfig(_MapperConfig):
             inherited_table = inherited_mapper.local_table
 
             if "exclude_properties" not in mapper_args:
-                mapper_args["exclude_properties"] = exclude_properties = set(
-                    [
+                mapper_args["exclude_properties"] = exclude_properties = {
                         c.key
                         for c in inherited_table.c
                         if c not in inherited_mapper._columntoproperty
-                    ]
-                ).union(inherited_mapper.exclude_properties or ())
+                }.union(inherited_mapper.exclude_properties or ())
                 exclude_properties.difference_update(
                     [c.key for c in self.declared_columns]
                 )
@@ -1066,7 +1064,7 @@ class _DeferredMapperConfig(_ClassScanMapperConfig):
         if not sort:
             return classes_for_base
 
-        all_m_by_cls = dict((m.cls, m) for m in classes_for_base)
+        all_m_by_cls = {m.cls: m for m in classes_for_base}
 
         tuples = []
         for m_cls in all_m_by_cls:
@@ -1079,7 +1077,7 @@ class _DeferredMapperConfig(_ClassScanMapperConfig):
 
     def map(self, mapper_kw=util.EMPTY_DICT):
         self._configs.pop(self._cls, None)
-        return super(_DeferredMapperConfig, self).map(mapper_kw)
+        return super().map(mapper_kw)
 
 
 def _add_attribute(cls, key, value):
@@ -1150,7 +1148,7 @@ def _declarative_constructor(self, **kwargs):
     for k in kwargs:
         if not hasattr(cls_, k):
             raise TypeError(
-                "%r is an invalid keyword argument for %s" % (k, cls_.__name__)
+                f"{k!r} is an invalid keyword argument for {cls_.__name__}"
             )
         setattr(self, k, kwargs[k])
 

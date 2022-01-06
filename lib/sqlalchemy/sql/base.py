@@ -189,16 +189,16 @@ def _cloned_intersection(a, b):
 
     """
     all_overlap = set(_expand_cloned(a)).intersection(_expand_cloned(b))
-    return set(
+    return {
         elem for elem in a if all_overlap.intersection(elem._cloned_set)
-    )
+    }
 
 
 def _cloned_difference(a, b):
     all_overlap = set(_expand_cloned(a)).intersection(_expand_cloned(b))
-    return set(
+    return {
         elem for elem in a if not all_overlap.intersection(elem._cloned_set)
-    )
+    }
 
 
 class _DialectArgView(collections_abc.MutableMapping):
@@ -250,7 +250,7 @@ class _DialectArgView(collections_abc.MutableMapping):
 
     def __iter__(self):
         return (
-            "%s_%s" % (dialect_name, value_name)
+            f"{dialect_name}_{value_name}"
             for dialect_name in self.obj.dialect_options
             for value_name in self.obj.dialect_options[
                 dialect_name
@@ -668,10 +668,10 @@ class Options(metaclass=_MetaOptions):
     def __repr__(self):
         # TODO: fairly inefficient, used only in debugging right now.
 
-        return "%s(%s)" % (
+        return "{}({})".format(
             self.__class__.__name__,
             ", ".join(
-                "%s=%r" % (k, self.__dict__[k])
+                f"{k}={self.__dict__[k]!r}"
                 for k in self._cache_attrs
                 if k in self.__dict__
             ),
@@ -1273,7 +1273,7 @@ class ColumnCollection:
             return default
 
     def __str__(self):
-        return "%s(%s)" % (
+        return "{}({})".format(
             self.__class__.__name__,
             ", ".join(str(c) for c in self),
         )
@@ -1683,5 +1683,5 @@ def _entity_namespace_key(entity, key, default=NO_ARG):
             return getattr(ns, key)
     except AttributeError as err:
         raise exc.InvalidRequestError(
-            'Entity namespace for "%s" has no property "%s"' % (entity, key)
+            f'Entity namespace for "{entity}" has no property "{key}"'
         ) from err

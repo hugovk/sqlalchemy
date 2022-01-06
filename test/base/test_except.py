@@ -1,5 +1,3 @@
-#! coding:utf-8
-
 """Tests exceptions and DB-API exception wrapping."""
 
 from itertools import product
@@ -72,7 +70,7 @@ class WrapTest(fixtures.TestBase):
                 "", [], OperationalError(), DatabaseError
             )
         except sa_exceptions.DBAPIError:
-            self.assert_(True)
+            self.assertTrue(True)
 
     def test_tostring(self):
         try:
@@ -327,8 +325,8 @@ class WrapTest(fixtures.TestBase):
                 "", [], ProgrammingError(), DatabaseError
             )
         except sa_exceptions.DBAPIError as e:
-            self.assert_(True)
-            self.assert_("Error in str() of DB-API" in e.args[0])
+            self.assertTrue(True)
+            self.assertTrue("Error in str() of DB-API" in e.args[0])
 
     def test_db_error_noncompliant_dbapi(self):
         try:
@@ -337,18 +335,18 @@ class WrapTest(fixtures.TestBase):
             )
         except sa_exceptions.DBAPIError as e:
             # OutOfSpec subclasses DatabaseError
-            self.assert_(e.__class__ is sa_exceptions.DatabaseError)
+            self.assertTrue(e.__class__ is sa_exceptions.DatabaseError)
         except OutOfSpec:
-            self.assert_(False)
+            self.assertTrue(False)
 
         try:
             raise sa_exceptions.DBAPIError.instance(
                 "", [], sa_exceptions.ArgumentError(), DatabaseError
             )
         except sa_exceptions.DBAPIError as e:
-            self.assert_(e.__class__ is sa_exceptions.DBAPIError)
+            self.assertTrue(e.__class__ is sa_exceptions.DBAPIError)
         except sa_exceptions.ArgumentError:
-            self.assert_(False)
+            self.assertTrue(False)
 
         dialect = self._translating_dialect_fixture()
         try:
@@ -360,9 +358,9 @@ class WrapTest(fixtures.TestBase):
                 dialect=dialect,
             )
         except sa_exceptions.DBAPIError as e:
-            self.assert_(e.__class__ is sa_exceptions.DBAPIError)
+            self.assertTrue(e.__class__ is sa_exceptions.DBAPIError)
         except sa_exceptions.ArgumentError:
-            self.assert_(False)
+            self.assertTrue(False)
 
     def test_db_error_dbapi_uses_wrong_names(self):
         dialect = self._translating_dialect_fixture()
@@ -372,7 +370,7 @@ class WrapTest(fixtures.TestBase):
                 "", [], IntegrityError(), DatabaseError, dialect=dialect
             )
         except sa_exceptions.DBAPIError as e:
-            self.assert_(e.__class__ is sa_exceptions.IntegrityError)
+            self.assertTrue(e.__class__ is sa_exceptions.IntegrityError)
 
         try:
             raise sa_exceptions.DBAPIError.instance(
@@ -383,7 +381,7 @@ class WrapTest(fixtures.TestBase):
                 dialect=dialect,
             )
         except sa_exceptions.DBAPIError as e:
-            self.assert_(e.__class__ is sa_exceptions.IntegrityError)
+            self.assertTrue(e.__class__ is sa_exceptions.IntegrityError)
 
         try:
             raise sa_exceptions.DBAPIError.instance(
@@ -391,7 +389,7 @@ class WrapTest(fixtures.TestBase):
             )
         except sa_exceptions.DBAPIError as e:
             # doesn't work without a dialect
-            self.assert_(e.__class__ is not sa_exceptions.IntegrityError)
+            self.assertTrue(e.__class__ is not sa_exceptions.IntegrityError)
 
     def test_db_error_keyboard_interrupt(self):
         try:
@@ -399,9 +397,9 @@ class WrapTest(fixtures.TestBase):
                 "", [], KeyboardInterrupt(), DatabaseError
             )
         except sa_exceptions.DBAPIError:
-            self.assert_(False)
+            self.assertTrue(False)
         except KeyboardInterrupt:
-            self.assert_(True)
+            self.assertTrue(True)
 
     def test_db_error_system_exit(self):
         try:
@@ -409,9 +407,9 @@ class WrapTest(fixtures.TestBase):
                 "", [], SystemExit(), DatabaseError
             )
         except sa_exceptions.DBAPIError:
-            self.assert_(False)
+            self.assertTrue(False)
         except SystemExit:
-            self.assert_(True)
+            self.assertTrue(True)
 
 
 def details(cls):

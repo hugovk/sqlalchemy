@@ -1,6 +1,3 @@
-# coding: utf-8
-
-
 import datetime
 import decimal
 import os
@@ -100,7 +97,7 @@ class DialectTypesTest(fixtures.TestBase, AssertsCompiledSQL):
 
         assert isinstance(
             start.dialect_impl(dialect), test
-        ), "wanted %r got %r" % (test, start.dialect_impl(dialect))
+        ), f"wanted {test!r} got {start.dialect_impl(dialect)!r}"
 
     @testing.combinations(
         (String(), String),
@@ -117,7 +114,7 @@ class DialectTypesTest(fixtures.TestBase, AssertsCompiledSQL):
 
         assert isinstance(
             start.dialect_impl(dialect), test
-        ), "wanted %r got %r" % (test, start.dialect_impl(dialect))
+        ), f"wanted {test!r} got {start.dialect_impl(dialect)!r}"
 
     def test_raw_compile(self):
         self.assert_compile(oracle.RAW(), "RAW")
@@ -349,7 +346,7 @@ class TypesTest(fixtures.TestBase):
                 )
             ):
                 eq_(row[i], val)
-                assert isinstance(row[i], type_), "%r is not %r" % (
+                assert isinstance(row[i], type_), "{!r} is not {!r}".format(
                     row[i],
                     type_,
                 )

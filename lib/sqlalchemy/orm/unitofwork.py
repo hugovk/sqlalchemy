@@ -400,9 +400,9 @@ class UOWTransaction:
         if cycles:
             # if yes, break the per-mapper actions into
             # per-state actions
-            convert = dict(
-                (rec, set(rec.per_state_flush_actions(self))) for rec in cycles
-            )
+            convert = {
+                rec: set(rec.per_state_flush_actions(self)) for rec in cycles
+            }
 
             # rewrite the existing dependencies to point to
             # the per-state actions for those per-mapper actions
@@ -424,9 +424,9 @@ class UOWTransaction:
                     for dep in convert[edge[1]]:
                         self.dependencies.add((edge[0], dep))
 
-        return set(
-            [a for a in self.postsort_actions.values() if not a.disabled]
-        ).difference(cycles)
+        return {
+            a for a in self.postsort_actions.values() if not a.disabled
+        }.difference(cycles)
 
     def execute(self):
         postsort_actions = self._generate_actions()
@@ -467,9 +467,9 @@ class UOWTransaction:
             return
 
         states = set(self.states)
-        isdel = set(
+        isdel = {
             s for (s, (isdelete, listonly)) in self.states.items() if isdelete
-        )
+        }
         other = states.difference(isdel)
         if isdel:
             self.session._remove_newly_deleted(isdel)
@@ -586,7 +586,7 @@ class ProcessAll(IterateMappersMixin, PostSortRec):
         return iter([])
 
     def __repr__(self):
-        return "%s(%s, isdelete=%s)" % (
+        return "{}({}, isdelete={})".format(
             self.__class__.__name__,
             self.dependency_processor,
             self.isdelete,
@@ -651,7 +651,7 @@ class SaveUpdateAll(PostSortRec):
             dep.per_state_flush_actions(uow, states_for_prop, False)
 
     def __repr__(self):
-        return "%s(%s)" % (self.__class__.__name__, self.mapper)
+        return f"{self.__class__.__name__}({self.mapper})"
 
 
 class DeleteAll(PostSortRec):
@@ -688,7 +688,7 @@ class DeleteAll(PostSortRec):
             dep.per_state_flush_actions(uow, states_for_prop, True)
 
     def __repr__(self):
-        return "%s(%s)" % (self.__class__.__name__, self.mapper)
+        return f"{self.__class__.__name__}({self.mapper})"
 
 
 class ProcessState(PostSortRec):
@@ -719,7 +719,7 @@ class ProcessState(PostSortRec):
             dependency_processor.process_saves(uow, states)
 
     def __repr__(self):
-        return "%s(%s, %s, delete=%s)" % (
+        return "{}({}, {}, delete={})".format(
             self.__class__.__name__,
             self.dependency_processor,
             orm_util.state_str(self.state),
@@ -749,7 +749,7 @@ class SaveUpdateState(PostSortRec):
         )
 
     def __repr__(self):
-        return "%s(%s)" % (
+        return "{}({})".format(
             self.__class__.__name__,
             orm_util.state_str(self.state),
         )
@@ -778,7 +778,7 @@ class DeleteState(PostSortRec):
         )
 
     def __repr__(self):
-        return "%s(%s)" % (
+        return "{}({})".format(
             self.__class__.__name__,
             orm_util.state_str(self.state),
         )

@@ -40,7 +40,7 @@ class UserDefinedTest(fixtures.TestBase, AssertsCompiledSQL):
             inherit_cache = False
 
             def __init__(self, arg=None):
-                super(MyThingy, self).__init__(arg or "MYTHINGY!")
+                super().__init__(arg or "MYTHINGY!")
 
         @compiles(MyThingy)
         def visit_thingy(thingy, compiler, **kw):
@@ -125,7 +125,7 @@ class UserDefinedTest(fixtures.TestBase, AssertsCompiledSQL):
             inherit_cache = False
 
             def __init__(self):
-                super(MyThingy, self).__init__("MYTHINGY!")
+                super().__init__("MYTHINGY!")
 
         @compiles(MyThingy)
         def visit_thingy(thingy, compiler, **kw):
@@ -154,7 +154,7 @@ class UserDefinedTest(fixtures.TestBase, AssertsCompiledSQL):
 
         @compiles(InsertFromSelect)
         def visit_insert_from_select(element, compiler, **kw):
-            return "INSERT INTO %s (%s)" % (
+            return "INSERT INTO {} ({})".format(
                 compiler.process(element.table, asfrom=True),
                 compiler.process(element.select),
             )
@@ -346,7 +346,7 @@ class UserDefinedTest(fixtures.TestBase, AssertsCompiledSQL):
 
         @compiles(myfunc)
         def visit_myfunc(element, compiler, **kw):
-            return "myfunc%s" % (compiler.process(element.clause_expr, **kw),)
+            return f"myfunc{compiler.process(element.clause_expr, **kw)}"
 
         self.assert_compile(myfunc(), "myfunc()")
 
@@ -367,7 +367,7 @@ class UserDefinedTest(fixtures.TestBase, AssertsCompiledSQL):
         @compiles(greatest, "mssql")
         def case_greatest(element, compiler, **kw):
             arg1, arg2 = list(element.clauses)
-            return "CASE WHEN %s > %s THEN %s ELSE %s END" % (
+            return "CASE WHEN {} > {} THEN {} ELSE {} END".format(
                 compiler.process(arg1),
                 compiler.process(arg2),
                 compiler.process(arg1),

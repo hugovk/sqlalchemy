@@ -262,10 +262,10 @@ class HasCacheKey:
                         result += (
                             attrname,
                             tuple(
-                                [
+                                
                                     elem._gen_cache_key(anon_map, bindparams)
                                     for elem in obj
-                                ]
+                                
                             ),
                         )
                     else:
@@ -442,7 +442,7 @@ class CacheKey(namedtuple("CacheKey", ["key", "bindparams"])):
                     output.append((" " * (indent * 2)) + "(")
             else:
                 if isinstance(elem, HasCacheKey):
-                    repr_ = "<%s object at %s>" % (
+                    repr_ = "<{} object at {}>".format(
                         type(elem).__name__,
                         hex(id(elem)),
                     )
@@ -450,7 +450,7 @@ class CacheKey(namedtuple("CacheKey", ["key", "bindparams"])):
                     repr_ = repr(elem)
                 output.append((" " * (indent * 2)) + "  " + repr_ + ", ")
 
-        return "CacheKey(key=%s)" % ("\n".join(output),)
+        return "CacheKey(key={})".format("\n".join(output))
 
     def _generate_param_dict(self):
         """used for testing"""
@@ -585,7 +585,7 @@ class _CacheKey(ExtendedInternalTraversal):
             return ()
         return (
             attrname,
-            tuple([elem._gen_cache_key(anon_map, bindparams) for elem in obj]),
+            tuple(elem._gen_cache_key(anon_map, bindparams) for elem in obj),
         )
 
     def visit_clauseelement_unordered_set(
@@ -617,10 +617,10 @@ class _CacheKey(ExtendedInternalTraversal):
         return (
             attrname,
             tuple(
-                [
+                
                     (clause._gen_cache_key(anon_map, bindparams), strval)
                     for clause, strval in obj
-                ]
+                
             ),
         )
 
@@ -642,7 +642,7 @@ class _CacheKey(ExtendedInternalTraversal):
                 from_._gen_cache_key(anon_map, bindparams)
                 if from_ is not None
                 else None,
-                tuple([(key, flags[key]) for key in sorted(flags)]),
+                tuple((key, flags[key]) for key in sorted(flags)),
             )
             for (target, onclause, from_, flags) in obj
         )
@@ -656,19 +656,19 @@ class _CacheKey(ExtendedInternalTraversal):
         return (
             attrname,
             tuple(
-                [
+                
                     (
                         clause._gen_cache_key(anon_map, bindparams),
                         dialect_name,
                         text,
                     )
                     for (clause, dialect_name), text in obj.items()
-                ]
+                
             ),
         )
 
     def visit_plain_dict(self, attrname, obj, parent, anon_map, bindparams):
-        return (attrname, tuple([(key, obj[key]) for key in sorted(obj)]))
+        return (attrname, tuple((key, obj[key]) for key in sorted(obj)))
 
     def visit_dialect_options(
         self, attrname, obj, parent, anon_map, bindparams
@@ -679,10 +679,10 @@ class _CacheKey(ExtendedInternalTraversal):
                 (
                     dialect_name,
                     tuple(
-                        [
+                        
                             (key, obj[dialect_name][key])
                             for key in sorted(obj[dialect_name])
-                        ]
+                        
                     ),
                 )
                 for dialect_name in sorted(obj)
@@ -830,12 +830,12 @@ class _CopyInternals(InternalTraversal):
     def visit_clauseelement_tuple(
         self, attrname, parent, element, clone=_clone, **kw
     ):
-        return tuple([clone(clause, **kw) for clause in element])
+        return tuple(clone(clause, **kw) for clause in element)
 
     def visit_executable_options(
         self, attrname, parent, element, clone=_clone, **kw
     ):
-        return tuple([clone(clause, **kw) for clause in element])
+        return tuple(clone(clause, **kw) for clause in element)
 
     def visit_clauseelement_unordered_set(
         self, attrname, parent, element, clone=_clone, **kw
@@ -853,9 +853,9 @@ class _CopyInternals(InternalTraversal):
     def visit_string_clauseelement_dict(
         self, attrname, parent, element, clone=_clone, **kw
     ):
-        return dict(
-            (key, clone(value, **kw)) for key, value in element.items()
-        )
+        return {
+            key: clone(value, **kw) for key, value in element.items()
+        }
 
     def visit_setup_join_tuple(
         self, attrname, parent, element, clone=_clone, **kw

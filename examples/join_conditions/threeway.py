@@ -56,7 +56,7 @@ class First(Base):
     partition_key = Column(String)
 
     def __repr__(self):
-        return "First(%s, %s)" % (self.first_id, self.partition_key)
+        return f"First({self.first_id}, {self.partition_key})"
 
 
 class Second(Base):
@@ -73,7 +73,7 @@ class Partitioned(Base):
     partition_key = Column(String, primary_key=True)
 
     def __repr__(self):
-        return "Partitioned(%s, %s)" % (self.other_id, self.partition_key)
+        return f"Partitioned({self.other_id}, {self.partition_key})"
 
 
 j = join(Partitioned, Second, Partitioned.other_id == Second.other_id)

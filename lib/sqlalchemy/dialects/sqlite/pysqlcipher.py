@@ -122,9 +122,7 @@ class SQLiteDialect_pysqlcipher(SQLiteDialect_pysqlite):
         return pool.SingletonThreadPool
 
     def on_connect_url(self, url):
-        super_on_connect = super(
-            SQLiteDialect_pysqlcipher, self
-        ).on_connect_url(url)
+        super_on_connect = super().on_connect_url(url)
 
         # pull the info we need from the URL early.  Even though URL
         # is immutable, we don't want any in-place changes to the URL
@@ -138,7 +136,7 @@ class SQLiteDialect_pysqlcipher(SQLiteDialect_pysqlite):
             for prag in self.pragmas:
                 value = url_query.get(prag, None)
                 if value is not None:
-                    cursor.execute('pragma %s="%s"' % (prag, value))
+                    cursor.execute(f'pragma {prag}="{value}"')
             cursor.close()
 
             if super_on_connect:
@@ -149,7 +147,7 @@ class SQLiteDialect_pysqlcipher(SQLiteDialect_pysqlite):
     def create_connect_args(self, url):
         plain_url = url._replace(password=None)
         plain_url = plain_url.difference_update_query(self.pragmas)
-        return super(SQLiteDialect_pysqlcipher, self).create_connect_args(
+        return super().create_connect_args(
             plain_url
         )
 

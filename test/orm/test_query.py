@@ -1733,10 +1733,10 @@ class OperatorTest(QueryTest, AssertsCompiledSQL):
         compiled = str(
             py_op(lhs, rhs).compile(dialect=default.DefaultDialect())
         )
-        fwd_sql = "%s %s %s" % (l_sql, fwd_op, r_sql)
-        rev_sql = "%s %s %s" % (r_sql, rev_op, l_sql)
+        fwd_sql = f"{l_sql} {fwd_op} {r_sql}"
+        rev_sql = f"{r_sql} {rev_op} {l_sql}"
 
-        self.assert_(
+        self.assertTrue(
             compiled == fwd_sql or compiled == rev_sql,
             "\n'"
             + compiled
@@ -2093,7 +2093,7 @@ class OperatorTest(QueryTest, AssertsCompiledSQL):
             # (User.id, "users.id")
         ):
             c = expr.compile(dialect=default.DefaultDialect())
-            assert str(c) == compare, "%s != %s" % (str(c), compare)
+            assert str(c) == compare, f"{str(c)} != {compare}"
 
 
 class ExpressionTest(QueryTest, AssertsCompiledSQL):
@@ -7300,15 +7300,15 @@ class ExecutionOptionsTest(QueryTest):
         a = Address(name="ed")
         u.addresses.append(a)
 
-        self.assert_(a in u.addresses)
+        self.assertTrue(a in u.addresses)
 
         s.query(User).populate_existing().all()
 
-        self.assert_(u not in s.dirty)
+        self.assertTrue(u not in s.dirty)
 
-        self.assert_(u.name == "jack")
+        self.assertTrue(u.name == "jack")
 
-        self.assert_(a not in u.addresses)
+        self.assertTrue(a not in u.addresses)
 
         u.addresses[0].email_address = "lala"
         u.orders[1].items[2].description = "item 12"
@@ -7338,7 +7338,7 @@ class ExecutionOptionsTest(QueryTest):
         a = Address(name="ed")
         u.addresses.append(a)
 
-        self.assert_(a in u.addresses)
+        self.assertTrue(a in u.addresses)
 
         stmt = select(User).execution_options(populate_existing=True)
 
@@ -7346,11 +7346,11 @@ class ExecutionOptionsTest(QueryTest):
             stmt,
         ).scalars().all()
 
-        self.assert_(u not in s.dirty)
+        self.assertTrue(u not in s.dirty)
 
-        self.assert_(u.name == "jack")
+        self.assertTrue(u.name == "jack")
 
-        self.assert_(a not in u.addresses)
+        self.assertTrue(a not in u.addresses)
 
         u.addresses[0].email_address = "lala"
         u.orders[1].items[2].description = "item 12"

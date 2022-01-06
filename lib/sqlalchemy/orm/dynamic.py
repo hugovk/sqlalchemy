@@ -79,7 +79,7 @@ class DynamicAttributeImpl(attributes.AttributeImpl):
         query_class=None,
         **kw,
     ):
-        super(DynamicAttributeImpl, self).__init__(
+        super().__init__(
             class_, key, typecallable, dispatch, **kw
         )
         self.target_mapper = target_mapper
@@ -288,7 +288,7 @@ class AppenderMixin:
     query_class = None
 
     def __init__(self, attr, state):
-        super(AppenderMixin, self).__init__(attr.target_mapper, None)
+        super().__init__(attr.target_mapper, None)
         self.instance = instance = state.obj()
         self.attr = attr
 

@@ -1,4 +1,3 @@
-# -*- encoding: utf-8
 from sqlalchemy import and_
 from sqlalchemy import Column
 from sqlalchemy import DDL

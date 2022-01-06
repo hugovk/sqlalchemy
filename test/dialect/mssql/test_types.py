@@ -1,4 +1,3 @@
-# -*- encoding: utf-8
 import codecs
 import datetime
 import decimal
@@ -279,9 +278,9 @@ class TypeDDLTest(fixtures.TestBase):
             index = int(col.name[1:])
             testing.eq_(
                 gen.get_column_specification(col),
-                "%s %s" % (col.name, columns[index][3]),
+                f"{col.name} {columns[index][3]}",
             )
-            self.assert_(repr(col))
+            self.assertTrue(repr(col))
 
     def test_numeric(self):
         "Exercise type specification and options for numeric types."
@@ -317,9 +316,9 @@ class TypeDDLTest(fixtures.TestBase):
             index = int(col.name[1:])
             testing.eq_(
                 gen.get_column_specification(col),
-                "%s %s" % (col.name, columns[index][3]),
+                f"{col.name} {columns[index][3]}",
             )
-            self.assert_(repr(col))
+            self.assertTrue(repr(col))
 
     def test_char(self):
         """Exercise COLLATE-ish options on string types."""
@@ -389,9 +388,9 @@ class TypeDDLTest(fixtures.TestBase):
             index = int(col.name[1:])
             testing.eq_(
                 gen.get_column_specification(col),
-                "%s %s" % (col.name, columns[index][3]),
+                f"{col.name} {columns[index][3]}",
             )
-            self.assert_(repr(col))
+            self.assertTrue(repr(col))
 
     @testing.combinations(
         # column type, args, kwargs, expected ddl
@@ -469,7 +468,7 @@ class TypeDDLTest(fixtures.TestBase):
             ),
         )
 
-        self.assert_(repr(col))
+        self.assertTrue(repr(col))
 
     def test_large_type_deprecation(self):
         d1 = mssql.dialect(deprecate_large_types=True)
@@ -512,9 +511,9 @@ class TypeDDLTest(fixtures.TestBase):
             index = int(col.name[1:])
             testing.eq_(
                 gen.get_column_specification(col),
-                "%s %s" % (col.name, columns[index][3]),
+                f"{col.name} {columns[index][3]}",
             )
-            self.assert_(repr(col))
+            self.assertTrue(repr(col))
 
     def test_binary(self):
         "Exercise type specification for binary types."
@@ -548,9 +547,9 @@ class TypeDDLTest(fixtures.TestBase):
             index = int(col.name[1:])
             testing.eq_(
                 gen.get_column_specification(col),
-                "%s %s" % (col.name, columns[index][3]),
+                f"{col.name} {columns[index][3]}",
             )
-            self.assert_(repr(col))
+            self.assertTrue(repr(col))
 
 
 class TypeRoundTripTest(
@@ -755,9 +754,9 @@ class TypeRoundTripTest(
             index = int(col.name[1:])
             testing.eq_(
                 gen.get_column_specification(col),
-                "%s %s" % (col.name, columns[index][3]),
+                f"{col.name} {columns[index][3]}",
             )
-            self.assert_(repr(col))
+            self.assertTrue(repr(col))
         dates_table.create(connection)
         reflected_dates = Table(
             "test_mssql_dates", MetaData(), autoload_with=connection
@@ -1039,7 +1038,7 @@ class TypeRoundTripTest(
                 ).__class__
                 assert issubclass(
                     c1, c2
-                ), "column %s: %r is not a subclass of %r" % (col.key, c1, c2)
+                ), f"column {col.key}: {c1!r} is not a subclass of {c2!r}"
                 if binary_table.c[col.name].type.length:
                     testing.eq_(
                         col.type.length, binary_table.c[col.name].type.length

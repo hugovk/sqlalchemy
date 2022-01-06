@@ -3422,7 +3422,7 @@ class ExternalColumnsTest(QueryTest):
             User,
             users,
             properties={
-                "concat": column_property((users.c.id * 2)),
+                "concat": column_property(users.c.id * 2),
                 "count": column_property(
                     select(func.count(addresses.c.id))
                     .where(
@@ -3589,7 +3589,7 @@ class ExternalColumnsTest(QueryTest):
                 "addresses": relationship(
                     Address, backref="user", order_by=addresses.c.id
                 ),
-                "concat": column_property((users.c.id * 2)),
+                "concat": column_property(users.c.id * 2),
                 "count": column_property(
                     select(func.count(addresses.c.id))
                     .where(

@@ -288,13 +288,13 @@ class DDL(DDLElement):
         self.context = context or {}
 
     def __repr__(self):
-        return "<%s@%s; %s>" % (
+        return "<{}@{}; {}>".format(
             type(self).__name__,
             id(self),
             ", ".join(
                 [repr(self.statement)]
                 + [
-                    "%s=%r" % (key, getattr(self, key))
+                    f"{key}={getattr(self, key)!r}"
                     for key in ("on", "context")
                     if getattr(self, key)
                 ]
@@ -350,7 +350,7 @@ class CreateSchema(_CreateDropBase):
         """Create a new :class:`.CreateSchema` construct."""
 
         self.quote = quote
-        super(CreateSchema, self).__init__(name, **kw)
+        super().__init__(name, **kw)
 
 
 class DropSchema(_CreateDropBase):
@@ -367,7 +367,7 @@ class DropSchema(_CreateDropBase):
 
         self.quote = quote
         self.cascade = cascade
-        super(DropSchema, self).__init__(name, **kw)
+        super().__init__(name, **kw)
 
 
 class CreateTable(_CreateDropBase):
@@ -399,7 +399,7 @@ class CreateTable(_CreateDropBase):
          .. versionadded:: 1.4.0b2
 
         """
-        super(CreateTable, self).__init__(element, if_not_exists=if_not_exists)
+        super().__init__(element, if_not_exists=if_not_exists)
         self.columns = [CreateColumn(column) for column in element.columns]
         self.include_foreign_key_constraints = include_foreign_key_constraints
 
@@ -541,7 +541,7 @@ class DropTable(_CreateDropBase):
          .. versionadded:: 1.4.0b2
 
         """
-        super(DropTable, self).__init__(element, if_exists=if_exists)
+        super().__init__(element, if_exists=if_exists)
 
 
 class CreateSequence(_CreateDropBase):
@@ -573,7 +573,7 @@ class CreateIndex(_CreateDropBase):
          .. versionadded:: 1.4.0b2
 
         """
-        super(CreateIndex, self).__init__(element, if_not_exists=if_not_exists)
+        super().__init__(element, if_not_exists=if_not_exists)
 
 
 class DropIndex(_CreateDropBase):
@@ -593,7 +593,7 @@ class DropIndex(_CreateDropBase):
          .. versionadded:: 1.4.0b2
 
         """
-        super(DropIndex, self).__init__(element, if_exists=if_exists)
+        super().__init__(element, if_exists=if_exists)
 
 
 class AddConstraint(_CreateDropBase):
@@ -602,7 +602,7 @@ class AddConstraint(_CreateDropBase):
     __visit_name__ = "add_constraint"
 
     def __init__(self, element, *args, **kw):
-        super(AddConstraint, self).__init__(element, *args, **kw)
+        super().__init__(element, *args, **kw)
         element._create_rule = util.portable_instancemethod(
             self._create_rule_disable
         )
@@ -615,7 +615,7 @@ class DropConstraint(_CreateDropBase):
 
     def __init__(self, element, cascade=False, **kw):
         self.cascade = cascade
-        super(DropConstraint, self).__init__(element, **kw)
+        super().__init__(element, **kw)
         element._create_rule = util.portable_instancemethod(
             self._create_rule_disable
         )
@@ -658,7 +658,7 @@ class SchemaGenerator(DDLBase):
     def __init__(
         self, dialect, connection, checkfirst=False, tables=None, **kwargs
     ):
-        super(SchemaGenerator, self).__init__(connection, **kwargs)
+        super().__init__(connection, **kwargs)
         self.checkfirst = checkfirst
         self.tables = tables
         self.preparer = dialect.identifier_preparer
@@ -822,7 +822,7 @@ class SchemaDropper(DDLBase):
     def __init__(
         self, dialect, connection, checkfirst=False, tables=None, **kwargs
     ):
-        super(SchemaDropper, self).__init__(connection, **kwargs)
+        super().__init__(connection, **kwargs)
         self.checkfirst = checkfirst
         self.tables = tables
         self.preparer = dialect.identifier_preparer
@@ -859,7 +859,7 @@ class SchemaDropper(DDLBase):
                     "ForeignKeyConstraint "
                     "objects involved in the cycle to mark these as known "
                     "cycles that will be ignored."
-                    % (", ".join(sorted([t.fullname for t in err2.cycles])))
+                    % (", ".join(sorted(t.fullname for t in err2.cycles)))
                 )
                 collection = [(t, ()) for t in unsorted_tables]
             else:
@@ -874,7 +874,7 @@ class SchemaDropper(DDLBase):
                     "involved in the cycle have "
                     "names so that they can be dropped using "
                     "DROP CONSTRAINT."
-                    % (", ".join(sorted([t.fullname for t in err2.cycles]))),
+                    % (", ".join(sorted(t.fullname for t in err2.cycles))),
                 ) from err2
 
         seq_coll = [

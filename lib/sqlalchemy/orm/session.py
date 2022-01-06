@@ -4066,10 +4066,10 @@ class sessionmaker(_SessionClassMethods):
         self.kw.update(new_kw)
 
     def __repr__(self):
-        return "%s(class_=%r, %s)" % (
+        return "{}(class_={!r}, {})".format(
             self.__class__.__name__,
             self.class_.__name__,
-            ", ".join("%s=%r" % (k, v) for k, v in self.kw.items()),
+            ", ".join(f"{k}={v!r}" for k, v in self.kw.items()),
         )
 
 

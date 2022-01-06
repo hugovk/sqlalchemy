@@ -177,7 +177,7 @@ class AssociationProxy(interfaces.InspectionAttrInfo):
         self.proxy_bulk_set = proxy_bulk_set
         self.cascade_scalar_deletes = cascade_scalar_deletes
 
-        self.key = "_%s_%s_%s" % (
+        self.key = "_{}_{}_{}".format(
             type(self).__name__,
             target_collection,
             id(self),
@@ -300,7 +300,7 @@ class AssociationProxy(interfaces.InspectionAttrInfo):
         return getter, setter
 
     def __repr__(self):
-        return "AssociationProxy(%r, %r)" % (
+        return "AssociationProxy({!r}, {!r})".format(
             self.target_collection,
             self.value_attr,
         )
@@ -754,7 +754,7 @@ class AssociationProxyInstance:
         )
 
     def __repr__(self):
-        return "%s(%r)" % (self.__class__.__name__, self.parent)
+        return f"{self.__class__.__name__}({self.parent!r})"
 
 
 class AmbiguousAssociationProxyInstance(AssociationProxyInstance):
@@ -782,7 +782,7 @@ class AmbiguousAssociationProxyInstance(AssociationProxyInstance):
         if obj is None:
             return self
         else:
-            return super(AmbiguousAssociationProxyInstance, self).get(obj)
+            return super().get(obj)
 
     def __eq__(self, obj):
         self._ambiguous()

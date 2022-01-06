@@ -5204,7 +5204,7 @@ class SubqueryTest(fixtures.MappedTest):
         class User(fixtures.ComparableEntity):
             @property
             def prop_score(self):
-                return sum([tag.prop_score for tag in self.tags])
+                return sum(tag.prop_score for tag in self.tags)
 
         class Tag(fixtures.ComparableEntity):
             @property

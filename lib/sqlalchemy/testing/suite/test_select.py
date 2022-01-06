@@ -550,7 +550,7 @@ class FetchLimitOffsetTest(fixtures.TablesTest):
             .offset(2)
         ).fetchall()
         eq_(fa[0], (3, 3, 4))
-        eq_(set(fa), set([(3, 3, 4), (4, 4, 5), (5, 4, 6)]))
+        eq_(set(fa), {(3, 3, 4), (4, 4, 5), (5, 4, 6)})
 
     @testing.requires.fetch_ties
     @testing.requires.fetch_offset_with_options
@@ -621,7 +621,7 @@ class FetchLimitOffsetTest(fixtures.TablesTest):
             .offset(2)
         ).fetchall()
         eq_(fa[0], (3, 3, 4))
-        eq_(set(fa), set([(3, 3, 4), (4, 4, 5), (5, 4, 6)]))
+        eq_(set(fa), {(3, 3, 4), (4, 4, 5), (5, 4, 6)})
 
 
 class JoinTest(fixtures.TablesTest):

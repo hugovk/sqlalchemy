@@ -648,7 +648,7 @@ class _OracleBinary(sqltypes.LargeBinary):
         if not dialect.auto_convert_lobs:
             return None
         else:
-            return super(_OracleBinary, self).result_processor(
+            return super().result_processor(
                 dialect, coltype
             )
 
@@ -969,7 +969,7 @@ class OracleDialect_cx_oracle(OracleDialect):
         return cx_Oracle
 
     def initialize(self, connection):
-        super(OracleDialect_cx_oracle, self).initialize(connection)
+        super().initialize(connection)
         self._detect_decimal_char(connection)
 
     def get_isolation_level(self, dbapi_connection):

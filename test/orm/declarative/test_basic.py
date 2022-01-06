@@ -1044,7 +1044,7 @@ class DeclarativeTest(DeclarativeTestBase):
         configure_mappers()
         eq_(
             Parent.children.property._calculated_foreign_keys,
-            set([Child.name_upper.property.columns[0]]),
+            {Child.name_upper.property.columns[0]},
         )
 
     def test_class_has_registry_attr(self):
@@ -1846,8 +1846,8 @@ class DeclarativeTest(DeclarativeTestBase):
 
             adr_count = Address.id
 
-        eq_(set(User.__table__.c.keys()), set(["id", "name"]))
-        eq_(set(Address.__table__.c.keys()), set(["id", "email", "user_id"]))
+        eq_(set(User.__table__.c.keys()), {"id", "name"})
+        eq_(set(Address.__table__.c.keys()), {"id", "email", "user_id"})
 
     def test_deferred(self):
         class User(Base, fixtures.ComparableEntity):

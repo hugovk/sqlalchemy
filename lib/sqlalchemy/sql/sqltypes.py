@@ -261,7 +261,7 @@ class Unicode(String):
         Parameters are the same as that of :class:`.String`.
 
         """
-        super(Unicode, self).__init__(length=length, **kwargs)
+        super().__init__(length=length, **kwargs)
 
 
 class UnicodeText(Text):
@@ -286,7 +286,7 @@ class UnicodeText(Text):
         Parameters are the same as that of :class:`_expression.TextClause`.
 
         """
-        super(UnicodeText, self).__init__(length=length, **kwargs)
+        super().__init__(length=length, **kwargs)
 
 
 class Integer(_LookupExpressionAdapter, TypeEngine):
@@ -758,7 +758,7 @@ class _Binary(TypeEngine):
         if isinstance(value, str):
             return self
         else:
-            return super(_Binary, self).coerce_compared_value(op, value)
+            return super().coerce_compared_value(op, value)
 
     def get_dbapi_type(self, dbapi):
         return dbapi.BINARY
@@ -1261,7 +1261,7 @@ class Enum(Emulated, String, SchemaType):
 
         self._valid_lookup[None] = self._object_lookup[None] = None
 
-        super(Enum, self).__init__(length=length)
+        super().__init__(length=length)
 
         if self.enum_class:
             kw.setdefault("name", self.enum_class.__name__.lower())
@@ -1420,7 +1420,7 @@ class Enum(Emulated, String, SchemaType):
 
     def adapt(self, impltype, **kw):
         kw["_enums"] = self._enums_argument
-        return super(Enum, self).adapt(impltype, **kw)
+        return super().adapt(impltype, **kw)
 
     def _should_create_constraint(self, compiler, **kw):
         if not self._is_impl_for_variant(compiler.dialect, kw):
@@ -1451,7 +1451,7 @@ class Enum(Emulated, String, SchemaType):
         assert e.table is table
 
     def literal_processor(self, dialect):
-        parent_processor = super(Enum, self).literal_processor(dialect)
+        parent_processor = super().literal_processor(dialect)
 
         def process(value):
             value = self._db_value_for_elem(value)
@@ -1462,7 +1462,7 @@ class Enum(Emulated, String, SchemaType):
         return process
 
     def bind_processor(self, dialect):
-        parent_processor = super(Enum, self).bind_processor(dialect)
+        parent_processor = super().bind_processor(dialect)
 
         def process(value):
             value = self._db_value_for_elem(value)
@@ -1473,7 +1473,7 @@ class Enum(Emulated, String, SchemaType):
         return process
 
     def result_processor(self, dialect, coltype):
-        parent_processor = super(Enum, self).result_processor(dialect, coltype)
+        parent_processor = super().result_processor(dialect, coltype)
 
         def process(value):
             if parent_processor:
@@ -1492,7 +1492,7 @@ class Enum(Emulated, String, SchemaType):
         if self.enum_class:
             return self.enum_class
         else:
-            return super(Enum, self).python_type
+            return super().python_type
 
 
 class PickleType(TypeDecorator):
@@ -1541,7 +1541,7 @@ class PickleType(TypeDecorator):
         self.protocol = protocol
         self.pickler = pickler or pickle
         self.comparator = comparator
-        super(PickleType, self).__init__()
+        super().__init__()
 
         if impl:
             self.impl = to_instance(impl)
@@ -1788,7 +1788,7 @@ class Interval(Emulated, _AbstractInterval, TypeDecorator):
           support a "day precision" parameter, i.e. Oracle.
 
         """
-        super(Interval, self).__init__()
+        super().__init__()
         self.native = native
         self.second_precision = second_precision
         self.day_precision = day_precision
@@ -2693,7 +2693,7 @@ class ARRAY(SchemaEventTarget, Indexable, Concatenable, TypeEngine):
     def _set_parent_with_dispatch(self, parent):
         """Support SchemaEventTarget"""
 
-        super(ARRAY, self)._set_parent_with_dispatch(parent, outer=True)
+        super()._set_parent_with_dispatch(parent, outer=True)
 
         if isinstance(self.item_type, SchemaEventTarget):
             self.item_type._set_parent_with_dispatch(parent)
@@ -2805,7 +2805,7 @@ class TIMESTAMP(DateTime):
 
 
         """
-        super(TIMESTAMP, self).__init__(timezone=timezone)
+        super().__init__(timezone=timezone)
 
     def get_dbapi_type(self, dbapi):
         return dbapi.TIMESTAMP

@@ -116,15 +116,15 @@ class SelectableTest(
 
         eq_(
             s1.selected_columns.foo.proxy_set,
-            set(
-                [s1.selected_columns.foo, scalar_select, scalar_select.element]
-            ),
+            {
+                s1.selected_columns.foo, scalar_select, scalar_select.element
+            },
         )
         eq_(
             s2.selected_columns.foo.proxy_set,
-            set(
-                [s2.selected_columns.foo, scalar_select, scalar_select.element]
-            ),
+            {
+                s2.selected_columns.foo, scalar_select, scalar_select.element
+            },
         )
 
         assert (
@@ -142,11 +142,11 @@ class SelectableTest(
 
         eq_(
             s1.c.foo.proxy_set,
-            set([s1.c.foo, scalar_select, scalar_select.element]),
+            {s1.c.foo, scalar_select, scalar_select.element},
         )
         eq_(
             s2.c.foo.proxy_set,
-            set([s2.c.foo, scalar_select, scalar_select.element]),
+            {s2.c.foo, scalar_select, scalar_select.element},
         )
 
         assert s1.corresponding_column(scalar_select) is s1.c.foo
@@ -425,7 +425,7 @@ class SelectableTest(
         s2c1 = s2._clone()
         s3c1 = s3._clone()
 
-        eq_(base._cloned_intersection([s1c1, s3c1], [s2c1, s1c2]), set([s1c1]))
+        eq_(base._cloned_intersection([s1c1, s3c1], [s2c1, s1c2]), {s1c1})
 
     def test_cloned_difference(self):
         t1 = table("t1", column("x"))
@@ -442,7 +442,7 @@ class SelectableTest(
 
         eq_(
             base._cloned_difference([s1c1, s2c1, s3c1], [s2c1, s1c2]),
-            set([s3c1]),
+            {s3c1},
         )
 
     def test_distance_on_aliases(self):
@@ -471,7 +471,7 @@ class SelectableTest(
         # be a FROM the "bar_col1" label would be directly in the join()
         # object.  However this was a useless join() object because PG and
         # MySQL don't accept unnamed subqueries in joins in any case.
-        name = "%s_bar_col1" % (jj.name,)
+        name = f"{jj.name}_bar_col1"
 
         assert jjj.corresponding_column(jjj.c.table1_col1) is jjj.c.table1_col1
         assert jjj.corresponding_column(jj.c.bar_col1) is jjj.c[name]
@@ -706,7 +706,7 @@ class SelectableTest(
         j = join(a, table2)
 
         criterion = a.c.col1 == table2.c.col2
-        self.assert_(criterion.compare(j.onclause))
+        self.assertTrue(criterion.compare(j.onclause))
 
     def test_join_doesnt_derive_from_onclause(self):
         # test issue #4621.   the hide froms from the join comes from
@@ -1197,14 +1197,14 @@ class SelectableTest(
         j = join(a, b)
         print(str(j))
         criterion = a.c.table1_col1 == b.c.col2
-        self.assert_(criterion.compare(j.onclause))
+        self.assertTrue(criterion.compare(j.onclause))
 
     def test_select_subquery_join(self):
         a = table1.select().alias("a")
         j = join(a, table2)
 
         criterion = a.c.col1 == table2.c.col2
-        self.assert_(criterion.compare(j.onclause))
+        self.assertTrue(criterion.compare(j.onclause))
 
     def test_subquery_labels_join(self):
         a = (
@@ -1215,7 +1215,7 @@ class SelectableTest(
         j = join(a, table2)
 
         criterion = a.c.table1_col1 == table2.c.col2
-        self.assert_(criterion.compare(j.onclause))
+        self.assertTrue(criterion.compare(j.onclause))
 
     def test_scalar_cloned_comparator(self):
         sel = select(table1.c.col1).scalar_subquery()
@@ -1234,7 +1234,7 @@ class SelectableTest(
         ).subquery()
         j = join(a, table2)
         criterion = a.c.acol1 == table2.c.col2
-        self.assert_(criterion.compare(j.onclause))
+        self.assertTrue(criterion.compare(j.onclause))
 
     def test_labeled_select_corresponding(self):
         l1 = select(func.max(table1.c.col1)).label("foo")
@@ -1263,7 +1263,7 @@ class SelectableTest(
         j = join(a, table1)
 
         criterion = table1.c.col1 == a.c.table2_col2
-        self.assert_(criterion.compare(j.onclause))
+        self.assertTrue(criterion.compare(j.onclause))
 
     def test_table_joined_to_select_of_table(self):
         metadata = MetaData()
@@ -1670,13 +1670,13 @@ class RefreshForNewColTest(fixtures.TestBase):
         q = Column("q", Integer)
         a.append_column(q)
         a._refresh_for_new_column(q)
-        eq_(a.foreign_keys, set([fk]))
+        eq_(a.foreign_keys, {fk})
 
         fk2 = ForeignKey("g.id")
         p = Column("p", Integer, fk2)
         a.append_column(p)
         a._refresh_for_new_column(p)
-        eq_(a.foreign_keys, set([fk, fk2]))
+        eq_(a.foreign_keys, {fk, fk2})
 
     def test_fk_join(self):
         m = MetaData()
@@ -1690,13 +1690,13 @@ class RefreshForNewColTest(fixtures.TestBase):
         q = Column("q", Integer)
         b.append_column(q)
         j._refresh_for_new_column(q)
-        eq_(j.foreign_keys, set([fk]))
+        eq_(j.foreign_keys, {fk})
 
         fk2 = ForeignKey("g.id")
         p = Column("p", Integer, fk2)
         b.append_column(p)
         j._refresh_for_new_column(p)
-        eq_(j.foreign_keys, set([fk, fk2]))
+        eq_(j.foreign_keys, {fk, fk2})
 
 
 class AnonLabelTest(fixtures.TestBase):
@@ -2371,10 +2371,10 @@ class ReduceTest(fixtures.TestBase, AssertsExecutionResults):
         )
         s1 = select(t1, t2)
         s2 = s1.reduce_columns(only_synonyms=False)
-        eq_(set(s2.selected_columns), set([t1.c.x, t1.c.y, t2.c.q]))
+        eq_(set(s2.selected_columns), {t1.c.x, t1.c.y, t2.c.q})
 
         s2 = s1.reduce_columns()
-        eq_(set(s2.selected_columns), set([t1.c.x, t1.c.y, t2.c.z, t2.c.q]))
+        eq_(set(s2.selected_columns), {t1.c.x, t1.c.y, t2.c.z, t2.c.q})
 
     def test_reduce_only_synonym_fk(self):
         m = MetaData()
@@ -2394,13 +2394,11 @@ class ReduceTest(fixtures.TestBase, AssertsExecutionResults):
         s1 = s1.reduce_columns(only_synonyms=True)
         eq_(
             set(s1.selected_columns),
-            set(
-                [
+            {
                     s1.selected_columns.x,
                     s1.selected_columns.y,
                     s1.selected_columns.q,
-                ]
-            ),
+            },
         )
 
     def test_reduce_only_synonym_lineage(self):
@@ -2418,7 +2416,7 @@ class ReduceTest(fixtures.TestBase, AssertsExecutionResults):
         s2 = select(t1, s1).where(t1.c.x == s1.c.x).where(s1.c.y == t1.c.z)
         eq_(
             set(s2.reduce_columns().selected_columns),
-            set([t1.c.x, t1.c.y, t1.c.z, s1.c.y, s1.c.z]),
+            {t1.c.x, t1.c.y, t1.c.z, s1.c.y, s1.c.z},
         )
 
         # reverse order, s1.c.x wins
@@ -2426,7 +2424,7 @@ class ReduceTest(fixtures.TestBase, AssertsExecutionResults):
         s2 = select(s1, t1).where(t1.c.x == s1.c.x).where(s1.c.y == t1.c.z)
         eq_(
             set(s2.reduce_columns().selected_columns),
-            set([s1.c.x, t1.c.y, t1.c.z, s1.c.y, s1.c.z]),
+            {s1.c.x, t1.c.y, t1.c.z, s1.c.y, s1.c.z},
         )
 
     def test_reduce_aliased_join(self):
@@ -2722,7 +2720,7 @@ class AnnotationsTest(fixtures.TestBase):
 
         for obj in [t, t.c.x, a, t.c.x > 1, (t.c.x > 1).label(None)]:
             annot = obj._annotate({})
-            eq_(set([obj]), set([annot]))
+            eq_({obj}, {annot})
 
     def test_clone_annotations_dont_hash(self):
         t = table("t", column("x"))
@@ -2733,7 +2731,7 @@ class AnnotationsTest(fixtures.TestBase):
 
         for obj in [s, s2]:
             annot = obj._annotate({})
-            ne_(set([obj]), set([annot]))
+            ne_({obj}, {annot})
 
     def test_replacement_traverse_preserve(self):
         """test that replacement traverse that hits an unannotated column
@@ -3468,11 +3466,11 @@ class ResultMapTest(fixtures.TestBase):
 
     def _mapping(self, stmt):
         compiled = stmt.compile()
-        return dict(
-            (elem, key)
+        return {
+            elem: key
             for key, elements in compiled._create_result_map().items()
             for elem in elements[1]
-        )
+        }
 
     def test_select_label_alt_name(self):
         t = self._fixture()

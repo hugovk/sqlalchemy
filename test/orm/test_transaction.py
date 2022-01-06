@@ -419,7 +419,7 @@ class SessionTransactionTest(fixtures.RemovesEvents, FixtureTest):
 
         sess.commit()
 
-        eq_(set(sess.query(User).all()), set([u2]))
+        eq_(set(sess.query(User).all()), {u2})
         sess.rollback()
 
         sess.begin()
@@ -430,7 +430,7 @@ class SessionTransactionTest(fixtures.RemovesEvents, FixtureTest):
         sess.commit()  # commit the nested transaction
         sess.rollback()
 
-        eq_(set(sess.query(User).all()), set([u2]))
+        eq_(set(sess.query(User).all()), {u2})
 
         sess.close()
 

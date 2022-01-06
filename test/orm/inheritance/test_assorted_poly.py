@@ -563,11 +563,11 @@ class RelationshipTest4(fixtures.MappedTest):
 
         class Engineer(Person):
             def __repr__(self):
-                return "Engineer %s, status %s" % (self.name, self.status)
+                return f"Engineer {self.name}, status {self.status}"
 
         class Manager(Person):
             def __repr__(self):
-                return "Manager %s, status %s" % (
+                return "Manager {}, status {}".format(
                     self.name,
                     self.longer_status,
                 )
@@ -741,11 +741,11 @@ class RelationshipTest5(fixtures.MappedTest):
 
         class Engineer(Person):
             def __repr__(self):
-                return "Engineer %s, status %s" % (self.name, self.status)
+                return f"Engineer {self.name}, status {self.status}"
 
         class Manager(Person):
             def __repr__(self):
-                return "Manager %s, status %s" % (
+                return "Manager {}, status {}".format(
                     self.name,
                     self.longer_status,
                 )
@@ -958,11 +958,11 @@ class RelationshipTest7(fixtures.MappedTest):
 
         class Engineer(Person):
             def __repr__(self):
-                return "Engineer %s, field %s" % (self.name, self.field)
+                return f"Engineer {self.name}, field {self.field}"
 
         class Manager(Person):
             def __repr__(self):
-                return "Manager %s, category %s" % (self.name, self.category)
+                return f"Manager {self.name}, category {self.category}"
 
         class Car(PersistentObject):
             def __repr__(self):
@@ -1617,8 +1617,8 @@ class MultiLevelTest(fixtures.MappedTest):
         session.add(b)
         session.add(c)
         session.flush()
-        assert set(session.query(Employee).all()) == set([a, b, c])
-        assert set(session.query(Engineer).all()) == set([b, c])
+        assert set(session.query(Employee).all()) == {a, b, c}
+        assert set(session.query(Engineer).all()) == {b, c}
         assert session.query(Manager).all() == [c]
 
 

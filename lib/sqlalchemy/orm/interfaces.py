@@ -296,7 +296,7 @@ class MapperProperty(
         """
 
     def __repr__(self):
-        return "<%s at 0x%x; %s>" % (
+        return "<{} at 0x{:x}; {}>".format(
             self.__class__.__name__,
             id(self),
             getattr(self, "key", "no key"),

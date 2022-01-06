@@ -1,5 +1,3 @@
-#!coding: utf-8
-
 from sqlalchemy import CheckConstraint
 from sqlalchemy import Column
 from sqlalchemy import column
@@ -828,7 +826,7 @@ class PreparerTest(fixtures.TestBase):
             if have != want:
                 print("Wanted %s" % want)
                 print("Received %s" % have)
-            self.assert_(have == want)
+            self.assertTrue(have == want)
 
         a_eq(unformat("foo"), ["foo"])
         a_eq(unformat('"foo"'), ["foo"])
@@ -842,7 +840,7 @@ class PreparerTest(fixtures.TestBase):
     def test_unformat_custom(self):
         class Custom(compiler.IdentifierPreparer):
             def __init__(self, dialect):
-                super(Custom, self).__init__(
+                super().__init__(
                     dialect, initial_quote="`", final_quote="`"
                 )
 
@@ -859,7 +857,7 @@ class PreparerTest(fixtures.TestBase):
             if have != want:
                 print("Wanted %s" % want)
                 print("Received %s" % have)
-            self.assert_(have == want)
+            self.assertTrue(have == want)
 
         a_eq(unformat("foo"), ["foo"])
         a_eq(unformat("`foo`"), ["foo"])
@@ -959,13 +957,13 @@ class QuotedIdentTest(fixtures.TestBase):
 
     def test_apply_map_quoted(self):
         q1 = _anonymous_label(quoted_name("x%s", True))
-        q2 = q1.apply_map(("bar"))
+        q2 = q1.apply_map("bar")
         eq_(q2, "xbar")
         eq_(q2.quote, True)
 
     def test_apply_map_plain(self):
         q1 = _anonymous_label(quoted_name("x%s", None))
-        q2 = q1.apply_map(("bar"))
+        q2 = q1.apply_map("bar")
         eq_(q2, "xbar")
         self._assert_not_quoted(q2)
 

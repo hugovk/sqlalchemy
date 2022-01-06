@@ -111,7 +111,7 @@ class TraversibleType(type):
             if "__visit_name__" in clsdict:
                 _generate_compiler_dispatch(cls)
 
-        super(TraversibleType, cls).__init__(clsname, bases, clsdict)
+        super().__init__(clsname, bases, clsdict)
 
 
 class Traversible(metaclass=TraversibleType):
@@ -173,7 +173,7 @@ class _InternalTraversalType(type):
                 lookup.update(cls._dispatch_lookup)
             cls._dispatch_lookup = lookup
 
-        super(_InternalTraversalType, cls).__init__(clsname, bases, clsdict)
+        super().__init__(clsname, bases, clsdict)
 
 
 def _generate_dispatcher(visitor, internal_dispatch, method_name):

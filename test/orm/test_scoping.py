@@ -193,14 +193,14 @@ class ScopedSessionTest(fixtures.MappedTest):
             elif style == "style3":
                 # py2k style
                 def get_bind(self, mapper=None, *args, **kwargs):
-                    return super(MySession, self).get_bind(
+                    return super().get_bind(
                         mapper, *args, **kwargs
                     )
 
             elif style == "style4":
                 # py2k style
                 def get_bind(self, mapper=None, **kwargs):
-                    return super(MySession, self).get_bind(
+                    return super().get_bind(
                         mapper=mapper, **kwargs
                     )
 

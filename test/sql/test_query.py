@@ -322,7 +322,7 @@ class QueryTest(fixtures.TablesTest):
             if got != wanted:
                 print("Wanted %s" % wanted)
                 print("Received %s" % got)
-            self.assert_(got == wanted, got)
+            self.assertTrue(got == wanted, got)
 
         a_eq(prep("select foo"), "select foo")
         a_eq(prep("time='12:30:00'"), "time='12:30:00'")
@@ -1005,7 +1005,7 @@ class LimitTest(fixtures.TablesTest):
         r = connection.execute(
             users.select().limit(3).order_by(users.c.user_id)
         ).fetchall()
-        self.assert_(r == [(1, "john"), (2, "jack"), (3, "ed")], repr(r))
+        self.assertTrue(r == [(1, "john"), (2, "jack"), (3, "ed")], repr(r))
 
     @testing.requires.offset
     def test_select_limit_offset(self, connection):
@@ -1016,11 +1016,11 @@ class LimitTest(fixtures.TablesTest):
         r = connection.execute(
             users.select().limit(3).offset(2).order_by(users.c.user_id)
         ).fetchall()
-        self.assert_(r == [(3, "ed"), (4, "wendy"), (5, "laura")])
+        self.assertTrue(r == [(3, "ed"), (4, "wendy"), (5, "laura")])
         r = connection.execute(
             users.select().offset(5).order_by(users.c.user_id)
         ).fetchall()
-        self.assert_(r == [(6, "ralph"), (7, "fido")])
+        self.assertTrue(r == [(6, "ralph"), (7, "fido")])
 
     def test_select_distinct_limit(self, connection):
         """Test the interaction between limit and distinct"""
@@ -1028,15 +1028,15 @@ class LimitTest(fixtures.TablesTest):
         users, addresses = self.tables("users", "addresses")
 
         r = sorted(
-            [
+            
                 x[0]
                 for x in connection.execute(
                     select(addresses.c.address).distinct().limit(3)
                 )
-            ]
+            
         )
-        self.assert_(len(r) == 3, repr(r))
-        self.assert_(r[0] != r[1] and r[1] != r[2], repr(r))
+        self.assertTrue(len(r) == 3, repr(r))
+        self.assertTrue(r[0] != r[1] and r[1] != r[2], repr(r))
 
     @testing.requires.offset
     def test_select_distinct_offset(self, connection):
@@ -1045,7 +1045,7 @@ class LimitTest(fixtures.TablesTest):
         users, addresses = self.tables("users", "addresses")
 
         r = sorted(
-            [
+            
                 x[0]
                 for x in connection.execute(
                     select(addresses.c.address)
@@ -1053,10 +1053,10 @@ class LimitTest(fixtures.TablesTest):
                     .offset(1)
                     .order_by(addresses.c.address)
                 ).fetchall()
-            ]
+            
         )
         eq_(len(r), 4)
-        self.assert_(r[0] != r[1] and r[1] != r[2] and r[2] != [3], repr(r))
+        self.assertTrue(r[0] != r[1] and r[1] != r[2] and r[2] != [3], repr(r))
 
     @testing.requires.offset
     def test_select_distinct_limit_offset(self, connection):
@@ -1071,8 +1071,8 @@ class LimitTest(fixtures.TablesTest):
             .offset(2)
             .limit(3)
         ).fetchall()
-        self.assert_(len(r) == 3, repr(r))
-        self.assert_(r[0] != r[1] and r[1] != r[2], repr(r))
+        self.assertTrue(len(r) == 3, repr(r))
+        self.assertTrue(r[0] != r[1] and r[1] != r[2], repr(r))
 
 
 class CompoundTest(fixtures.TablesTest):
@@ -1156,7 +1156,7 @@ class CompoundTest(fixtures.TablesTest):
         )
 
     def _fetchall_sorted(self, executed):
-        return sorted([tuple(row) for row in executed.fetchall()])
+        return sorted(tuple(row) for row in executed.fetchall())
 
     @testing.requires.subqueries
     def test_union(self, connection):
@@ -1529,7 +1529,7 @@ class JoinTest(fixtures.TablesTest):
         """Execute a statement and assert that rows returned equal expected."""
         with testing.db.connect() as conn:
             found = sorted(
-                [tuple(row) for row in conn.execute(statement).fetchall()]
+                tuple(row) for row in conn.execute(statement).fetchall()
             )
             eq_(found, sorted(expected))
 
@@ -1586,11 +1586,9 @@ class JoinTest(fixtures.TablesTest):
                 select(t1.c.t1_id, t2.c.t2_id, t3.c.t3_id)
                 .where(t1.c.name == "t1 #10")
                 .select_from(
-                    (
                         t1.outerjoin(t2, t1.c.t1_id == t2.c.t1_id).outerjoin(
                             t3, criteria
                         )
-                    )
                 )
             )
             self.assertRows(expr, [(10, 20, 30)])
@@ -1599,11 +1597,9 @@ class JoinTest(fixtures.TablesTest):
                 select(t1.c.t1_id, t2.c.t2_id, t3.c.t3_id)
                 .where(t1.c.t1_id < 12)
                 .select_from(
-                    (
                         t1.outerjoin(t2, t1.c.t1_id == t2.c.t1_id).outerjoin(
                             t3, criteria
                         )
-                    )
                 )
             )
             self.assertRows(expr, [(10, 20, 30), (11, 21, None)])
@@ -1617,11 +1613,9 @@ class JoinTest(fixtures.TablesTest):
                 select(t1.c.t1_id, t2.c.t2_id, t3.c.t3_id)
                 .where(t2.c.name == "t2 #20")
                 .select_from(
-                    (
                         t1.outerjoin(t2, t1.c.t1_id == t2.c.t1_id).outerjoin(
                             t3, criteria
                         )
-                    )
                 )
             )
             self.assertRows(expr, [(10, 20, 30)])
@@ -1630,11 +1624,9 @@ class JoinTest(fixtures.TablesTest):
                 select(t1.c.t1_id, t2.c.t2_id, t3.c.t3_id)
                 .where(t2.c.t2_id < 29)
                 .select_from(
-                    (
                         t1.outerjoin(t2, t1.c.t1_id == t2.c.t1_id).outerjoin(
                             t3, criteria
                         )
-                    )
                 )
             )
             self.assertRows(expr, [(10, 20, 30), (11, 21, None)])
@@ -1648,11 +1640,9 @@ class JoinTest(fixtures.TablesTest):
                 select(t1.c.t1_id, t2.c.t2_id, t3.c.t3_id)
                 .where(t3.c.name == "t3 #30")
                 .select_from(
-                    (
                         t1.outerjoin(t2, t1.c.t1_id == t2.c.t1_id).outerjoin(
                             t3, criteria
                         )
-                    )
                 )
             )
             self.assertRows(expr, [(10, 20, 30)])
@@ -1661,11 +1651,9 @@ class JoinTest(fixtures.TablesTest):
                 select(t1.c.t1_id, t2.c.t2_id, t3.c.t3_id)
                 .where(t3.c.t3_id < 39)
                 .select_from(
-                    (
                         t1.outerjoin(t2, t1.c.t1_id == t2.c.t1_id).outerjoin(
                             t3, criteria
                         )
-                    )
                 )
             )
             self.assertRows(expr, [(10, 20, 30)])
@@ -1692,11 +1680,9 @@ class JoinTest(fixtures.TablesTest):
                 select(t1.c.t1_id, t2.c.t2_id, t3.c.t3_id)
                 .where(and_(t1.c.t1_id < 19, t3.c.t3_id < 39))
                 .select_from(
-                    (
                         t1.outerjoin(t2, t1.c.t1_id == t2.c.t1_id).outerjoin(
                             t3, criteria
                         )
-                    )
                 )
             )
             self.assertRows(expr, [(10, 20, 30)])
@@ -1711,11 +1697,9 @@ class JoinTest(fixtures.TablesTest):
                 select(t1.c.t1_id, t2.c.t2_id, t3.c.t3_id)
                 .where(and_(t1.c.name == "t1 #10", t2.c.name == "t2 #20"))
                 .select_from(
-                    (
                         t1.outerjoin(t2, t1.c.t1_id == t2.c.t1_id).outerjoin(
                             t3, criteria
                         )
-                    )
                 )
             )
             self.assertRows(expr, [(10, 20, 30)])
@@ -1724,11 +1708,9 @@ class JoinTest(fixtures.TablesTest):
                 select(t1.c.t1_id, t2.c.t2_id, t3.c.t3_id)
                 .where(and_(t1.c.t1_id < 12, t2.c.t2_id < 39))
                 .select_from(
-                    (
                         t1.outerjoin(t2, t1.c.t1_id == t2.c.t1_id).outerjoin(
                             t3, criteria
                         )
-                    )
                 )
             )
             self.assertRows(expr, [(10, 20, 30), (11, 21, None)])
@@ -1748,11 +1730,9 @@ class JoinTest(fixtures.TablesTest):
                     )
                 )
                 .select_from(
-                    (
                         t1.outerjoin(t2, t1.c.t1_id == t2.c.t1_id).outerjoin(
                             t3, criteria
                         )
-                    )
                 )
             )
             self.assertRows(expr, [(10, 20, 30)])
@@ -1761,11 +1741,9 @@ class JoinTest(fixtures.TablesTest):
                 select(t1.c.t1_id, t2.c.t2_id, t3.c.t3_id)
                 .where(and_(t1.c.t1_id < 19, t2.c.t2_id < 29, t3.c.t3_id < 39))
                 .select_from(
-                    (
                         t1.outerjoin(t2, t1.c.t1_id == t2.c.t1_id).outerjoin(
                             t3, criteria
                         )
-                    )
                 )
             )
             self.assertRows(expr, [(10, 20, 30)])
@@ -1791,7 +1769,7 @@ class JoinTest(fixtures.TablesTest):
                 .where(
                     t1.c.name == "t1 #10",
                 )
-                .select_from((t1.join(t2).outerjoin(t3, criteria)))
+                .select_from(t1.join(t2).outerjoin(t3, criteria))
             )
             self.assertRows(expr, [(10, 20, 30)])
 
@@ -1800,7 +1778,7 @@ class JoinTest(fixtures.TablesTest):
                 .where(
                     t2.c.name == "t2 #20",
                 )
-                .select_from((t1.join(t2).outerjoin(t3, criteria)))
+                .select_from(t1.join(t2).outerjoin(t3, criteria))
             )
             self.assertRows(expr, [(10, 20, 30)])
 
@@ -1809,7 +1787,7 @@ class JoinTest(fixtures.TablesTest):
                 .where(
                     t3.c.name == "t3 #30",
                 )
-                .select_from((t1.join(t2).outerjoin(t3, criteria)))
+                .select_from(t1.join(t2).outerjoin(t3, criteria))
             )
             self.assertRows(expr, [(10, 20, 30)])
 
@@ -1818,7 +1796,7 @@ class JoinTest(fixtures.TablesTest):
                 .where(
                     and_(t1.c.name == "t1 #10", t2.c.name == "t2 #20"),
                 )
-                .select_from((t1.join(t2).outerjoin(t3, criteria)))
+                .select_from(t1.join(t2).outerjoin(t3, criteria))
             )
             self.assertRows(expr, [(10, 20, 30)])
 
@@ -1827,7 +1805,7 @@ class JoinTest(fixtures.TablesTest):
                 .where(
                     and_(t2.c.name == "t2 #20", t3.c.name == "t3 #30"),
                 )
-                .select_from((t1.join(t2).outerjoin(t3, criteria)))
+                .select_from(t1.join(t2).outerjoin(t3, criteria))
             )
             self.assertRows(expr, [(10, 20, 30)])
 
@@ -1840,7 +1818,7 @@ class JoinTest(fixtures.TablesTest):
                         t3.c.name == "t3 #30",
                     ),
                 )
-                .select_from((t1.join(t2).outerjoin(t3, criteria)))
+                .select_from(t1.join(t2).outerjoin(t3, criteria))
             )
             self.assertRows(expr, [(10, 20, 30)])
 

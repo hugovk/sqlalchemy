@@ -922,7 +922,7 @@ class Insert(ValuesBase):
             :ref:`inserts_and_updates` - SQL Expression Tutorial
 
         """
-        super(Insert, self).__init__(table, values, prefixes)
+        super().__init__(table, values, prefixes)
         self._inline = inline
         if returning:
             self._returning = returning
@@ -1276,7 +1276,7 @@ class Update(DMLWhereBase, ValuesBase):
 
         """
         self._preserve_parameter_order = preserve_parameter_order
-        super(Update, self).__init__(table, values, prefixes)
+        super().__init__(table, values, prefixes)
         if returning:
             self._returning = returning
         if whereclause is not None:

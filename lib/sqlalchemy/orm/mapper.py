@@ -67,8 +67,7 @@ def _all_registries():
 
 def _unconfigured_mappers():
     for reg in _all_registries():
-        for mapper in reg._mappers_to_configure():
-            yield mapper
+        yield from reg._mappers_to_configure()
 
 
 _already_compiling = False
@@ -559,7 +558,7 @@ class Mapper(
 
         """
         self.class_ = util.assert_arg_type(class_, type, "class_")
-        self._sort_key = "%s.%s" % (
+        self._sort_key = "{}.{}".format(
             self.class_.__module__,
             self.class_.__name__,
         )
@@ -1390,7 +1389,7 @@ class Mapper(
 
         # determine cols that aren't expressed within our tables; mark these
         # as "read only" properties which are refreshed upon INSERT/UPDATE
-        self._readonly_props = set(
+        self._readonly_props = {
             self._columntoproperty[col]
             for col in self._columntoproperty
             if self._columntoproperty[col] not in self._identity_key_props
@@ -1398,7 +1397,7 @@ class Mapper(
                 not hasattr(col, "table")
                 or col.table not in self._cols_by_table
             )
-        )
+        }
 
     def _configure_properties(self):
         # Column and other ClauseElement objects which are mapped
@@ -1952,10 +1951,10 @@ class Mapper(
         self.logger.debug("%s " + msg, *((self._log_desc,) + args))
 
     def __repr__(self):
-        return "<Mapper at 0x%x; %s>" % (id(self), self.class_.__name__)
+        return f"<Mapper at 0x{id(self):x}; {self.class_.__name__}>"
 
     def __str__(self):
-        return "Mapper[%s%s(%s)]" % (
+        return "Mapper[{}{}({})]".format(
             self.class_.__name__,
             self.non_primary and " (non-primary)" or "",
             self.local_table.description
@@ -1996,7 +1995,7 @@ class Mapper(
             return self._props[key]
         except KeyError as err:
             raise sa_exc.InvalidRequestError(
-                "Mapper '%s' has no property '%s'" % (self, key)
+                f"Mapper '{self}' has no property '{key}'"
             ) from err
 
     def get_property_by_column(self, column):
@@ -2028,7 +2027,7 @@ class Mapper(
                 m = _class_to_mapper(m)
                 if not m.isa(self):
                     raise sa_exc.InvalidRequestError(
-                        "%r does not inherit from %r" % (m, self)
+                        f"{m!r} does not inherit from {self!r}"
                     )
 
                 if selectable is None:
@@ -2124,21 +2123,18 @@ class Mapper(
 
     @HasMemoized.memoized_attribute
     def _insert_cols_evaluating_none(self):
-        return dict(
-            (
-                table,
+        return {
+                table:
                 frozenset(
                     col for col in columns if col.type.should_evaluate_none
-                ),
-            )
+                )
             for table, columns in self._cols_by_table.items()
-        )
+        }
 
     @HasMemoized.memoized_attribute
     def _insert_cols_as_none(self):
-        return dict(
-            (
-                table,
+        return {
+                table:
                 frozenset(
                     col.key
                     for col in columns
@@ -2146,55 +2142,48 @@ class Mapper(
                     and not col.server_default
                     and not col.default
                     and not col.type.should_evaluate_none
-                ),
-            )
+                )
             for table, columns in self._cols_by_table.items()
-        )
+        }
 
     @HasMemoized.memoized_attribute
     def _propkey_to_col(self):
-        return dict(
-            (
-                table,
-                dict(
-                    (self._columntoproperty[col].key, col) for col in columns
-                ),
-            )
+        return {
+                table:
+                {
+                    self._columntoproperty[col].key: col for col in columns
+                }
             for table, columns in self._cols_by_table.items()
-        )
+        }
 
     @HasMemoized.memoized_attribute
     def _pk_keys_by_table(self):
-        return dict(
-            (table, frozenset([col.key for col in pks]))
+        return {
+            table: frozenset(col.key for col in pks)
             for table, pks in self._pks_by_table.items()
-        )
+        }
 
     @HasMemoized.memoized_attribute
     def _pk_attr_keys_by_table(self):
-        return dict(
-            (
-                table,
-                frozenset([self._columntoproperty[col].key for col in pks]),
-            )
+        return {
+                table:
+                frozenset(self._columntoproperty[col].key for col in pks)
             for table, pks in self._pks_by_table.items()
-        )
+        }
 
     @HasMemoized.memoized_attribute
     def _server_default_cols(self):
-        return dict(
-            (
-                table,
+        return {
+                table:
                 frozenset(
-                    [
+                    
                         col.key
                         for col in columns
                         if col.server_default is not None
-                    ]
-                ),
-            )
+                    
+                )
             for table, columns in self._cols_by_table.items()
-        )
+        }
 
     @HasMemoized.memoized_attribute
     def _server_default_plus_onupdate_propkeys(self):
@@ -2212,19 +2201,17 @@ class Mapper(
 
     @HasMemoized.memoized_attribute
     def _server_onupdate_default_cols(self):
-        return dict(
-            (
-                table,
+        return {
+                table:
                 frozenset(
-                    [
+                    
                         col.key
                         for col in columns
                         if col.server_onupdate is not None
-                    ]
-                ),
-            )
+                    
+                )
             for table, columns in self._cols_by_table.items()
-        )
+        }
 
     @HasMemoized.memoized_instancemethod
     def __clause_element__(self):
@@ -2833,10 +2820,10 @@ class Mapper(
         return (
             self._identity_class,
             tuple(
-                [
+                
                     manager[prop.key].impl.get(state, dict_, passive)
                     for prop in self._identity_key_props
-                ]
+                
             ),
             state.identity_token,
         )

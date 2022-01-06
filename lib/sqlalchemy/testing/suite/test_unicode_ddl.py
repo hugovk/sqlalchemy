@@ -1,4 +1,3 @@
-# coding: utf-8
 """verrrrry basic unicode column name testing"""
 
 from sqlalchemy import desc

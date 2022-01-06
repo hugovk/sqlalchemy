@@ -1924,7 +1924,7 @@ class EagerDefaultEvalTest(fixtures.DeclarativeMappedTest):
 class EagerDefaultEvalTestSubDefaults(EagerDefaultEvalTest):
     @classmethod
     def setup_classes(cls):
-        super(EagerDefaultEvalTestSubDefaults, cls).setup_classes(
+        super().setup_classes(
             include_sub_defaults=True
         )
 
@@ -1932,6 +1932,6 @@ class EagerDefaultEvalTestSubDefaults(EagerDefaultEvalTest):
 class EagerDefaultEvalTestPolymorphic(EagerDefaultEvalTest):
     @classmethod
     def setup_classes(cls):
-        super(EagerDefaultEvalTestPolymorphic, cls).setup_classes(
+        super().setup_classes(
             with_polymorphic="*"
         )

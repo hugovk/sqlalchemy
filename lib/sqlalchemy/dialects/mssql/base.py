@@ -860,8 +860,7 @@ MS_2008_VERSION = (10,)
 MS_2005_VERSION = (9,)
 MS_2000_VERSION = (8,)
 
-RESERVED_WORDS = set(
-    [
+RESERVED_WORDS = {
         "add",
         "all",
         "alter",
@@ -1042,8 +1041,7 @@ RESERVED_WORDS = set(
         "while",
         "with",
         "writetext",
-    ]
-)
+}
 
 
 class REAL(sqltypes.REAL):
@@ -1054,7 +1052,7 @@ class REAL(sqltypes.REAL):
         # it is only accepted as the word "REAL" in DDL, the numeric
         # precision value is not allowed to be present
         kw.setdefault("precision", 24)
-        super(REAL, self).__init__(**kw)
+        super().__init__(**kw)
 
 
 class TINYINT(sqltypes.Integer):
@@ -1087,7 +1085,7 @@ class _MSDate(sqltypes.Date):
                 m = self._reg.match(value)
                 if not m:
                     raise ValueError(
-                        "could not parse %r as a date value" % (value,)
+                        f"could not parse {value!r} as a date value"
                     )
                 return datetime.date(*[int(x or 0) for x in m.groups()])
             else:
@@ -1099,7 +1097,7 @@ class _MSDate(sqltypes.Date):
 class TIME(sqltypes.TIME):
     def __init__(self, precision=None, **kwargs):
         self.precision = precision
-        super(TIME, self).__init__()
+        super().__init__()
 
     __zero_date = datetime.date(1900, 1, 1)
 
@@ -1129,7 +1127,7 @@ class TIME(sqltypes.TIME):
                 m = self._reg.match(value)
                 if not m:
                     raise ValueError(
-                        "could not parse %r as a time value" % (value,)
+                        f"could not parse {value!r} as a time value"
                     )
                 return datetime.time(*[int(x or 0) for x in m.groups()])
             else:
@@ -1168,7 +1166,7 @@ class DATETIME2(_DateTimeBase, sqltypes.DateTime):
     __visit_name__ = "DATETIME2"
 
     def __init__(self, precision=None, **kw):
-        super(DATETIME2, self).__init__(**kw)
+        super().__init__(**kw)
         self.precision = precision
 
 
@@ -1176,7 +1174,7 @@ class DATETIMEOFFSET(_DateTimeBase, sqltypes.DateTime):
     __visit_name__ = "DATETIMEOFFSET"
 
     def __init__(self, precision=None, **kw):
-        super(DATETIMEOFFSET, self).__init__(**kw)
+        super().__init__(**kw)
         self.precision = precision
 
 
@@ -1234,7 +1232,7 @@ class TIMESTAMP(sqltypes._Binary):
         self.convert_int = convert_int
 
     def result_processor(self, dialect, coltype):
-        super_ = super(TIMESTAMP, self).result_processor(dialect, coltype)
+        super_ = super().result_processor(dialect, coltype)
         if self.convert_int:
 
             def process(value):
@@ -1378,7 +1376,7 @@ class TryCast(sql.elements.Cast):
         .. versionadded:: 1.3.7
 
         """
-        super(TryCast, self).__init__(*arg, **kw)
+        super().__init__(*arg, **kw)
 
 
 try_cast = public_factory(TryCast, ".dialects.mssql.try_cast")
@@ -1466,7 +1464,7 @@ class MSTypeCompiler(compiler.GenericTypeCompiler):
         if precision is None:
             return "FLOAT"
         else:
-            return "FLOAT(%(precision)s)" % {"precision": precision}
+            return f"FLOAT({precision})"
 
     def visit_TINYINT(self, type_, **kw):
         return "TINYINT"
@@ -1730,7 +1728,7 @@ class MSExecutionContext(default.DefaultExecutionContext):
         if self._result_strategy:
             return self._result_strategy
         else:
-            return super(MSExecutionContext, self).get_result_cursor_strategy(
+            return super().get_result_cursor_strategy(
                 result
             )
 
@@ -1751,7 +1749,7 @@ class MSExecutionContext(default.DefaultExecutionContext):
             and column.default.optional
         ):
             return None
-        return super(MSExecutionContext, self).get_insert_default(column)
+        return super().get_insert_default(column)
 
 
 class MSSQLCompiler(compiler.SQLCompiler):
@@ -1769,7 +1767,7 @@ class MSSQLCompiler(compiler.SQLCompiler):
 
     def __init__(self, *args, **kwargs):
         self.tablealiases = {}
-        super(MSSQLCompiler, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def _with_legacy_schema_aliasing(fn):
         def decorate(self, *arg, **kw):
@@ -1794,7 +1792,7 @@ class MSSQLCompiler(compiler.SQLCompiler):
         return "LEN%s" % self.function_argspec(fn, **kw)
 
     def visit_concat_op_binary(self, binary, operator, **kw):
-        return "%s + %s" % (
+        return "{} + {}".format(
             self.process(binary.left, **kw),
             self.process(binary.right, **kw),
         )
@@ -1806,7 +1804,7 @@ class MSSQLCompiler(compiler.SQLCompiler):
         return "0"
 
     def visit_match_op_binary(self, binary, operator, **kw):
-        return "CONTAINS (%s, %s)" % (
+        return "CONTAINS ({}, {})".format(
             self.process(binary.left, **kw),
             self.process(binary.right, **kw),
         )
@@ -1814,7 +1812,7 @@ class MSSQLCompiler(compiler.SQLCompiler):
     def get_select_precolumns(self, select, **kw):
         """MS-SQL puts TOP, it's version of LIMIT here"""
 
-        s = super(MSSQLCompiler, self).get_select_precolumns(select, **kw)
+        s = super().get_select_precolumns(select, **kw)
 
         if select._has_row_limiting_clause and self._use_top(select):
             # ODBC drivers and possibly others
@@ -1911,7 +1909,7 @@ class MSSQLCompiler(compiler.SQLCompiler):
             return ""
 
     def visit_try_cast(self, element, **kw):
-        return "TRY_CAST (%s AS %s)" % (
+        return "TRY_CAST ({} AS {})".format(
             self.process(element.clause, **kw),
             self.process(element.typeclause, **kw),
         )
@@ -1971,20 +1969,20 @@ class MSSQLCompiler(compiler.SQLCompiler):
     @_with_legacy_schema_aliasing
     def visit_table(self, table, mssql_aliased=False, iscrud=False, **kwargs):
         if mssql_aliased is table or iscrud:
-            return super(MSSQLCompiler, self).visit_table(table, **kwargs)
+            return super().visit_table(table, **kwargs)
 
         # alias schema-qualified tables
         alias = self._schema_aliased_table(table)
         if alias is not None:
             return self.process(alias, mssql_aliased=table, **kwargs)
         else:
-            return super(MSSQLCompiler, self).visit_table(table, **kwargs)
+            return super().visit_table(table, **kwargs)
 
     @_with_legacy_schema_aliasing
     def visit_alias(self, alias, **kw):
         # translate for schema-qualified table aliases
         kw["mssql_aliased"] = alias.element
-        return super(MSSQLCompiler, self).visit_alias(alias, **kw)
+        return super().visit_alias(alias, **kw)
 
     @_with_legacy_schema_aliasing
     def visit_column(self, column, add_to_result_map=None, **kw):
@@ -2005,9 +2003,9 @@ class MSSQLCompiler(compiler.SQLCompiler):
                         column.type,
                     )
 
-                return super(MSSQLCompiler, self).visit_column(converted, **kw)
+                return super().visit_column(converted, **kw)
 
-        return super(MSSQLCompiler, self).visit_column(
+        return super().visit_column(
             column, add_to_result_map=add_to_result_map, **kw
         )
 
@@ -2021,7 +2019,7 @@ class MSSQLCompiler(compiler.SQLCompiler):
 
     def visit_extract(self, extract, **kw):
         field = self.extract_map.get(extract.field, extract.field)
-        return "DATEPART(%s, %s)" % (field, self.process(extract.expr, **kw))
+        return f"DATEPART({field}, {self.process(extract.expr, **kw)})"
 
     def visit_savepoint(self, savepoint_stmt):
         return "SAVE TRANSACTION %s" % self.preparer.format_savepoint(
@@ -2049,7 +2047,7 @@ class MSSQLCompiler(compiler.SQLCompiler):
                 ),
                 **kwargs,
             )
-        return super(MSSQLCompiler, self).visit_binary(binary, **kwargs)
+        return super().visit_binary(binary, **kwargs)
 
     def returning_clause(self, stmt, returning_cols):
         # SQL server returning clause requires that the columns refer to
@@ -2095,7 +2093,7 @@ class MSSQLCompiler(compiler.SQLCompiler):
         if isinstance(column, expression.Function):
             return column.label(None)
         else:
-            return super(MSSQLCompiler, self).label_select_column(
+            return super().label_select_column(
                 select, column, asfrom
             )
 
@@ -2167,13 +2165,13 @@ class MSSQLCompiler(compiler.SQLCompiler):
         return "SELECT 1 WHERE 1!=1"
 
     def visit_is_distinct_from_binary(self, binary, operator, **kw):
-        return "NOT EXISTS (SELECT %s INTERSECT SELECT %s)" % (
+        return "NOT EXISTS (SELECT {} INTERSECT SELECT {})".format(
             self.process(binary.left),
             self.process(binary.right),
         )
 
     def visit_is_not_distinct_from_binary(self, binary, operator, **kw):
-        return "EXISTS (SELECT %s INTERSECT SELECT %s)" % (
+        return "EXISTS (SELECT {} INTERSECT SELECT {})".format(
             self.process(binary.left),
             self.process(binary.right),
         )
@@ -2184,24 +2182,24 @@ class MSSQLCompiler(compiler.SQLCompiler):
         # by positional parameter rendering
 
         if binary.type._type_affinity is sqltypes.JSON:
-            return "JSON_QUERY(%s, %s)" % (
+            return "JSON_QUERY({}, {})".format(
                 self.process(binary.left, **kw),
                 self.process(binary.right, **kw),
             )
 
         # as with other dialects, start with an explicit test for NULL
-        case_expression = "CASE JSON_VALUE(%s, %s) WHEN NULL THEN NULL" % (
+        case_expression = "CASE JSON_VALUE({}, {}) WHEN NULL THEN NULL".format(
             self.process(binary.left, **kw),
             self.process(binary.right, **kw),
         )
 
         if binary.type._type_affinity is sqltypes.Integer:
-            type_expression = "ELSE CAST(JSON_VALUE(%s, %s) AS INTEGER)" % (
+            type_expression = "ELSE CAST(JSON_VALUE({}, {}) AS INTEGER)".format(
                 self.process(binary.left, **kw),
                 self.process(binary.right, **kw),
             )
         elif binary.type._type_affinity is sqltypes.Numeric:
-            type_expression = "ELSE CAST(JSON_VALUE(%s, %s) AS %s)" % (
+            type_expression = "ELSE CAST(JSON_VALUE({}, {}) AS {})".format(
                 self.process(binary.left, **kw),
                 self.process(binary.right, **kw),
                 "FLOAT"
@@ -2219,13 +2217,13 @@ class MSSQLCompiler(compiler.SQLCompiler):
             # TODO: does this comment (from mysql) apply to here, too?
             #       this fails with a JSON value that's a four byte unicode
             #       string.  SQLite has the same problem at the moment
-            type_expression = "ELSE JSON_VALUE(%s, %s)" % (
+            type_expression = "ELSE JSON_VALUE({}, {})".format(
                 self.process(binary.left, **kw),
                 self.process(binary.right, **kw),
             )
         else:
             # other affinity....this is not expected right now
-            type_expression = "ELSE JSON_QUERY(%s, %s)" % (
+            type_expression = "ELSE JSON_QUERY({}, {})".format(
                 self.process(binary.left, **kw),
                 self.process(binary.right, **kw),
             )
@@ -2256,14 +2254,14 @@ class MSSQLStrictCompiler(MSSQLCompiler):
 
     def visit_in_op_binary(self, binary, operator, **kw):
         kw["literal_execute"] = True
-        return "%s IN %s" % (
+        return "{} IN {}".format(
             self.process(binary.left, **kw),
             self.process(binary.right, **kw),
         )
 
     def visit_not_in_op_binary(self, binary, operator, **kw):
         kw["literal_execute"] = True
-        return "%s NOT IN %s" % (
+        return "{} NOT IN {}".format(
             self.process(binary.left, **kw),
             self.process(binary.right, **kw),
         )
@@ -2284,7 +2282,7 @@ class MSSQLStrictCompiler(MSSQLCompiler):
             # SQL Server wants single quotes around the date string.
             return "'" + str(value) + "'"
         else:
-            return super(MSSQLStrictCompiler, self).render_literal_value(
+            return super().render_literal_value(
                 value, type_
             )
 
@@ -2369,7 +2367,7 @@ class MSDDLCompiler(compiler.DDLCompiler):
             else:
                 text += "NONCLUSTERED "
 
-        text += "INDEX %s ON %s (%s)" % (
+        text += "INDEX {} ON {} ({})".format(
             self._prepared_index_name(index, include_schema=include_schema),
             preparer.format_table(index.table),
             ", ".join(
@@ -2406,7 +2404,7 @@ class MSDDLCompiler(compiler.DDLCompiler):
         return text
 
     def visit_drop_index(self, drop):
-        return "\nDROP INDEX %s ON %s" % (
+        return "\nDROP INDEX {} ON {}".format(
             self._prepared_index_name(drop.element, include_schema=False),
             self.preparer.format_table(drop.element.table),
         )
@@ -2471,7 +2469,7 @@ class MSDDLCompiler(compiler.DDLCompiler):
         if create.element.data_type is not None:
             data_type = create.element.data_type
             prefix = " AS %s" % self.type_compiler.process(data_type)
-        return super(MSDDLCompiler, self).visit_create_sequence(
+        return super().visit_create_sequence(
             create, prefix=prefix, **kw
         )
 
@@ -2480,7 +2478,7 @@ class MSDDLCompiler(compiler.DDLCompiler):
         if identity.start is not None or identity.increment is not None:
             start = 1 if identity.start is None else identity.start
             increment = 1 if identity.increment is None else identity.increment
-            text += "(%s,%s)" % (start, increment)
+            text += f"({start},{increment})"
         return text
 
 
@@ -2488,7 +2486,7 @@ class MSIdentifierPreparer(compiler.IdentifierPreparer):
     reserved_words = RESERVED_WORDS
 
     def __init__(self, dialect):
-        super(MSIdentifierPreparer, self).__init__(
+        super().__init__(
             dialect,
             initial_quote="[",
             final_quote="]",
@@ -2520,7 +2518,7 @@ class MSIdentifierPreparer(compiler.IdentifierPreparer):
 
         dbname, owner = _schema_elements(schema)
         if dbname:
-            result = "%s.%s" % (self.quote(dbname), self.quote(owner))
+            result = f"{self.quote(dbname)}.{self.quote(owner)}"
         elif owner:
             result = self.quote(owner)
         else:
@@ -2743,7 +2741,7 @@ class MSDialect(default.DefaultDialect):
             )
             self.legacy_schema_aliasing = legacy_schema_aliasing
 
-        super(MSDialect, self).__init__(**opts)
+        super().__init__(**opts)
 
         self._json_serializer = json_serializer
         self._json_deserializer = json_deserializer
@@ -2751,21 +2749,19 @@ class MSDialect(default.DefaultDialect):
     def do_savepoint(self, connection, name):
         # give the DBAPI a push
         connection.exec_driver_sql("IF @@TRANCOUNT = 0 BEGIN TRANSACTION")
-        super(MSDialect, self).do_savepoint(connection, name)
+        super().do_savepoint(connection, name)
 
     def do_release_savepoint(self, connection, name):
         # SQL Server does not support RELEASE SAVEPOINT
         pass
 
-    _isolation_lookup = set(
-        [
+    _isolation_lookup = {
             "SERIALIZABLE",
             "READ UNCOMMITTED",
             "READ COMMITTED",
             "REPEATABLE READ",
             "SNAPSHOT",
-        ]
-    )
+    }
 
     def get_isolation_level_values(self, dbapi_connection):
         return list(self._isolation_lookup)
@@ -2820,7 +2816,7 @@ class MSDialect(default.DefaultDialect):
             )
 
     def initialize(self, connection):
-        super(MSDialect, self).initialize(connection)
+        super().initialize(connection)
         self._setup_version_attributes()
         self._setup_supports_nvarchar_max(connection)
 
@@ -2885,7 +2881,7 @@ class MSDialect(default.DefaultDialect):
                 if bool(
                     connection.scalar(
                         text("SELECT object_id(:table_name)"),
-                        {"table_name": "tempdb.dbo.[{}]".format(table_name)},
+                        {"table_name": f"tempdb.dbo.[{table_name}]"},
                     )
                 ):
                     return True

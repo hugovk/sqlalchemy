@@ -1,5 +1,3 @@
-#! coding: utf-8
-
 import copy
 import inspect
 import pickle
@@ -465,7 +463,7 @@ class ToListTest(fixtures.TestBase):
         eq_(util.to_list("xyz"), ["xyz"])
 
     def test_from_set(self):
-        spec = util.to_list(set([1, 2, 3]))
+        spec = util.to_list({1, 2, 3})
         assert isinstance(spec, list)
         eq_(sorted(spec), [1, 2, 3])
 
@@ -489,7 +487,7 @@ class ToListTest(fixtures.TestBase):
 
 class ColumnCollectionCommon(testing.AssertsCompiledSQL):
     def _assert_collection_integrity(self, coll):
-        eq_(coll._colset, set(c for k, c in coll._collection))
+        eq_(coll._colset, {c for k, c in coll._collection})
         d = {}
         for k, col in coll._collection:
             d.setdefault(k, col)
@@ -616,7 +614,7 @@ class ColumnCollectionCommon(testing.AssertsCompiledSQL):
             [("col1", c1), ("col2", c2), ("col3", c3)]
         )
 
-        eq_(str(cc), "%s(%s, %s, %s)" % (type(cc).__name__, c1, c2, c3))
+        eq_(str(cc), f"{type(cc).__name__}({c1}, {c2}, {c3})")
         eq_(repr(cc), object.__repr__(cc))
 
 
@@ -1318,8 +1316,8 @@ class IdentitySetTest(fixtures.TestBase):
     obj_type = object
 
     def assert_eq(self, identityset, expected_iterable):
-        expected = sorted([id(o) for o in expected_iterable])
-        found = sorted([id(o) for o in identityset])
+        expected = sorted(id(o) for o in expected_iterable)
+        found = sorted(id(o) for o in identityset)
         eq_(found, expected)
 
     def test_init(self):
@@ -1846,7 +1844,7 @@ class IdentitySetTest(fixtures.TestBase):
             assert True
 
         try:
-            s = set([o1, o2])
+            s = {o1, o2}
             s |= ids
             assert False
         except TypeError:
@@ -1901,7 +1899,7 @@ class OrderedIdentitySetTest(fixtures.TestBase):
 
 
 class DictlikeIteritemsTest(fixtures.TestBase):
-    baseline = set([("a", 1), ("b", 2), ("c", 3)])
+    baseline = {("a", 1), ("b", 2), ("c", 3)}
 
     def _ok(self, instance):
         iterator = util.dictlike_iteritems(instance)
@@ -2772,7 +2770,7 @@ class GenericReprTest(fixtures.TestBase):
                 self.e = e
                 self.f = f
                 self.g = g
-                super(Bar, self).__init__(**kw)
+                super().__init__(**kw)
 
         eq_(
             util.generic_repr(
@@ -2795,7 +2793,7 @@ class GenericReprTest(fixtures.TestBase):
         class Bar(Foo):
             def __init__(self, b=3, c=4, **kw):
                 self.c = c
-                super(Bar, self).__init__(b=b, **kw)
+                super().__init__(b=b, **kw)
 
         eq_(
             util.generic_repr(Bar(a="a", b="b", c="c"), to_inspect=[Bar, Foo]),
@@ -2931,7 +2929,7 @@ class AsInterfaceTest(fixtures.TestBase):
 
         def assertAdapted(obj, *methods):
             assert isinstance(obj, type)
-            found = set([m for m in dir(obj) if not m.startswith("_")])
+            found = {m for m in dir(obj) if not m.startswith("_")}
             for method in methods:
                 assert method in found
                 found.remove(method)
@@ -2969,7 +2967,7 @@ class AsInterfaceTest(fixtures.TestBase):
 
 class TestClassHierarchy(fixtures.TestBase):
     def test_object(self):
-        eq_(set(util.class_hierarchy(object)), set((object,)))
+        eq_(set(util.class_hierarchy(object)), {object})
 
     def test_single(self):
         class A:
@@ -2978,14 +2976,14 @@ class TestClassHierarchy(fixtures.TestBase):
         class B:
             pass
 
-        eq_(set(util.class_hierarchy(A)), set((A, object)))
-        eq_(set(util.class_hierarchy(B)), set((B, object)))
+        eq_(set(util.class_hierarchy(A)), {A, object})
+        eq_(set(util.class_hierarchy(B)), {B, object})
 
         class C(A, B):
             pass
 
-        eq_(set(util.class_hierarchy(A)), set((A, B, C, object)))
-        eq_(set(util.class_hierarchy(B)), set((A, B, C, object)))
+        eq_(set(util.class_hierarchy(A)), {A, B, C, object})
+        eq_(set(util.class_hierarchy(B)), {A, B, C, object})
 
 
 class TestClassProperty(fixtures.TestBase):
@@ -2996,7 +2994,7 @@ class TestClassProperty(fixtures.TestBase):
         class B(A):
             @classproperty
             def something(cls):
-                d = dict(super(B, cls).something)
+                d = dict(super().something)
                 d.update({"bazz": 2})
                 return d
 
@@ -3125,7 +3123,7 @@ class BackslashReplaceTest(fixtures.TestBase):
     def test_utf8_to_utf8(self):
         eq_(
             compat.decode_backslashreplace(
-                "some message méil".encode("utf-8"), "utf-8"
+                "some message méil".encode(), "utf-8"
             ),
             "some message méil",
         )

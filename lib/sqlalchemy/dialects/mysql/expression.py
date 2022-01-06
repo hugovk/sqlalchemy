@@ -105,7 +105,7 @@ class match(Generative, elements.BinaryExpression):
         if kw:
             raise exc.ArgumentError("unknown arguments: %s" % (", ".join(kw)))
 
-        super(match, self).__init__(
+        super().__init__(
             left, against, operators.match_op, modifiers=flags
         )
 

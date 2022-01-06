@@ -122,7 +122,7 @@ class compound:
     def _do(self, cfg, fn, *args, **kw):
         for skip in self.skips:
             if skip(cfg):
-                msg = "'%s' : %s" % (
+                msg = "'{}' : {}".format(
                     config.get_current_test_name(),
                     skip._as_string(cfg),
                 )
@@ -140,10 +140,8 @@ class compound:
         for fail in self.fails:
             if fail(config):
                 print(
-                    (
                         "%s failed as expected (%s): %s "
                         % (name, fail._as_string(config), ex)
-                    )
                 )
                 break
         else:
@@ -309,9 +307,9 @@ class SpecPredicate(Predicate):
                 return "%s" % self.db
         else:
             if negate:
-                return "not %s %s %s" % (self.db, self.op, self.spec)
+                return f"not {self.db} {self.op} {self.spec}"
             else:
-                return "%s %s %s" % (self.db, self.op, self.spec)
+                return f"{self.db} {self.op} {self.spec}"
 
 
 class LambdaPredicate(Predicate):

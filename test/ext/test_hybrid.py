@@ -1231,8 +1231,8 @@ class SpecialObjectTest(fixtures.TestBase, AssertsCompiledSQL):
         from sqlalchemy import literal
 
         symbols = ("usd", "gbp", "cad", "eur", "aud")
-        currency_lookup = dict(
-            ((currency_from, currency_to), Decimal(str(rate)))
+        currency_lookup = {
+            (currency_from, currency_to): Decimal(str(rate))
             for currency_to, values in zip(
                 symbols,
                 [
@@ -1244,7 +1244,7 @@ class SpecialObjectTest(fixtures.TestBase, AssertsCompiledSQL):
                 ],
             )
             for currency_from, rate in zip(symbols, values)
-        )
+        }
 
         class Amount:
             def __init__(self, amount, currency):
@@ -1288,10 +1288,10 @@ class SpecialObjectTest(fixtures.TestBase, AssertsCompiledSQL):
                     return self.amount
 
             def __str__(self):
-                return "%2.4f %s" % (self.amount, self.currency)
+                return f"{self.amount:2.4f} {self.currency}"
 
             def __repr__(self):
-                return "Amount(%r, %r)" % (self.amount, self.currency)
+                return f"Amount({self.amount!r}, {self.currency!r})"
 
         Base = declarative_base()
 

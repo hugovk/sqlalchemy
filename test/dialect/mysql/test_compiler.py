@@ -1,5 +1,3 @@
-# coding: utf-8
-
 from sqlalchemy import BLOB
 from sqlalchemy import BOOLEAN
 from sqlalchemy import Boolean
@@ -245,7 +243,7 @@ class CompileTest(ReservedWordFixture, fixtures.TestBase, AssertsCompiledSQL):
         dialect = mysql.dialect()
         self.assert_compile(
             schema.DropConstraint(constraint),
-            "ALTER TABLE %s DROP CHECK `%s`" % (table_name, constraint_name),
+            f"ALTER TABLE {table_name} DROP CHECK `{constraint_name}`",
             dialect=dialect,
         )
 

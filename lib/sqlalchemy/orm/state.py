@@ -121,7 +121,7 @@ class InstanceState(interfaces.InspectionAttrInfo):
 
         """
         return util.ImmutableProperties(
-            dict((key, AttributeState(self, key)) for key in self.manager)
+            {key: AttributeState(self, key) for key in self.manager}
         )
 
     @property

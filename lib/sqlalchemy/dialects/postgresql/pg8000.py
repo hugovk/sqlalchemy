@@ -274,7 +274,7 @@ _server_side_id = util.counter()
 
 class PGExecutionContext_pg8000(PGExecutionContext):
     def create_server_side_cursor(self):
-        ident = "c_%s_%s" % (hex(id(self))[2:], hex(_server_side_id())[2:])
+        ident = f"c_{hex(id(self))[2:]}_{hex(_server_side_id())[2:]}"
         return ServerSideCursor(self._dbapi_connection.cursor(), ident)
 
     def pre_exec(self):
@@ -415,12 +415,12 @@ class PGDialect_pg8000(PGDialect):
     def _dbapi_version(self):
         if self.dbapi and hasattr(self.dbapi, "__version__"):
             return tuple(
-                [
+                
                     int(x)
                     for x in re.findall(
                         r"(\d+)(?:[-\.]?|$)", self.dbapi.__version__
                     )
-                ]
+                
             )
         else:
             return (99, 99, 99)

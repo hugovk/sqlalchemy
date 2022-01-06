@@ -90,15 +90,15 @@ def _get_crud_params(compiler, stmt, compile_state, **kw):
     if compiler.column_keys is None:
         parameters = {}
     elif stmt_parameter_tuples:
-        parameters = dict(
-            (_column_as_key(key), REQUIRED)
+        parameters = {
+            _column_as_key(key): REQUIRED
             for key in compiler.column_keys
             if key not in spd
-        )
+        }
     else:
-        parameters = dict(
-            (_column_as_key(key), REQUIRED) for key in compiler.column_keys
-        )
+        parameters = {
+            _column_as_key(key): REQUIRED for key in compiler.column_keys
+        }
 
     # create a list of column assignment clauses as tuples
     values = []
@@ -167,7 +167,7 @@ def _get_crud_params(compiler, stmt, compile_state, **kw):
         if check:
             raise exc.CompileError(
                 "Unconsumed column names: %s"
-                % (", ".join("%s" % (c,) for c in check))
+                % (", ".join(f"{c}" for c in check))
             )
 
     if compile_state._has_multi_parameters:
@@ -280,7 +280,7 @@ def _key_getters_for_crud_column(compiler, stmt, compile_state):
 
         def _col_bind_name(col):
             if col.table in _et:
-                return "%s_%s" % (col.table.name, col.key)
+                return f"{col.table.name}_{col.key}"
             else:
                 return col.key
 
@@ -858,10 +858,10 @@ def _get_update_multitable_params(
     values,
     kw,
 ):
-    normalized_params = dict(
-        (coercions.expect(roles.DMLColumnRole, c), param)
+    normalized_params = {
+        coercions.expect(roles.DMLColumnRole, c): param
         for c, param in stmt_parameter_tuples
-    )
+    }
 
     include_table = compile_state.include_table_with_column_exprs
 

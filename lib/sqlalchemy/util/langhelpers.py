@@ -296,7 +296,7 @@ def %(name)s%(grouped_args)s:
         linked_to, linked_to_location = fn._linked_to
         linked_to_doc = linked_to.__doc__
         if class_location is None:
-            class_location = "%s.%s" % (target.__module__, target.__name__)
+            class_location = f"{target.__module__}.{target.__name__}"
 
         linked_to_doc = inject_docstring_text(
             linked_to_doc,
@@ -356,7 +356,7 @@ class PluginLoader:
                 return impl.load()
 
         raise exc.NoSuchModuleError(
-            "Can't load plugin: %s:%s" % (self.group, name)
+            f"Can't load plugin: {self.group}:{name}"
         )
 
     def register(self, name, modulepath, objname):
@@ -733,21 +733,21 @@ def create_proxy_methods(
         for meth in methods:
             if hasattr(cls, meth):
                 raise TypeError(
-                    "class %s already has a method %s" % (cls, meth)
+                    f"class {cls} already has a method {meth}"
                 )
             setattr(cls, meth, instrument(meth))
 
         for prop in attributes:
             if hasattr(cls, prop):
                 raise TypeError(
-                    "class %s already has a method %s" % (cls, prop)
+                    f"class {cls} already has a method {prop}"
                 )
             setattr(cls, prop, makeprop(prop))
 
         for prop in classmethods:
             if hasattr(cls, prop):
                 raise TypeError(
-                    "class %s already has a method %s" % (cls, prop)
+                    f"class {cls} already has a method {prop}"
                 )
             setattr(cls, prop, instrument(prop, clslevel=True))
 
@@ -842,7 +842,7 @@ def generic_repr(obj, additional_kw=(), to_inspect=None, omit_kwarg=()):
         try:
             val = getattr(obj, arg, missing)
             if val is not missing and val != defval:
-                output.append("%s=%r" % (arg, val))
+                output.append(f"{arg}={val!r}")
         except Exception:
             pass
 
@@ -851,11 +851,11 @@ def generic_repr(obj, additional_kw=(), to_inspect=None, omit_kwarg=()):
             try:
                 val = getattr(obj, arg, missing)
                 if val is not missing and val != defval:
-                    output.append("%s=%r" % (arg, val))
+                    output.append(f"{arg}={val!r}")
             except Exception:
                 pass
 
-    return "%s(%s)" % (obj.__class__.__name__, ", ".join(output))
+    return "{}({})".format(obj.__class__.__name__, ", ".join(output))
 
 
 class portable_instancemethod:
@@ -1081,7 +1081,7 @@ def as_interface(obj, cls=None, methods=None, required=None):
         if method not in interface:
             raise TypeError("%r: unknown in this interface" % method)
         if not callable(impl):
-            raise TypeError("%r=%r is not callable" % (method, impl))
+            raise TypeError(f"{method!r}={impl!r} is not callable")
         setattr(AnonymousInterface, method, staticmethod(impl))
         found.add(method)
 
@@ -1435,7 +1435,7 @@ class classproperty(property):
     """
 
     def __init__(self, fget, *arg, **kw):
-        super(classproperty, self).__init__(fget, *arg, **kw)
+        super().__init__(fget, *arg, **kw)
         self.__doc__ = fget.__doc__
 
     def __get__(desc, self, cls):
@@ -1567,7 +1567,7 @@ class symbol:
         if arg is None:
             return None
 
-        raise exc.ArgumentError("Invalid value for '%s': %r" % (name, arg))
+        raise exc.ArgumentError(f"Invalid value for '{name}': {arg!r}")
 
 
 _creation_order = 1
@@ -1622,7 +1622,7 @@ class _hash_limit_string(str):
         interpolated = (value % args) + (
             " (this warning may be suppressed after %d occurrences)" % num
         )
-        self = super(_hash_limit_string, cls).__new__(cls, interpolated)
+        self = super().__new__(cls, interpolated)
         self._hash = hash("%s_%d" % (value, hash(interpolated) % num))
         return self
 
@@ -1760,7 +1760,7 @@ class EnsureKWArgType(type):
                     if not spec.varkw:
                         clsdict[key] = wrapped = cls._wrap_w_kw(fn)
                         setattr(cls, key, wrapped)
-        super(EnsureKWArgType, cls).__init__(clsname, bases, clsdict)
+        super().__init__(clsname, bases, clsdict)
 
     def _wrap_w_kw(self, fn):
         def wrap(*arg, **kw):
@@ -1937,7 +1937,7 @@ def repr_tuple_names(names):
     if flag:
         return ", ".join(res)
     else:
-        return "%s, ..., %s" % (", ".join(res[0:3]), res[-1])
+        return "{}, ..., {}".format(", ".join(res[0:3]), res[-1])
 
 
 def has_compiled_ext(raise_=False):

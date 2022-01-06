@@ -24,7 +24,7 @@ def generate_driver_url(url, driver, query_str):
         if url.database:
             url = url.set(database=url.database + ".enc")
         url = url.set(password="test")
-    url = url.set(drivername="sqlite+%s" % (driver,))
+    url = url.set(drivername=f"sqlite+{driver}")
     try:
         url.get_dialect()
     except exc.NoSuchModuleError:
@@ -45,7 +45,7 @@ def _sqlite_follower_url_from_main(url, ident):
         name, ext = m.group(1, 2)
         drivername = url.get_driver_name()
         return sa_url.make_url(
-            "sqlite+%s:///%s_%s.%s" % (drivername, drivername, ident, ext)
+            f"sqlite+{drivername}:///{drivername}_{ident}.{ext}"
         )
 
 
@@ -83,7 +83,7 @@ def _sqlite_create_db(cfg, eng, ident):
 def _sqlite_drop_db(cfg, eng, ident):
     for path in [
         "%s.db" % ident,
-        "%s_%s_test_schema.db" % (ident, eng.driver),
+        f"{ident}_{eng.driver}_test_schema.db",
     ]:
         if os.path.exists(path):
             log.info("deleting SQLite database file: %s" % path)
@@ -123,17 +123,17 @@ def _reap_sqlite_dbs(url, idents):
         # decorator
         for ext in ("db", "db.enc"):
             for path in (
-                ["%s.%s" % (ident, ext)]
+                [f"{ident}.{ext}"]
                 + [
-                    "%s_%s.%s" % (drivername, ident, ext)
+                    f"{drivername}_{ident}.{ext}"
                     for drivername in _drivernames
                 ]
                 + [
-                    "%s_test_schema.%s" % (drivername, ext)
+                    f"{drivername}_test_schema.{ext}"
                     for drivername in _drivernames
                 ]
                 + [
-                    "%s_%s_test_schema.%s" % (ident, drivername, ext)
+                    f"{ident}_{drivername}_test_schema.{ext}"
                     for drivername in _drivernames
                 ]
             ):

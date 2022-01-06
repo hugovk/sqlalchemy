@@ -1,5 +1,3 @@
-#! coding:utf-8
-
 """
 compiler tests.
 
@@ -2027,7 +2025,7 @@ class SelectTest(fixtures.TestBase, AssertsCompiledSQL):
         class CustomCompiler(PGCompiler):
             def order_by_clause(self, select, **kw):
                 return (
-                    super(CustomCompiler, self).order_by_clause(select, **kw)
+                    super().order_by_clause(select, **kw)
                     + " CUSTOMIZED"
                 )
 
@@ -2047,7 +2045,7 @@ class SelectTest(fixtures.TestBase, AssertsCompiledSQL):
         class CustomCompiler(PGCompiler):
             def group_by_clause(self, select, **kw):
                 return (
-                    super(CustomCompiler, self).group_by_clause(select, **kw)
+                    super().group_by_clause(select, **kw)
                     + " CUSTOMIZED"
                 )
 
@@ -2790,11 +2788,11 @@ class SelectTest(fixtures.TestBase, AssertsCompiledSQL):
             )
             eq_(
                 str(cast(1234, Text).compile(dialect=dialect)),
-                "CAST(%s AS %s)" % (literal, expected_results[3]),
+                f"CAST({literal} AS {expected_results[3]})",
             )
             eq_(
                 str(cast("test", String(20)).compile(dialect=dialect)),
-                "CAST(%s AS %s)" % (literal, expected_results[4]),
+                f"CAST({literal} AS {expected_results[4]})",
             )
 
             # fixme: shoving all of this dialect-specific stuff in one test
@@ -3254,10 +3252,10 @@ class SelectTest(fixtures.TestBase, AssertsCompiledSQL):
 
             if lbl:
                 self.assert_compile(
-                    s1, "SELECT %s AS %s FROM mytable" % (expr, lbl)
+                    s1, f"SELECT {expr} AS {lbl} FROM mytable"
                 )
             else:
-                self.assert_compile(s1, "SELECT %s FROM mytable" % (expr,))
+                self.assert_compile(s1, f"SELECT {expr} FROM mytable")
 
             s1 = select(s1.subquery())
             if lbl:
@@ -3698,12 +3696,12 @@ class BindParameterTest(AssertsCompiledSQL, fixtures.TestBase):
         total_params = 100000
 
         in_clause = [":in%d" % i for i in range(total_params)]
-        params = dict(("in%d" % i, i) for i in range(total_params))
+        params = {"in%d" % i: i for i in range(total_params)}
         t = text("text clause %s" % ", ".join(in_clause))
         eq_(len(t.bindparams), total_params)
         c = t.compile()
         pp = c.construct_params(params)
-        eq_(len(set(pp)), total_params, "%s %s" % (len(set(pp)), len(pp)))
+        eq_(len(set(pp)), total_params, f"{len(set(pp))} {len(pp)}")
         eq_(len(set(pp.values())), total_params)
 
     def test_bind_anon_name_no_special_chars(self):
@@ -6282,7 +6280,7 @@ class ResultMapTest(fixtures.TestBase):
         comp = stmt.compile()
         eq_(
             set(comp._create_result_map()),
-            set(["t1_1_b", "t1_1_a", "t1_a", "t1_b"]),
+            {"t1_1_b", "t1_1_a", "t1_a", "t1_b"},
         )
         is_(comp._create_result_map()["t1_a"][1][2], t1.c.a)
 
@@ -6335,12 +6333,12 @@ class ResultMapTest(fixtures.TestBase):
                 if stmt is stmt2.element:
                     with self._nested_result() as nested:
                         contexts[stmt2.element] = nested
-                        text = super(MyCompiler, self).visit_select(
+                        text = super().visit_select(
                             stmt2.element,
                         )
                         self._add_to_result_map("k1", "k1", (1, 2, 3), int_)
                 else:
-                    text = super(MyCompiler, self).visit_select(
+                    text = super().visit_select(
                         stmt, *arg, **kw
                     )
                     self._add_to_result_map("k2", "k2", (3, 4, 5), int_)

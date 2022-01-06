@@ -46,7 +46,7 @@ def _wrap_fn_for_legacy(dispatch_collection, fn, argspec):
             argspec.varkw
         ):
 
-            formatted_def = "def %s(%s%s)" % (
+            formatted_def = "def {}({}{})".format(
                 dispatch_collection.name,
                 ", ".join(dispatch_collection.arg_names),
                 ", **kw" if has_kw else "",
@@ -94,7 +94,7 @@ def _indent(text, indent):
 def _standard_listen_example(dispatch_collection, sample_target, fn):
     example_kw_arg = _indent(
         "\n".join(
-            "%(arg)s = kw['%(arg)s']" % {"arg": arg}
+            "{arg} = kw['{arg}']".format(arg=arg)
             for arg in dispatch_collection.arg_names[0:2]
         ),
         "    ",

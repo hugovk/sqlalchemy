@@ -69,7 +69,7 @@ def warn_deprecated_20(msg, stacklevel=3, code=None):
 
 
 def deprecated_cls(version, message, constructor="__init__"):
-    header = ".. deprecated:: %s %s" % (version, (message or ""))
+    header = ".. deprecated:: {} {}".format(version, (message or ""))
 
     def decorate(cls):
         return _decorate_cls_with_warning(
@@ -151,7 +151,7 @@ def deprecated(
             warning = exc.RemovedIn20Warning
         version = "1.4"
     if add_deprecation_to_docstring:
-        header = ".. deprecated:: %s %s" % (
+        header = ".. deprecated:: {} {}".format(
             version,
             (message or ""),
         )

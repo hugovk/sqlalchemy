@@ -616,7 +616,7 @@ class NaturalPKTest(fixtures.MappedTest):
         eq_(Item(itemname="item1"), r[0])
         eq_(["jack"], [u.username for u in r[0].users])
         eq_(Item(itemname="item2"), r[1])
-        eq_(["ed", "jack"], sorted([u.username for u in r[1].users]))
+        eq_(["ed", "jack"], sorted(u.username for u in r[1].users))
 
         sess.expunge_all()
         u2 = sess.get(User, u2.username)
@@ -1795,7 +1795,7 @@ class UnsortablePKTest(fixtures.MappedTest):
             cache_ok = True
 
             def process_bind_param(self, value, dialect):
-                return "%s,%s" % (value["x"], value["y"])
+                return "{},{}".format(value["x"], value["y"])
 
             def process_result_value(self, value, dialect):
                 rec = value.split(",")

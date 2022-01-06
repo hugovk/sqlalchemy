@@ -611,7 +611,7 @@ class Table(DialectKWArgs, SchemaItem, TableClause):
         # calling the superclass constructor.
 
     def _init(self, name, metadata, *args, **kwargs):
-        super(Table, self).__init__(
+        super().__init__(
             quoted_name(name, kwargs.pop("quote", None))
         )
         self.metadata = metadata
@@ -633,7 +633,7 @@ class Table(DialectKWArgs, SchemaItem, TableClause):
         self.foreign_keys = set()
         self._extra_dependencies = set()
         if self.schema is not None:
-            self.fullname = "%s.%s" % (self.schema, self.name)
+            self.fullname = f"{self.schema}.{self.name}"
         else:
             self.fullname = self.name
 
@@ -729,7 +729,7 @@ class Table(DialectKWArgs, SchemaItem, TableClause):
             :attr:`_schema.Table.indexes`
 
         """
-        return set(fkc.constraint for fkc in self.foreign_keys)
+        return {fkc.constraint for fkc in self.foreign_keys}
 
     def _init_existing(self, *args, **kwargs):
         autoload_with = kwargs.pop("autoload_with", None)
@@ -820,7 +820,7 @@ class Table(DialectKWArgs, SchemaItem, TableClause):
             [repr(self.name)]
             + [repr(self.metadata)]
             + [repr(x) for x in self.columns]
-            + ["%s=%s" % (k, repr(getattr(self, k))) for k in ["schema"]]
+            + [f"{k}={repr(getattr(self, k))}" for k in ["schema"]]
         )
 
     def __str__(self):
@@ -1550,7 +1550,7 @@ class Column(DialectKWArgs, SchemaItem, ColumnClause):
                 "Explicit 'name' is required when " "sending 'quote' argument"
             )
 
-        super(Column, self).__init__(name, type_)
+        super().__init__(name, type_)
         self.key = kwargs.pop("key", name)
         self.primary_key = primary_key = kwargs.pop("primary_key", False)
 
@@ -1722,7 +1722,7 @@ class Column(DialectKWArgs, SchemaItem, ColumnClause):
                     or "table=None"
                 )
             ]
-            + ["%s=%s" % (k, repr(getattr(self, k))) for k in kwarg]
+            + [f"{k}={repr(getattr(self, k))}" for k in kwarg]
         )
 
     def _set_parent(self, table, allow_replacements=True):
@@ -2166,15 +2166,15 @@ class ForeignKey(DialectKWArgs, SchemaItem):
             _schema, tname, colname = self._column_tokens
             if table_name is not None:
                 tname = table_name
-            return "%s.%s.%s" % (schema, tname, colname)
+            return f"{schema}.{tname}.{colname}"
         elif table_name:
             schema, tname, colname = self._column_tokens
             if schema:
-                return "%s.%s.%s" % (schema, table_name, colname)
+                return f"{schema}.{table_name}.{colname}"
             else:
-                return "%s.%s" % (table_name, colname)
+                return f"{table_name}.{colname}"
         elif self._table_column is not None:
-            return "%s.%s" % (
+            return "{}.{}".format(
                 self._table_column.table.fullname,
                 self._table_column.key,
             )
@@ -2522,7 +2522,7 @@ class ColumnDefault(DefaultGenerator):
            statement and parameters.
 
         """
-        super(ColumnDefault, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         if isinstance(arg, FetchedValue):
             raise exc.ArgumentError(
                 "ColumnDefault may not be a server-side default type."
@@ -2584,7 +2584,7 @@ class ColumnDefault(DefaultGenerator):
             )
 
     def __repr__(self):
-        return "ColumnDefault(%r)" % (self.arg,)
+        return f"ColumnDefault({self.arg!r})"
 
 
 class IdentityOptions:
@@ -2883,7 +2883,7 @@ class Sequence(IdentityOptions, DefaultGenerator):
         return util.preloaded.sql_functions.func.next_value(self)
 
     def _set_parent(self, column, **kw):
-        super(Sequence, self)._set_parent(column)
+        super()._set_parent(column)
         column._on_table_attach(self._set_table)
 
     def _set_table(self, column, table):
@@ -2991,12 +2991,12 @@ class DefaultClause(FetchedValue):
 
     def __init__(self, arg, for_update=False, _reflected=False):
         util.assert_arg_type(arg, (str, ClauseElement, TextClause), "arg")
-        super(DefaultClause, self).__init__(for_update)
+        super().__init__(for_update)
         self.arg = arg
         self.reflected = _reflected
 
     def __repr__(self):
-        return "DefaultClause(%r, for_update=%r)" % (self.arg, self.for_update)
+        return f"DefaultClause({self.arg!r}, for_update={self.for_update!r})"
 
 
 class Constraint(DialectKWArgs, SchemaItem):
@@ -3146,9 +3146,9 @@ class ColumnCollectionMixin:
 
             # issue #3411 - don't do the per-column auto-attach if some of the
             # columns are specified as strings.
-            has_string_cols = set(
+            has_string_cols = {
                 c for c in self._pending_colargs if c is not None
-            ).difference(col_objs)
+            }.difference(col_objs)
             if not has_string_cols:
 
                 def _col_attached(column, table):
@@ -3349,7 +3349,7 @@ class CheckConstraint(ColumnCollectionConstraint):
         columns = []
         visitors.traverse(self.sqltext, {}, {"column": columns.append})
 
-        super(CheckConstraint, self).__init__(
+        super().__init__(
             name=name,
             deferrable=deferrable,
             initially=initially,
@@ -3605,7 +3605,7 @@ class ForeignKeyConstraint(ColumnCollectionConstraint):
         return self.elements[0].column.table
 
     def _validate_dest_table(self, table):
-        table_keys = set([elem._table_key() for elem in self.elements])
+        table_keys = {elem._table_key() for elem in self.elements}
         if None not in table_keys and len(table_keys) > 1:
             elem0, elem1 = sorted(table_keys)[0:2]
             raise exc.ArgumentError(
@@ -3770,10 +3770,10 @@ class PrimaryKeyConstraint(ColumnCollectionConstraint):
 
     def __init__(self, *columns, **kw):
         self._implicit_generated = kw.pop("_implicit_generated", False)
-        super(PrimaryKeyConstraint, self).__init__(*columns, **kw)
+        super().__init__(*columns, **kw)
 
     def _set_parent(self, table, **kw):
-        super(PrimaryKeyConstraint, self)._set_parent(table)
+        super()._set_parent(table)
 
         if table.primary_key is not self:
             table.constraints.discard(table.primary_key)
@@ -4321,13 +4321,11 @@ class MetaData(SchemaItem):
             for fk in removed.foreign_keys:
                 fk._remove_from_metadata(self)
         if self._schemas:
-            self._schemas = set(
-                [
+            self._schemas = {
                     t.schema
                     for t in self.tables.values()
                     if t.schema is not None
-                ]
-            )
+            }
 
     def __getstate__(self):
         return {
@@ -4531,7 +4529,7 @@ class MetaData(SchemaItem):
 
             if schema is not None:
                 available_w_schema = util.OrderedSet(
-                    ["%s.%s" % (schema, name) for name in available]
+                    [f"{schema}.{name}" for name in available]
                 )
             else:
                 available_w_schema = available
@@ -4569,7 +4567,7 @@ class MetaData(SchemaItem):
                 try:
                     Table(name, self, **reflect_opts)
                 except exc.UnreflectableTableError as uerr:
-                    util.warn("Skipping table %s: %s" % (name, uerr))
+                    util.warn(f"Skipping table {name}: {uerr}")
 
     def create_all(self, bind, tables=None, checkfirst=True):
         """Create all tables stored in this metadata.

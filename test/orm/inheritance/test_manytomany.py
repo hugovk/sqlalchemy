@@ -309,11 +309,11 @@ class InheritTest3(fixtures.MappedTest):
         b.foos.append(Foo("foo #1"))
         b.foos.append(Foo("foo #2"))
         sess.flush()
-        compare = [repr(b)] + sorted([repr(o) for o in b.foos])
+        compare = [repr(b)] + sorted(repr(o) for o in b.foos)
         sess.expunge_all()
         result = sess.query(Bar).all()
         print(repr(result[0]) + repr(result[0].foos))
-        found = [repr(result[0])] + sorted([repr(o) for o in result[0].foos])
+        found = [repr(result[0])] + sorted(repr(o) for o in result[0].foos)
         eq_(found, compare)
 
     def test_advanced(self):
@@ -367,8 +367,8 @@ class InheritTest3(fixtures.MappedTest):
 
         result = sess.query(Blub).all()
         print(result)
-        self.assert_(repr(result[0]) == compare)
+        self.assertTrue(repr(result[0]) == compare)
         sess.expunge_all()
         x = sess.query(Blub).filter_by(id=blubid).one()
         print(x)
-        self.assert_(repr(x) == compare)
+        self.assertTrue(repr(x) == compare)

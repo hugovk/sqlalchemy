@@ -634,7 +634,7 @@ class MapperEventsTest(_RemoveListeners, _fixtures.FixtureTest):
 
     @classmethod
     def define_tables(cls, metadata):
-        super(MapperEventsTest, cls).define_tables(metadata)
+        super().define_tables(metadata)
         metadata.tables["users"].append_column(
             Column("extra", Integer, default=5, onupdate=10)
         )
@@ -1996,7 +1996,7 @@ class RefreshTest(_fixtures.FixtureTest):
         sess.commit()
 
         sess.query(User).union_all(sess.query(User)).all()
-        eq_(canary, [("refresh", set(["id", "name"]))])
+        eq_(canary, [("refresh", {"id", "name"})])
 
     def test_via_refresh_state(self):
         User = self.classes.User
@@ -2010,7 +2010,7 @@ class RefreshTest(_fixtures.FixtureTest):
         sess.commit()
 
         u1.name
-        eq_(canary, [("refresh", set(["id", "name"]))])
+        eq_(canary, [("refresh", {"id", "name"})])
 
     def test_was_expired(self):
         User = self.classes.User
@@ -2025,7 +2025,7 @@ class RefreshTest(_fixtures.FixtureTest):
         sess.expire(u1)
 
         sess.query(User).first()
-        eq_(canary, [("refresh", set(["id", "name"]))])
+        eq_(canary, [("refresh", {"id", "name"})])
 
     def test_was_expired_via_commit(self):
         User = self.classes.User
@@ -2039,7 +2039,7 @@ class RefreshTest(_fixtures.FixtureTest):
         sess.commit()
 
         sess.query(User).first()
-        eq_(canary, [("refresh", set(["id", "name"]))])
+        eq_(canary, [("refresh", {"id", "name"})])
 
     def test_was_expired_attrs(self):
         User = self.classes.User
@@ -2054,7 +2054,7 @@ class RefreshTest(_fixtures.FixtureTest):
         sess.expire(u1, ["name"])
 
         sess.query(User).first()
-        eq_(canary, [("refresh", set(["name"]))])
+        eq_(canary, [("refresh", {"name"})])
 
     def test_populate_existing(self):
         User = self.classes.User

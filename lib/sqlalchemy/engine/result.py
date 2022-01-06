@@ -1718,13 +1718,13 @@ class ChunkedIteratorResult(IteratorResult):
         return self
 
     def _soft_close(self, **kw):
-        super(ChunkedIteratorResult, self)._soft_close(**kw)
+        super()._soft_close(**kw)
         self.chunks = lambda size: []
 
     def _fetchmany_impl(self, size=None):
         if self.dynamic_yield_per:
             self.iterator = itertools.chain.from_iterable(self.chunks(size))
-        return super(ChunkedIteratorResult, self)._fetchmany_impl(size=size)
+        return super()._fetchmany_impl(size=size)
 
 
 class MergedResult(IteratorResult):
@@ -1741,7 +1741,7 @@ class MergedResult(IteratorResult):
 
     def __init__(self, cursor_metadata, results):
         self._results = results
-        super(MergedResult, self).__init__(
+        super().__init__(
             cursor_metadata,
             itertools.chain.from_iterable(
                 r._raw_row_iterator() for r in results

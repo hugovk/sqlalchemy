@@ -154,7 +154,7 @@ class ColumnProperty(StrategizedProperty):
             expressions
 
         """
-        super(ColumnProperty, self).__init__()
+        super().__init__()
         self._orig_columns = [
             coercions.expect(roles.LabeledColumnExprRole, c) for c in columns
         ]
@@ -271,7 +271,7 @@ class ColumnProperty(StrategizedProperty):
         )
 
     def do_init(self):
-        super(ColumnProperty, self).do_init()
+        super().do_init()
 
         if len(self.columns) > 1 and set(self.parent.primary_key).issuperset(
             self.columns

@@ -128,9 +128,9 @@ class _MultipleClassMarker:
 
     def __init__(self, classes, on_remove=None):
         self.on_remove = on_remove
-        self.contents = set(
-            [weakref.ref(item, self._remove_item) for item in classes]
-        )
+        self.contents = {
+            weakref.ref(item, self._remove_item) for item in classes
+        }
         _registries.add(self)
 
     def remove_item(self, cls):
@@ -165,13 +165,11 @@ class _MultipleClassMarker:
         # protect against class registration race condition against
         # asynchronous garbage collection calling _remove_item,
         # [ticket:3208]
-        modules = set(
-            [
+        modules = {
                 cls.__module__
                 for cls in [ref() for ref in self.contents]
                 if cls is not None
-            ]
-        )
+        }
         if item.__module__ in modules:
             util.warn(
                 "This declarative base already contains a class with the "

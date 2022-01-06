@@ -472,7 +472,7 @@ class AsyncAdapt_asyncpg_ss_cursor(AsyncAdapt_asyncpg_cursor):
     __slots__ = ("_rowbuffer",)
 
     def __init__(self, adapt_connection):
-        super(AsyncAdapt_asyncpg_ss_cursor, self).__init__(adapt_connection)
+        super().__init__(adapt_connection)
         self._rowbuffer = None
 
     def close(self):
@@ -627,7 +627,7 @@ class AsyncAdapt_asyncpg_connection(AdaptedConnection):
             for super_ in type(error).__mro__:
                 if super_ in exception_mapping:
                     translated_error = exception_mapping[super_](
-                        "%s: %s" % (type(error), error)
+                        f"{type(error)}: {error}"
                     )
                     translated_error.pgcode = (
                         translated_error.sqlstate
@@ -848,12 +848,12 @@ class PGDialect_asyncpg(PGDialect):
     def _dbapi_version(self):
         if self.dbapi and hasattr(self.dbapi, "__version__"):
             return tuple(
-                [
+                
                     int(x)
                     for x in re.findall(
                         r"(\d+)(?:[-\.]?|$)", self.dbapi.__version__
                     )
-                ]
+                
             )
         else:
             return (99, 99, 99)
@@ -983,7 +983,7 @@ class PGDialect_asyncpg(PGDialect):
 
         """
 
-        super_connect = super(PGDialect_asyncpg, self).on_connect()
+        super_connect = super().on_connect()
 
         def connect(conn):
             conn.await_(self.setup_asyncpg_json_codec(conn))

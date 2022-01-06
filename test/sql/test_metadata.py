@@ -117,10 +117,10 @@ class MetaDataTest(fixtures.TestBase, ComparesTables):
         class MyColumn(schema.Column):
             def __init__(self, *args, **kw):
                 self.widget = kw.pop("widget", None)
-                super(MyColumn, self).__init__(*args, **kw)
+                super().__init__(*args, **kw)
 
             def _copy(self, *arg, **kw):
-                c = super(MyColumn, self)._copy(*arg, **kw)
+                c = super()._copy(*arg, **kw)
                 c.widget = self.widget
                 return c
 
@@ -133,7 +133,7 @@ class MetaDataTest(fixtures.TestBase, ComparesTables):
         msgs = []
 
         def write(c, t):
-            msgs.append("attach %s.%s" % (t.name, c.name))
+            msgs.append(f"attach {t.name}.{c.name}")
 
         c1 = Column("foo", String())
         m = MetaData()
@@ -153,7 +153,7 @@ class MetaDataTest(fixtures.TestBase, ComparesTables):
         Table("t2", metadata, Column("x", Integer), schema="bar")
         Table("t3", metadata, Column("x", Integer))
 
-        eq_(metadata._schemas, set(["foo", "bar"]))
+        eq_(metadata._schemas, {"foo", "bar"})
         eq_(len(metadata.tables), 3)
 
     def test_schema_collection_remove(self):
@@ -164,11 +164,11 @@ class MetaDataTest(fixtures.TestBase, ComparesTables):
         t3 = Table("t3", metadata, Column("x", Integer), schema="bar")
 
         metadata.remove(t3)
-        eq_(metadata._schemas, set(["foo", "bar"]))
+        eq_(metadata._schemas, {"foo", "bar"})
         eq_(len(metadata.tables), 2)
 
         metadata.remove(t1)
-        eq_(metadata._schemas, set(["bar"]))
+        eq_(metadata._schemas, {"bar"})
         eq_(len(metadata.tables), 1)
 
     def test_schema_collection_remove_all(self):
@@ -1364,8 +1364,8 @@ class ToMetaDataTest(fixtures.TestBase, AssertsCompiledSQL, ComparesTables):
             )
 
         eq_(
-            sorted([_get_key(i) for i in table.indexes]),
-            sorted([_get_key(i) for i in table_c.indexes]),
+            sorted(_get_key(i) for i in table.indexes),
+            sorted(_get_key(i) for i in table_c.indexes),
         )
 
     def test_indexes_with_col_redefine(self):
@@ -1402,8 +1402,8 @@ class ToMetaDataTest(fixtures.TestBase, AssertsCompiledSQL, ComparesTables):
             )
 
         eq_(
-            sorted([_get_key(i) for i in table.indexes]),
-            sorted([_get_key(i) for i in table_c.indexes]),
+            sorted(_get_key(i) for i in table.indexes),
+            sorted(_get_key(i) for i in table_c.indexes),
         )
 
     @emits_warning("Table '.+' already exists within the given MetaData")
@@ -1690,15 +1690,15 @@ class TableTest(fixtures.TestBase, AssertsCompiledSQL):
         fk3 = ForeignKeyConstraint(["b", "c"], ["r.x", "r.y"])
 
         t1.append_column(Column("b", Integer, fk1))
-        eq_(t1.foreign_key_constraints, set([fk1.constraint]))
+        eq_(t1.foreign_key_constraints, {fk1.constraint})
 
         t1.append_column(Column("c", Integer, fk2))
-        eq_(t1.foreign_key_constraints, set([fk1.constraint, fk2.constraint]))
+        eq_(t1.foreign_key_constraints, {fk1.constraint, fk2.constraint})
 
         t1.append_constraint(fk3)
         eq_(
             t1.foreign_key_constraints,
-            set([fk1.constraint, fk2.constraint, fk3]),
+            {fk1.constraint, fk2.constraint, fk3},
         )
 
     def test_c_immutable(self):
@@ -2851,7 +2851,7 @@ class ConstraintTest(fixtures.TestBase):
         return t1, t2, t3
 
     def _assert_index_col_x(self, t, i, columns=True):
-        eq_(t.indexes, set([i]))
+        eq_(t.indexes, {i})
         if columns:
             eq_(list(i.columns), [t.c.x])
         else:
@@ -2975,7 +2975,7 @@ class ConstraintTest(fixtures.TestBase):
 
         idx = Index("bar", MyThing(), t.c.y)
 
-        eq_(set(t.indexes), set([idx]))
+        eq_(set(t.indexes), {idx})
 
     def test_clauseelement_extraction_three(self):
         t = Table("t", MetaData(), Column("x", Integer), Column("y", Integer))
@@ -4031,7 +4031,7 @@ class ColumnDefinitionTest(AssertsCompiledSQL, fixtures.TestBase):
             if "special" not in column.info:
                 return compiler.visit_create_column(element, **kw)
 
-            text = "%s SPECIAL DIRECTIVE %s" % (
+            text = "{} SPECIAL DIRECTIVE {}".format(
                 column.name,
                 compiler.type_compiler.process(column.type),
             )
@@ -4246,11 +4246,11 @@ class CatchAllEventsTest(fixtures.RemovesEvents, fixtures.TestBase):
 
         def before_attach(obj, parent):
             canary.append(
-                "%s->%s" % (obj.__class__.__name__, parent.__class__.__name__)
+                f"{obj.__class__.__name__}->{parent.__class__.__name__}"
             )
 
         def after_attach(obj, parent):
-            canary.append("%s->%s" % (obj.__class__.__name__, parent))
+            canary.append(f"{obj.__class__.__name__}->{parent}")
 
         self.event_listen(
             schema.SchemaItem, "before_parent_attach", before_attach
@@ -4300,12 +4300,12 @@ class CatchAllEventsTest(fixtures.RemovesEvents, fixtures.TestBase):
         def evt(target):
             def before_attach(obj, parent):
                 canary.append(
-                    "%s->%s" % (target.__name__, parent.__class__.__name__)
+                    f"{target.__name__}->{parent.__class__.__name__}"
                 )
 
             def after_attach(obj, parent):
                 assert hasattr(obj, "name")  # so we can change it
-                canary.append("%s->%s" % (target.__name__, parent))
+                canary.append(f"{target.__name__}->{parent}")
 
             self.event_listen(target, "before_parent_attach", before_attach)
             self.event_listen(target, "after_parent_attach", after_attach)

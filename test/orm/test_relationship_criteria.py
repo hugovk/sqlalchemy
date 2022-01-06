@@ -529,7 +529,7 @@ class LoaderCriteriaTest(_Fixtures, testing.AssertsCompiledSQL):
 
         self.assert_compile(
             stmt,
-            "SELECT %s FROM users WHERE users.name != some_crit" % (expected,),
+            f"SELECT {expected} FROM users WHERE users.name != some_crit",
         )
 
     def test_select_from_aliased_inclaliased_criteria(

@@ -95,9 +95,9 @@ class Glyph(Base):
                     continue
                 render_line.append((color, char))
             data.append(render_line)
-        width = max([len(rl) for rl in data])
+        width = max(len(rl) for rl in data)
         data = "".join(
-            "".join("%s%s" % (color, char) for color, char in render_line)
+            "".join(f"{color}{char}" for color, char in render_line)
             + ("W " * (width - len(render_line)))
             for render_line in data
         )

@@ -847,7 +847,7 @@ from ...types import VARCHAR  # noqa
 
 class _SQliteJson(JSON):
     def result_processor(self, dialect, coltype):
-        default_processor = super(_SQliteJson, self).result_processor(
+        default_processor = super().result_processor(
             dialect, coltype
         )
 
@@ -868,7 +868,7 @@ class _DateTimeMixin:
     _storage_format = None
 
     def __init__(self, storage_format=None, regexp=None, **kw):
-        super(_DateTimeMixin, self).__init__(**kw)
+        super().__init__(**kw)
         if regexp is not None:
             self._reg = re.compile(regexp)
         if storage_format is not None:
@@ -904,7 +904,7 @@ class _DateTimeMixin:
                 kw["storage_format"] = self._storage_format
             if self._reg:
                 kw["regexp"] = self._reg
-        return super(_DateTimeMixin, self).adapt(cls, **kw)
+        return super().adapt(cls, **kw)
 
     def literal_processor(self, dialect):
         bp = self.bind_processor(dialect)
@@ -956,7 +956,7 @@ class DATETIME(_DateTimeMixin, sqltypes.DateTime):
 
     def __init__(self, *args, **kwargs):
         truncate_microseconds = kwargs.pop("truncate_microseconds", False)
-        super(DATETIME, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         if truncate_microseconds:
             assert "storage_format" not in kwargs, (
                 "You can specify only "
@@ -1117,7 +1117,7 @@ class TIME(_DateTimeMixin, sqltypes.Time):
 
     def __init__(self, *args, **kwargs):
         truncate_microseconds = kwargs.pop("truncate_microseconds", False)
-        super(TIME, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         if truncate_microseconds:
             assert "storage_format" not in kwargs, (
                 "You can specify only "
@@ -1239,13 +1239,13 @@ class SQLiteCompiler(compiler.SQLCompiler):
 
     def visit_cast(self, cast, **kwargs):
         if self.dialect.supports_cast:
-            return super(SQLiteCompiler, self).visit_cast(cast, **kwargs)
+            return super().visit_cast(cast, **kwargs)
         else:
             return self.process(cast.clause, **kwargs)
 
     def visit_extract(self, extract, **kw):
         try:
-            return "CAST(STRFTIME('%s', %s) AS INTEGER)" % (
+            return "CAST(STRFTIME('{}', {}) AS INTEGER)".format(
                 self.extract_map[extract.field],
                 self.process(extract.expr, **kw),
             )
@@ -1271,13 +1271,13 @@ class SQLiteCompiler(compiler.SQLCompiler):
         return ""
 
     def visit_is_distinct_from_binary(self, binary, operator, **kw):
-        return "%s IS NOT %s" % (
+        return "{} IS NOT {}".format(
             self.process(binary.left),
             self.process(binary.right),
         )
 
     def visit_is_not_distinct_from_binary(self, binary, operator, **kw):
-        return "%s IS %s" % (
+        return "{} IS {}".format(
             self.process(binary.left),
             self.process(binary.right),
         )
@@ -1310,7 +1310,7 @@ class SQLiteCompiler(compiler.SQLCompiler):
         return self.visit_empty_set_expr(type_)
 
     def visit_empty_set_expr(self, element_types):
-        return "SELECT %s FROM (SELECT %s) WHERE 1!=1" % (
+        return "SELECT {} FROM (SELECT {}) WHERE 1!=1".format(
             ", ".join("1" for type_ in element_types or [INTEGER()]),
             ", ".join("1" for type_ in element_types or [INTEGER()]),
         )
@@ -1390,7 +1390,7 @@ class SQLiteCompiler(compiler.SQLCompiler):
             value_text = self.process(value.self_group(), use_schema=False)
 
             key_text = self.preparer.quote(col_key)
-            action_set_ops.append("%s = %s" % (key_text, value_text))
+            action_set_ops.append(f"{key_text} = {value_text}")
 
         # check for names that don't match columns
         if set_parameters:
@@ -1412,7 +1412,7 @@ class SQLiteCompiler(compiler.SQLCompiler):
                     coercions.expect(roles.ExpressionElementRole, v),
                     use_schema=False,
                 )
-                action_set_ops.append("%s = %s" % (key_text, value_text))
+                action_set_ops.append(f"{key_text} = {value_text}")
 
         action_text = ", ".join(action_set_ops)
         if clause.update_whereclause is not None:
@@ -1420,7 +1420,7 @@ class SQLiteCompiler(compiler.SQLCompiler):
                 clause.update_whereclause, include_table=True, use_schema=False
             )
 
-        return "ON CONFLICT %s DO UPDATE SET %s" % (target_text, action_text)
+        return f"ON CONFLICT {target_text} DO UPDATE SET {action_text}"
 
 
 class SQLiteDDLCompiler(compiler.DDLCompiler):
@@ -1490,7 +1490,7 @@ class SQLiteDDLCompiler(compiler.DDLCompiler):
             ):
                 return None
 
-        text = super(SQLiteDDLCompiler, self).visit_primary_key_constraint(
+        text = super().visit_primary_key_constraint(
             constraint
         )
 
@@ -1508,7 +1508,7 @@ class SQLiteDDLCompiler(compiler.DDLCompiler):
         return text
 
     def visit_unique_constraint(self, constraint):
-        text = super(SQLiteDDLCompiler, self).visit_unique_constraint(
+        text = super().visit_unique_constraint(
             constraint
         )
 
@@ -1528,7 +1528,7 @@ class SQLiteDDLCompiler(compiler.DDLCompiler):
         return text
 
     def visit_check_constraint(self, constraint):
-        text = super(SQLiteDDLCompiler, self).visit_check_constraint(
+        text = super().visit_check_constraint(
             constraint
         )
 
@@ -1542,7 +1542,7 @@ class SQLiteDDLCompiler(compiler.DDLCompiler):
         return text
 
     def visit_column_check_constraint(self, constraint):
-        text = super(SQLiteDDLCompiler, self).visit_column_check_constraint(
+        text = super().visit_column_check_constraint(
             constraint
         )
 
@@ -1562,7 +1562,7 @@ class SQLiteDDLCompiler(compiler.DDLCompiler):
         if local_table.schema != remote_table.schema:
             return None
         else:
-            return super(SQLiteDDLCompiler, self).visit_foreign_key_constraint(
+            return super().visit_foreign_key_constraint(
                 constraint
             )
 
@@ -1586,7 +1586,7 @@ class SQLiteDDLCompiler(compiler.DDLCompiler):
         if create.if_not_exists:
             text += "IF NOT EXISTS "
 
-        text += "%s ON %s (%s)" % (
+        text += "{} ON {} ({})".format(
             self._prepared_index_name(index, include_schema=True),
             preparer.format_table(index.table, use_schema=False),
             ", ".join(
@@ -1621,7 +1621,7 @@ class SQLiteTypeCompiler(compiler.GenericTypeCompiler):
             not isinstance(type_, _DateTimeMixin)
             or type_.format_is_text_affinity
         ):
-            return super(SQLiteTypeCompiler, self).visit_DATETIME(type_)
+            return super().visit_DATETIME(type_)
         else:
             return "DATETIME_CHAR"
 
@@ -1630,7 +1630,7 @@ class SQLiteTypeCompiler(compiler.GenericTypeCompiler):
             not isinstance(type_, _DateTimeMixin)
             or type_.format_is_text_affinity
         ):
-            return super(SQLiteTypeCompiler, self).visit_DATE(type_)
+            return super().visit_DATE(type_)
         else:
             return "DATE_CHAR"
 
@@ -1639,7 +1639,7 @@ class SQLiteTypeCompiler(compiler.GenericTypeCompiler):
             not isinstance(type_, _DateTimeMixin)
             or type_.format_is_text_affinity
         ):
-            return super(SQLiteTypeCompiler, self).visit_TIME(type_)
+            return super().visit_TIME(type_)
         else:
             return "TIME_CHAR"
 
@@ -1651,8 +1651,7 @@ class SQLiteTypeCompiler(compiler.GenericTypeCompiler):
 
 
 class SQLiteIdentifierPreparer(compiler.IdentifierPreparer):
-    reserved_words = set(
-        [
+    reserved_words = {
             "add",
             "after",
             "all",
@@ -1770,8 +1769,7 @@ class SQLiteIdentifierPreparer(compiler.IdentifierPreparer):
             "virtual",
             "when",
             "where",
-        ]
-    )
+    }
 
 
 class SQLiteExecutionContext(default.DefaultExecutionContext):
@@ -2272,17 +2270,15 @@ class SQLiteDialect(default.DefaultDialect):
         # the names as well.   SQLite saves the DDL in whatever format
         # it was typed in as, so need to be liberal here.
 
-        keys_by_signature = dict(
-            (
+        keys_by_signature = {
                 fk_sig(
                     fk["constrained_columns"],
                     fk["referred_table"],
                     fk["referred_columns"],
-                ),
-                fk,
-            )
+                ):
+                fk
             for fk in fks.values()
-        )
+        }
 
         table_data = self._get_table_sql(connection, table_name, schema=schema)
         if table_data is None:
@@ -2517,7 +2513,7 @@ class SQLiteDialect(default.DefaultDialect):
 
         qtable = quote(table_name)
         for statement in statements:
-            statement = "%s%s(%s)" % (statement, pragma, qtable)
+            statement = f"{statement}{pragma}({qtable})"
             cursor = connection.exec_driver_sql(statement)
             if not cursor._soft_closed:
                 # work around SQLite issue whereby cursor.description

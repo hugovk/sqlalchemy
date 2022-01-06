@@ -55,7 +55,7 @@ class DeferredTest(AssertsCompiledSQL, _fixtures.FixtureTest):
         )
 
         o = Order()
-        self.assert_(o.description is None)
+        self.assertTrue(o.description is None)
 
         q = fixture_session().query(Order).order_by(Order.id)
 
@@ -1353,7 +1353,7 @@ class InheritanceTest(_Polymorphic):
 
     @classmethod
     def setup_mappers(cls):
-        super(InheritanceTest, cls).setup_mappers()
+        super().setup_mappers()
         from sqlalchemy import inspect
 
         inspect(Company).add_property(

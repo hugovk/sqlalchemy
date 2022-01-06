@@ -265,10 +265,10 @@ class HasPrefixes:
 
     def _setup_prefixes(self, prefixes, dialect=None):
         self._prefixes = self._prefixes + tuple(
-            [
+            
                 (coercions.expect(roles.StatementOptionRole, p), dialect)
                 for p in prefixes
-            ]
+            
         )
 
 
@@ -320,10 +320,10 @@ class HasSuffixes:
 
     def _setup_suffixes(self, suffixes, dialect=None):
         self._suffixes = self._suffixes + tuple(
-            [
+            
                 (coercions.expect(roles.StatementOptionRole, p), dialect)
                 for p in suffixes
-            ]
+            
         )
 
 
@@ -1138,12 +1138,12 @@ class Join(roles.DMLTableRole, FromClause):
         # run normal _copy_internals.  the clones for
         # left and right will come from the clone function's
         # cache
-        super(Join, self)._copy_internals(clone=clone, **kw)
+        super()._copy_internals(clone=clone, **kw)
 
         self._reset_memoizations()
 
     def _refresh_for_new_column(self, column):
-        super(Join, self)._refresh_for_new_column(column)
+        super()._refresh_for_new_column(column)
         self.left._refresh_for_new_column(column)
         self.right._refresh_for_new_column(column)
 
@@ -1292,7 +1292,7 @@ class Join(roles.DMLTableRole, FromClause):
         # "consider_as_foreign_keys".
         if consider_as_foreign_keys:
             for const in list(constraints):
-                if set(f.parent for f in const.elements) != set(
+                if {f.parent for f in const.elements} != set(
                     consider_as_foreign_keys
                 ):
                     del constraints[const]
@@ -1300,7 +1300,7 @@ class Join(roles.DMLTableRole, FromClause):
         # if still multiple constraints, but
         # they all refer to the exact same end result, use it.
         if len(constraints) > 1:
-            dedupe = set(tuple(crit) for crit in constraints.values())
+            dedupe = {tuple(crit) for crit in constraints.values()}
             if len(dedupe) == 1:
                 key = list(constraints)[0]
                 constraints = {key: constraints[key]}
@@ -1541,7 +1541,7 @@ class AliasedReturnsRows(NoInit, FromClause):
         self.name = name
 
     def _refresh_for_new_column(self, column):
-        super(AliasedReturnsRows, self)._refresh_for_new_column(column)
+        super()._refresh_for_new_column(column)
         self.element._refresh_for_new_column(column)
 
     @property
@@ -1568,7 +1568,7 @@ class AliasedReturnsRows(NoInit, FromClause):
     def _copy_internals(self, clone=_clone, **kw):
         existing_element = self.element
 
-        super(AliasedReturnsRows, self)._copy_internals(clone=clone, **kw)
+        super()._copy_internals(clone=clone, **kw)
 
         # the element clone is usually against a Table that returns the
         # same object.  don't reset exported .c. collections and other
@@ -1693,7 +1693,7 @@ class TableValuedAlias(Alias):
     ]
 
     def _init(self, selectable, name=None, table_value_type=None):
-        super(TableValuedAlias, self)._init(selectable, name=name)
+        super()._init(selectable, name=name)
 
         self._tableval_type = (
             type_api.TABLEVALUE
@@ -1930,7 +1930,7 @@ class TableSample(AliasedReturnsRows):
 
         self.sampling = sampling
         self.seed = seed
-        super(TableSample, self)._init(selectable, name=name)
+        super()._init(selectable, name=name)
 
     def _get_method(self):
         return self.sampling
@@ -2008,7 +2008,7 @@ class CTE(
             self._prefixes = _prefixes
         if _suffixes:
             self._suffixes = _suffixes
-        super(CTE, self)._init(selectable, name=name)
+        super()._init(selectable, name=name)
 
     def _populate_column_collection(self):
         if self._cte_alias is not None:
@@ -2619,7 +2619,7 @@ class TableClause(roles.DMLTableRole, Immutable, FromClause):
                accept a ``schema`` argument.
         """
 
-        super(TableClause, self).__init__()
+        super().__init__()
         self.name = name
         self._columns = DedupeColumnCollection()
         self.primary_key = ColumnSet()
@@ -2631,7 +2631,7 @@ class TableClause(roles.DMLTableRole, Immutable, FromClause):
         if schema is not None:
             self.schema = schema
         if self.schema is not None:
-            self.fullname = "%s.%s" % (self.schema, self.name)
+            self.fullname = f"{self.schema}.{self.name}"
         else:
             self.fullname = self.name
         if kw:
@@ -2842,7 +2842,7 @@ class Values(Generative, FromClause):
 
         """
 
-        super(Values, self).__init__()
+        super().__init__()
         self._column_args = columns
         self.name = kw.pop("name", None)
         self.literal_binds = kw.pop("literal_binds", False)
@@ -3847,7 +3847,7 @@ class CompoundSelectState(CompileState):
         # TODO: this is hacky and slow
         hacky_subquery = self.statement.subquery()
         hacky_subquery.named_with_column = False
-        d = dict((c.key, c) for c in hacky_subquery.c)
+        d = {c.key: c for c in hacky_subquery.c}
         return d, d, d
 
 
@@ -4086,7 +4086,7 @@ class CompoundSelect(HasCompileState, GenerativeSelect):
             ]
 
     def _refresh_for_new_column(self, column):
-        super(CompoundSelect, self)._refresh_for_new_column(column)
+        super()._refresh_for_new_column(column)
         for select in self.selects:
             select._refresh_for_new_column(column)
 
@@ -4462,16 +4462,16 @@ class SelectState(util.MemoizedSlots, CompileState):
         return froms
 
     def _memoized_attr__label_resolve_dict(self):
-        with_cols = dict(
-            (c._tq_label or c.key, c)
+        with_cols = {
+            c._tq_label or c.key: c
             for c in self.statement._all_selected_columns
             if c._allow_label_resolve
-        )
-        only_froms = dict(
-            (c.key, c)
+        }
+        only_froms = {
+            c.key: c
             for c in _select_iterables(self.froms)
             if c._allow_label_resolve
-        )
+        }
         only_cols = with_cols.copy()
         for key, value in only_froms.items():
             with_cols.setdefault(key, value)
@@ -5223,7 +5223,7 @@ class Select(
         # 2. copy FROM collections, adding in joins that we've created.
         existing_from_obj = [clone(f, **kw) for f in self._from_obj]
         add_froms = (
-            set(f for f in new_froms.values() if isinstance(f, Join))
+            {f for f in new_froms.values() if isinstance(f, Join)}
             .difference(all_the_froms)
             .difference(existing_from_obj)
         )
@@ -5243,7 +5243,7 @@ class Select(
         # correlate_except, setup_joins, these clone normally.  For
         # column-expression oriented things like raw_columns, where_criteria,
         # order by, we get this from the new froms.
-        super(Select, self)._copy_internals(
+        super()._copy_internals(
             clone=clone, omit_attrs=("_from_obj",), **kw
         )
 
@@ -5251,7 +5251,7 @@ class Select(
 
     def get_children(self, **kwargs):
         return itertools.chain(
-            super(Select, self).get_children(
+            super().get_children(
                 omit_attrs=["_from_obj", "_correlate", "_correlate_except"]
             ),
             self._iterate_from_elements(),
@@ -5406,7 +5406,7 @@ class Select(
 
         maintain_column_froms = kw.pop("maintain_column_froms", False)
         if kw:
-            raise TypeError("unknown parameters: %s" % (", ".join(kw),))
+            raise TypeError("unknown parameters: {}".format(", ".join(kw)))
 
         if maintain_column_froms:
             self.select_from.non_generative(self, *self.columns_clause_froms)

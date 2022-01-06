@@ -225,8 +225,7 @@ def flatten_typechecking(stmts: Iterable[Statement]) -> Iterator[Statement]:
             and isinstance(stmt.expr[0], NameExpr)
             and stmt.expr[0].fullname == "typing.TYPE_CHECKING"
         ):
-            for substmt in stmt.body[0].body:
-                yield substmt
+            yield from stmt.body[0].body
         else:
             yield stmt
 

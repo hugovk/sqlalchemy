@@ -142,7 +142,7 @@ class CompositeProperty(DescriptorProperty):
             :attr:`.MapperProperty.info` attribute of this object.
 
         """
-        super(CompositeProperty, self).__init__()
+        super().__init__()
 
         self.attrs = attrs
         self.composite_class = class_
@@ -159,7 +159,7 @@ class CompositeProperty(DescriptorProperty):
         self._create_descriptor()
 
     def instrument_class(self, mapper):
-        super(CompositeProperty, self).instrument_class(mapper)
+        super().instrument_class(mapper)
         self._setup_event_handlers()
 
     def do_init(self):
@@ -513,7 +513,7 @@ class ConcreteInheritedProperty(DescriptorProperty):
         return comparator_callable
 
     def __init__(self):
-        super(ConcreteInheritedProperty, self).__init__()
+        super().__init__()
 
         def warn():
             raise AttributeError(
@@ -651,7 +651,7 @@ class SynonymProperty(DescriptorProperty):
             than can be achieved with synonyms.
 
         """
-        super(SynonymProperty, self).__init__()
+        super().__init__()
 
         self.name = name
         self.map_column = map_column

@@ -103,7 +103,7 @@ class OrderedSet(set):
         return self.union(other)
 
     def __repr__(self):
-        return "%s(%r)" % (self.__class__.__name__, self._list)
+        return f"{self.__class__.__name__}({self._list!r})"
 
     __str__ = __repr__
 
@@ -385,7 +385,7 @@ class IdentitySet:
         raise TypeError("set objects are unhashable")
 
     def __repr__(self):
-        return "%s(%r)" % (type(self).__name__, list(self._members.values()))
+        return f"{type(self).__name__}({list(self._members.values())!r})"
 
 
 def unique_list(seq, hashfunc=None):

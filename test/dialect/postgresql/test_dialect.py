@@ -1,4 +1,3 @@
-# coding: utf-8
 import datetime
 import itertools
 import logging
@@ -138,7 +137,7 @@ $$ LANGUAGE plpgsql;"""
         event.listen(
             metadata,
             "before_drop",
-            DDL("DROP FUNCTION %s.version" % (default_schema_name,)),
+            DDL(f"DROP FUNCTION {default_schema_name}.version"),
         )
 
         metadata.create_all(future_connection)
@@ -151,7 +150,7 @@ $$ LANGUAGE plpgsql;"""
             conn = dialect.dbapi.connect(*cargs, **cparams)
             cursor = conn.cursor()
             cursor.execute(
-                "set search_path = %s,pg_catalog" % (default_schema_name,)
+                f"set search_path = {default_schema_name},pg_catalog"
             )
             cursor.close()
             return conn

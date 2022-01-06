@@ -325,7 +325,7 @@ class Inspector:
         fknames_for_table = {}
         for tname in tnames:
             fkeys = self.get_foreign_keys(tname, schema)
-            fknames_for_table[tname] = set([fk["name"] for fk in fkeys])
+            fknames_for_table[tname] = {fk["name"] for fk in fkeys}
             for fkey in fkeys:
                 if tname != fkey["referred_table"]:
                     tuples.add((fkey["referred_table"], tname))
@@ -741,11 +741,11 @@ class Inspector:
         # intended for reflection, e.g. oracle_resolve_synonyms.
         # these are unconditionally passed to related Table
         # objects
-        reflection_options = dict(
-            (k, table.dialect_kwargs.get(k))
+        reflection_options = {
+            k: table.dialect_kwargs.get(k)
             for k in dialect.reflection_options
             if k in table.dialect_kwargs
-        )
+        }
 
         # reflect table options, like mysql_engine
         tbl_opts = self.get_table_options(
@@ -844,8 +844,8 @@ class Inspector:
 
         coltype = col_d["type"]
 
-        col_kw = dict(
-            (k, col_d[k])
+        col_kw = {
+            k: col_d[k]
             for k in [
                 "nullable",
                 "autoincrement",
@@ -855,7 +855,7 @@ class Inspector:
                 "comment",
             ]
             if k in col_d
-        )
+        }
 
         if "dialect_options" in col_d:
             col_kw.update(col_d["dialect_options"])

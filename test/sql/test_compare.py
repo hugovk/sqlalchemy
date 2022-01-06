@@ -1360,7 +1360,7 @@ class CompareAndCopyTest(CoreFixtures, fixtures.TestBase):
         also included in the fixtures above.
 
         """
-        need = set(
+        need = {
             cls
             for cls in class_hierarchy(ClauseElement)
             if issubclass(cls, (ColumnElement, Selectable, LambdaElement))
@@ -1374,7 +1374,7 @@ class CompareAndCopyTest(CoreFixtures, fixtures.TestBase):
             and "compiler" not in cls.__module__
             and "crud" not in cls.__module__
             and "dialects" not in cls.__module__  # TODO: dialects?
-        ).difference({ColumnElement, UnaryExpression})
+        }.difference({ColumnElement, UnaryExpression})
 
         for fixture in self.fixtures + self.dont_compare_values_fixtures:
             case_a = fixture()
@@ -1403,7 +1403,7 @@ class CompareAndCopyTest(CoreFixtures, fixtures.TestBase):
                                 compare_annotations=True,
                                 compare_values=compare_values,
                             ),
-                            "%r != %r" % (case_a[a], case_b[b]),
+                            f"{case_a[a]!r} != {case_b[b]!r}",
                         )
 
                     else:
@@ -1413,7 +1413,7 @@ class CompareAndCopyTest(CoreFixtures, fixtures.TestBase):
                                 compare_annotations=True,
                                 compare_values=compare_values,
                             ),
-                            "%r == %r" % (case_a[a], case_b[b]),
+                            f"{case_a[a]!r} == {case_b[b]!r}",
                         )
 
     def test_compare_col_identity(self):

@@ -607,12 +607,12 @@ class NUMBER(sqltypes.Numeric, sqltypes.Integer):
         if asdecimal is None:
             asdecimal = bool(scale and scale > 0)
 
-        super(NUMBER, self).__init__(
+        super().__init__(
             precision=precision, scale=scale, asdecimal=asdecimal
         )
 
     def adapt(self, impltype):
-        ret = super(NUMBER, self).adapt(impltype)
+        ret = super().adapt(impltype)
         # leave a hint for the DBAPI handler
         ret._is_oracle_number = True
         return ret
@@ -767,7 +767,7 @@ class OracleTypeCompiler(compiler.GenericTypeCompiler):
             return self.visit_VARCHAR2(type_, **kw)
 
     def visit_INTERVAL(self, type_, **kw):
-        return "INTERVAL DAY%s TO SECOND%s" % (
+        return "INTERVAL DAY{} TO SECOND{}".format(
             type_.day_precision is not None
             and "(%d)" % type_.day_precision
             or "",
@@ -837,7 +837,7 @@ class OracleTypeCompiler(compiler.GenericTypeCompiler):
 
     def _visit_varchar(self, type_, n, num):
         if not type_.length:
-            return "%(n)sVARCHAR%(two)s" % {"two": num, "n": n}
+            return f"{n}VARCHAR{num}"
         elif not n and self.dialect._supports_char_length:
             varchar = "VARCHAR%(two)s(%(length)s CHAR)"
             return varchar % {"length": type_.length, "two": num}
@@ -865,7 +865,7 @@ class OracleTypeCompiler(compiler.GenericTypeCompiler):
 
     def visit_RAW(self, type_, **kw):
         if type_.length:
-            return "RAW(%(length)s)" % {"length": type_.length}
+            return f"RAW({type_.length})"
         else:
             return "RAW"
 
@@ -886,10 +886,10 @@ class OracleCompiler(compiler.SQLCompiler):
 
     def __init__(self, *args, **kwargs):
         self.__wheres = {}
-        super(OracleCompiler, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def visit_mod_binary(self, binary, operator, **kw):
-        return "mod(%s, %s)" % (
+        return "mod({}, {})".format(
             self.process(binary.left, **kw),
             self.process(binary.right, **kw),
         )
@@ -901,7 +901,7 @@ class OracleCompiler(compiler.SQLCompiler):
         return "LENGTH" + self.function_argspec(fn, **kw)
 
     def visit_match_op_binary(self, binary, operator, **kw):
-        return "CONTAINS (%s, %s)" % (
+        return "CONTAINS ({}, {})".format(
             self.process(binary.left),
             self.process(binary.right),
         )
@@ -925,13 +925,13 @@ class OracleCompiler(compiler.SQLCompiler):
             return ""
 
     def visit_function(self, func, **kw):
-        text = super(OracleCompiler, self).visit_function(func, **kw)
+        text = super().visit_function(func, **kw)
         if kw.get("asfrom", False):
             text = "TABLE (%s)" % func
         return text
 
     def visit_table_valued_column(self, element, **kw):
-        text = super(OracleCompiler, self).visit_table_valued_column(
+        text = super().visit_table_valued_column(
             element, **kw
         )
         text = "COLUMN_VALUE " + text
@@ -1245,13 +1245,13 @@ class OracleCompiler(compiler.SQLCompiler):
         return tmp
 
     def visit_is_distinct_from_binary(self, binary, operator, **kw):
-        return "DECODE(%s, %s, 0, 1) = 1" % (
+        return "DECODE({}, {}, 0, 1) = 1".format(
             self.process(binary.left),
             self.process(binary.right),
         )
 
     def visit_is_not_distinct_from_binary(self, binary, operator, **kw):
-        return "DECODE(%s, %s, 0, 1) = 0" % (
+        return "DECODE({}, {}, 0, 1) = 0".format(
             self.process(binary.left),
             self.process(binary.right),
         )
@@ -1267,9 +1267,9 @@ class OracleCompiler(compiler.SQLCompiler):
     def visit_regexp_match_op_binary(self, binary, operator, **kw):
         string, pattern, flags = self._get_regexp_args(binary, kw)
         if flags is None:
-            return "REGEXP_LIKE(%s, %s)" % (string, pattern)
+            return f"REGEXP_LIKE({string}, {pattern})"
         else:
-            return "REGEXP_LIKE(%s, %s, %s)" % (string, pattern, flags)
+            return f"REGEXP_LIKE({string}, {pattern}, {flags})"
 
     def visit_not_regexp_match_op_binary(self, binary, operator, **kw):
         return "NOT %s" % self.visit_regexp_match_op_binary(
@@ -1280,13 +1280,13 @@ class OracleCompiler(compiler.SQLCompiler):
         string, pattern, flags = self._get_regexp_args(binary, kw)
         replacement = self.process(binary.modifiers["replacement"], **kw)
         if flags is None:
-            return "REGEXP_REPLACE(%s, %s, %s)" % (
+            return "REGEXP_REPLACE({}, {}, {})".format(
                 string,
                 pattern,
                 replacement,
             )
         else:
-            return "REGEXP_REPLACE(%s, %s, %s, %s)" % (
+            return "REGEXP_REPLACE({}, {}, {}, {})".format(
                 string,
                 pattern,
                 replacement,
@@ -1327,7 +1327,7 @@ class OracleDDLCompiler(compiler.DDLCompiler):
             text += "UNIQUE "
         if index.dialect_options["oracle"]["bitmap"]:
             text += "BITMAP "
-        text += "INDEX %s ON %s (%s)" % (
+        text += "INDEX {} ON {} ({})".format(
             self._prepared_index_name(index, include_schema=True),
             preparer.format_table(index.table, use_schema=True),
             ", ".join(
@@ -1363,7 +1363,7 @@ class OracleDDLCompiler(compiler.DDLCompiler):
         return "".join(table_opts)
 
     def get_identity_options(self, identity_options):
-        text = super(OracleDDLCompiler, self).get_identity_options(
+        text = super().get_identity_options(
             identity_options
         )
         text = text.replace("NO MINVALUE", "NOMINVALUE")
@@ -1418,7 +1418,7 @@ class OracleIdentifierPreparer(compiler.IdentifierPreparer):
 
     def format_savepoint(self, savepoint):
         name = savepoint.ident.lstrip("_")
-        return super(OracleIdentifierPreparer, self).format_savepoint(
+        return super().format_savepoint(
             savepoint, name
         )
 
@@ -1506,7 +1506,7 @@ class OracleDialect(default.DefaultDialect):
         self.exclude_tablespaces = exclude_tablespaces
 
     def initialize(self, connection):
-        super(OracleDialect, self).initialize(connection)
+        super().initialize(connection)
 
         # Oracle 8i has RETURNING:
         # https://docs.oracle.com/cd/A87860_01/doc/index.htm
@@ -1900,13 +1900,13 @@ class OracleDialect(default.DefaultDialect):
                 col.default_on_null,
                 (
                     SELECT id.generation_type || ',' || id.IDENTITY_OPTIONS
-                    FROM ALL_TAB_IDENTITY_COLS%(dblink)s id
+                    FROM ALL_TAB_IDENTITY_COLS{dblink} id
                     WHERE col.table_name = id.table_name
                     AND col.column_name = id.column_name
                     AND col.owner = id.owner
-                ) AS identity_options""" % {
-                "dblink": dblink
-            }
+                ) AS identity_options""".format(
+                dblink=dblink
+            )
         else:
             identity_cols = "NULL as default_on_null, NULL as identity_options"
 
@@ -2260,7 +2260,7 @@ class OracleDialect(default.DefaultDialect):
                 remote_table,
                 remote_column,
                 remote_owner,
-            ) = row[0:2] + tuple([self.normalize_name(x) for x in row[2:6]])
+            ) = row[0:2] + tuple(self.normalize_name(x) for x in row[2:6])
             if cons_type == "P":
                 if constraint_name is None:
                     constraint_name = self.normalize_name(cons_name)
@@ -2320,7 +2320,7 @@ class OracleDialect(default.DefaultDialect):
                 remote_table,
                 remote_column,
                 remote_owner,
-            ) = row[0:2] + tuple([self.normalize_name(x) for x in row[2:6]])
+            ) = row[0:2] + tuple(self.normalize_name(x) for x in row[2:6])
 
             cons_name = self.normalize_name(cons_name)
 

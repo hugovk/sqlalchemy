@@ -950,13 +950,13 @@ class BufferedRowCursorFetchStrategy(CursorFetchStrategy):
 
     def soft_close(self, result, dbapi_cursor):
         self._rowbuffer.clear()
-        super(BufferedRowCursorFetchStrategy, self).soft_close(
+        super().soft_close(
             result, dbapi_cursor
         )
 
     def hard_close(self, result, dbapi_cursor):
         self._rowbuffer.clear()
-        super(BufferedRowCursorFetchStrategy, self).hard_close(
+        super().hard_close(
             result, dbapi_cursor
         )
 
@@ -1027,13 +1027,13 @@ class FullyBufferedCursorFetchStrategy(CursorFetchStrategy):
 
     def soft_close(self, result, dbapi_cursor):
         self._rowbuffer.clear()
-        super(FullyBufferedCursorFetchStrategy, self).soft_close(
+        super().soft_close(
             result, dbapi_cursor
         )
 
     def hard_close(self, result, dbapi_cursor):
         self._rowbuffer.clear()
-        super(FullyBufferedCursorFetchStrategy, self).hard_close(
+        super().hard_close(
             result, dbapi_cursor
         )
 
@@ -1668,7 +1668,7 @@ class CursorResult(BaseCursorResult, Result):
         return self._fetchiter_impl()
 
     def merge(self, *others):
-        merged_result = super(CursorResult, self).merge(*others)
+        merged_result = super().merge(*others)
         setup_rowcounts = not self._metadata.returns_rows
         if setup_rowcounts:
             merged_result.rowcount = sum(

@@ -51,7 +51,7 @@ def pytest_addoption(parser):
                     required=False,
                     help=None,  # noqa
                 ):
-                    super(CallableAction, self).__init__(
+                    super().__init__(
                         option_strings=option_strings,
                         dest=dest,
                         nargs=0,
@@ -200,7 +200,7 @@ def pytest_collection_modifyitems(session, config, items):
         and not item.getparent(pytest.Class).name.startswith("_")
     ]
 
-    test_classes = set(item.getparent(pytest.Class) for item in items)
+    test_classes = {item.getparent(pytest.Class) for item in items}
 
     def collect(element):
         for inst_or_fn in element.collect():
@@ -340,7 +340,7 @@ def _parametrize_cls(module, cls):
             for param in full_param_set
             for token in param.id.split("-")
         )
-        name = "%s_%s" % (cls.__name__, parametrized_name)
+        name = f"{cls.__name__}_{parametrized_name}"
         newcls = type.__new__(type, name, (cls,), cls_variables)
         setattr(module, name, newcls)
         classes.append(newcls)

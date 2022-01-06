@@ -38,7 +38,7 @@ class TreeNode(Base):
         self.parent = parent
 
     def __repr__(self):
-        return "TreeNode(name=%r, id=%r, parent_id=%r)" % (
+        return "TreeNode(name={!r}, id={!r}, parent_id={!r})".format(
             self.name,
             self.id,
             self.parent_id,

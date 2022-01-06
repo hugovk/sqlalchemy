@@ -35,7 +35,7 @@ def _auto_fn(name):
             ).dialects.mysql.mariadb
             return module.loader(driver)
         else:
-            module = __import__("sqlalchemy.dialects.%s" % (dialect,)).dialects
+            module = __import__(f"sqlalchemy.dialects.{dialect}").dialects
             module = getattr(module, dialect)
     except ImportError:
         return None

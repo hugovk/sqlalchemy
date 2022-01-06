@@ -361,7 +361,7 @@ class adict(dict):
             return dict.__getattribute__(self, key)
 
     def __call__(self, *keys):
-        return tuple([self[key] for key in keys])
+        return tuple(self[key] for key in keys)
 
     get_all = __call__
 

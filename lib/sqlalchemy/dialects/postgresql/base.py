@@ -1413,8 +1413,7 @@ from ...types import VARCHAR
 
 IDX_USING = re.compile(r"^(?:btree|hash|gist|gin|[\w_]+)$", re.I)
 
-RESERVED_WORDS = set(
-    [
+RESERVED_WORDS = {
         "all",
         "analyse",
         "analyze",
@@ -1517,8 +1516,7 @@ RESERVED_WORDS = set(
         "right",
         "similar",
         "verbose",
-    ]
-)
+}
 
 _DECIMAL_TYPES = (1231, 1700)
 _FLOAT_TYPES = (700, 701, 1021, 1022)
@@ -1623,13 +1621,13 @@ class REGCLASS(sqltypes.TypeEngine):
 
 class TIMESTAMP(sqltypes.TIMESTAMP):
     def __init__(self, timezone=False, precision=None):
-        super(TIMESTAMP, self).__init__(timezone=timezone)
+        super().__init__(timezone=timezone)
         self.precision = precision
 
 
 class TIME(sqltypes.TIME):
     def __init__(self, timezone=False, precision=None):
-        super(TIME, self).__init__(timezone=timezone)
+        super().__init__(timezone=timezone)
         self.precision = precision
 
 
@@ -1725,7 +1723,7 @@ class UUID(sqltypes.TypeEngine):
         if isinstance(value, str):
             return self
         else:
-            return super(UUID, self).coerce_compared_value(op, value)
+            return super().coerce_compared_value(op, value)
 
     def bind_processor(self, dialect):
         if self.as_uuid:
@@ -1891,7 +1889,7 @@ class ENUM(sqltypes.NativeForEmulated, sqltypes.Enum):
                 "non-native enum."
             )
         self.create_type = kw.pop("create_type", True)
-        super(ENUM, self).__init__(*enums, **kw)
+        super().__init__(*enums, **kw)
 
     @classmethod
     def adapt_emulated_to_native(cls, impl, **kw):
@@ -2114,7 +2112,7 @@ class PGCompiler(compiler.SQLCompiler):
         return "ARRAY[%s]" % self.visit_clauselist(element, **kw)
 
     def visit_slice(self, element, **kw):
-        return "%s:%s" % (
+        return "{}:{}".format(
             self.process(element.start, **kw),
             self.process(element.stop, **kw),
         )
@@ -2151,13 +2149,13 @@ class PGCompiler(compiler.SQLCompiler):
         )
 
     def visit_getitem_binary(self, binary, operator, **kw):
-        return "%s[%s]" % (
+        return "{}[{}]".format(
             self.process(binary.left, **kw),
             self.process(binary.right, **kw),
         )
 
     def visit_aggregate_order_by(self, element, **kw):
-        return "%s ORDER BY %s" % (
+        return "{} ORDER BY {}".format(
             self.process(element.target, **kw),
             self.process(element.order_by, **kw),
         )
@@ -2168,12 +2166,12 @@ class PGCompiler(compiler.SQLCompiler):
                 binary.modifiers["postgresql_regconfig"], sqltypes.STRINGTYPE
             )
             if regconfig:
-                return "%s @@ to_tsquery(%s, %s)" % (
+                return "{} @@ to_tsquery({}, {})".format(
                     self.process(binary.left, **kw),
                     regconfig,
                     self.process(binary.right, **kw),
                 )
-        return "%s @@ to_tsquery(%s)" % (
+        return "{} @@ to_tsquery({})".format(
             self.process(binary.left, **kw),
             self.process(binary.right, **kw),
         )
@@ -2181,7 +2179,7 @@ class PGCompiler(compiler.SQLCompiler):
     def visit_ilike_op_binary(self, binary, operator, **kw):
         escape = binary.modifiers.get("escape", None)
 
-        return "%s ILIKE %s" % (
+        return "{} ILIKE {}".format(
             self.process(binary.left, **kw),
             self.process(binary.right, **kw),
         ) + (
@@ -2192,7 +2190,7 @@ class PGCompiler(compiler.SQLCompiler):
 
     def visit_not_ilike_op_binary(self, binary, operator, **kw):
         escape = binary.modifiers.get("escape", None)
-        return "%s NOT ILIKE %s" % (
+        return "{} NOT ILIKE {}".format(
             self.process(binary.left, **kw),
             self.process(binary.right, **kw),
         ) + (
@@ -2214,7 +2212,7 @@ class PGCompiler(compiler.SQLCompiler):
         flags = self.process(flags, **kw)
         string = self.process(binary.left, **kw)
         pattern = self.process(binary.right, **kw)
-        return "%s %s CONCAT('(?', %s, ')', %s)" % (
+        return "{} {} CONCAT('(?', {}, ')', {})".format(
             string,
             base_op,
             flags,
@@ -2235,13 +2233,13 @@ class PGCompiler(compiler.SQLCompiler):
             flags = self.process(flags, **kw)
         replacement = self.process(binary.modifiers["replacement"], **kw)
         if flags is None:
-            return "REGEXP_REPLACE(%s, %s, %s)" % (
+            return "REGEXP_REPLACE({}, {}, {})".format(
                 string,
                 pattern,
                 replacement,
             )
         else:
-            return "REGEXP_REPLACE(%s, %s, %s, %s)" % (
+            return "REGEXP_REPLACE({}, {}, {}, {})".format(
                 string,
                 pattern,
                 replacement,
@@ -2252,7 +2250,7 @@ class PGCompiler(compiler.SQLCompiler):
         # cast the empty set to the type we are comparing against.  if
         # we are comparing against the null type, pick an arbitrary
         # datatype for the empty set
-        return "SELECT %s WHERE 1!=1" % (
+        return "SELECT {} WHERE 1!=1".format(
             ", ".join(
                 "CAST(NULL AS %s)"
                 % self.dialect.type_compiler.process(
@@ -2263,7 +2261,7 @@ class PGCompiler(compiler.SQLCompiler):
         )
 
     def render_literal_value(self, value, type_):
-        value = super(PGCompiler, self).render_literal_value(value, type_)
+        value = super().render_literal_value(value, type_)
 
         if self.dialect._backslash_escapes:
             value = value.replace("\\", "\\\\")
@@ -2351,9 +2349,9 @@ class PGCompiler(compiler.SQLCompiler):
         start = self.process(func.clauses.clauses[1], **kw)
         if len(func.clauses.clauses) > 2:
             length = self.process(func.clauses.clauses[2], **kw)
-            return "SUBSTRING(%s FROM %s FOR %s)" % (s, start, length)
+            return f"SUBSTRING({s} FROM {start} FOR {length})"
         else:
-            return "SUBSTRING(%s FROM %s)" % (s, start)
+            return f"SUBSTRING({s} FROM {start})"
 
     def _on_conflict_target(self, clause, **kw):
 
@@ -2434,7 +2432,7 @@ class PGCompiler(compiler.SQLCompiler):
             value_text = self.process(value.self_group(), use_schema=False)
 
             key_text = self.preparer.quote(col_key)
-            action_set_ops.append("%s = %s" % (key_text, value_text))
+            action_set_ops.append(f"{key_text} = {value_text}")
 
         # check for names that don't match columns
         if set_parameters:
@@ -2456,7 +2454,7 @@ class PGCompiler(compiler.SQLCompiler):
                     coercions.expect(roles.ExpressionElementRole, v),
                     use_schema=False,
                 )
-                action_set_ops.append("%s = %s" % (key_text, value_text))
+                action_set_ops.append(f"{key_text} = {value_text}")
 
         action_text = ", ".join(action_set_ops)
         if clause.update_whereclause is not None:
@@ -2464,7 +2462,7 @@ class PGCompiler(compiler.SQLCompiler):
                 clause.update_whereclause, include_table=True, use_schema=False
             )
 
-        return "ON CONFLICT %s DO UPDATE SET %s" % (target_text, action_text)
+        return f"ON CONFLICT {target_text} DO UPDATE SET {action_text}"
 
     def update_from_clause(
         self, update_stmt, from_table, extra_froms, from_hints, **kw
@@ -2495,7 +2493,7 @@ class PGCompiler(compiler.SQLCompiler):
                 select._offset_clause, **kw
             )
         if select._fetch_clause is not None:
-            text += "\n FETCH FIRST (%s)%s ROWS %s" % (
+            text += "\n FETCH FIRST ({}){} ROWS {}".format(
                 self.process(select._fetch_clause, **kw),
                 " PERCENT" if select._fetch_clause_options["percent"] else "",
                 "WITH TIES"
@@ -2575,7 +2573,7 @@ class PGDDLCompiler(compiler.DDLCompiler):
                     "create_constraint=False on this Enum datatype."
                 )
 
-        return super(PGDDLCompiler, self).visit_check_constraint(constraint)
+        return super().visit_check_constraint(constraint)
 
     def visit_drop_table_comment(self, drop):
         return "COMMENT ON TABLE %s IS NULL" % self.preparer.format_table(
@@ -2585,7 +2583,7 @@ class PGDDLCompiler(compiler.DDLCompiler):
     def visit_create_enum_type(self, create):
         type_ = create.element
 
-        return "CREATE TYPE %s AS ENUM (%s)" % (
+        return "CREATE TYPE {} AS ENUM ({})".format(
             self.preparer.format_type(type_),
             ", ".join(
                 self.sql_compiler.process(sql.literal(e), literal_binds=True)
@@ -2615,7 +2613,7 @@ class PGDDLCompiler(compiler.DDLCompiler):
         if create.if_not_exists:
             text += "IF NOT EXISTS "
 
-        text += "%s ON %s " % (
+        text += "{} ON {} ".format(
             self._prepared_index_name(index, include_schema=False),
             preparer.format_table(index.table),
         )
@@ -2717,8 +2715,8 @@ class PGDDLCompiler(compiler.DDLCompiler):
                 else ""
             )
 
-            elements.append("%s WITH %s" % (exclude_element, op))
-        text += "EXCLUDE USING %s (%s)" % (
+            elements.append(f"{exclude_element} WITH {op}")
+        text += "EXCLUDE USING {} ({})".format(
             self.preparer.validate_sql_phrase(
                 constraint.using, IDX_USING
             ).lower(),
@@ -2784,7 +2782,7 @@ class PGDDLCompiler(compiler.DDLCompiler):
                 create.element.data_type
             )
 
-        return super(PGDDLCompiler, self).visit_create_sequence(
+        return super().visit_create_sequence(
             create, prefix=prefix, **kw
         )
 
@@ -2815,7 +2813,7 @@ class PGTypeCompiler(compiler.GenericTypeCompiler):
         if not type_.precision:
             return "FLOAT"
         else:
-            return "FLOAT(%(precision)s)" % {"precision": type_.precision}
+            return f"FLOAT({type_.precision})"
 
     def visit_DOUBLE_PRECISION(self, type_, **kw):
         return "DOUBLE PRECISION"
@@ -2861,7 +2859,7 @@ class PGTypeCompiler(compiler.GenericTypeCompiler):
 
     def visit_enum(self, type_, **kw):
         if not type_.native_enum or not self.dialect.supports_native_enum:
-            return super(PGTypeCompiler, self).visit_enum(type_, **kw)
+            return super().visit_enum(type_, **kw)
         else:
             return self.visit_ENUM(type_, **kw)
 
@@ -2871,7 +2869,7 @@ class PGTypeCompiler(compiler.GenericTypeCompiler):
         return identifier_preparer.format_type(type_)
 
     def visit_TIMESTAMP(self, type_, **kw):
-        return "TIMESTAMP%s %s" % (
+        return "TIMESTAMP{} {}".format(
             "(%d)" % type_.precision
             if getattr(type_, "precision", None) is not None
             else "",
@@ -2879,7 +2877,7 @@ class PGTypeCompiler(compiler.GenericTypeCompiler):
         )
 
     def visit_TIME(self, type_, **kw):
-        return "TIME%s %s" % (
+        return "TIME{} {}".format(
             "(%d)" % type_.precision
             if getattr(type_, "precision", None) is not None
             else "",
@@ -3063,7 +3061,7 @@ class PGExecutionContext(default.DefaultExecutionContext):
                     col = column.name
                     tab = tab[0 : 29 + max(0, (29 - len(col)))]
                     col = col[0 : 29 + max(0, (29 - len(tab)))]
-                    name = "%s_%s_seq" % (tab, col)
+                    name = f"{tab}_{col}_seq"
                     column._postgresql_seq_name = seq_name = name
 
                 if column.table is not None:
@@ -3074,16 +3072,16 @@ class PGExecutionContext(default.DefaultExecutionContext):
                     effective_schema = None
 
                 if effective_schema is not None:
-                    exc = 'select nextval(\'"%s"."%s"\')' % (
+                    exc = 'select nextval(\'"{}"."{}"\')'.format(
                         effective_schema,
                         seq_name,
                     )
                 else:
-                    exc = "select nextval('\"%s\"')" % (seq_name,)
+                    exc = f"select nextval('\"{seq_name}\"')"
 
                 return self._execute_scalar(exc, column.type)
 
-        return super(PGExecutionContext, self).get_insert_default(column)
+        return super().get_insert_default(column)
 
 
 class PGReadOnlyConnectionCharacteristic(
@@ -3206,7 +3204,7 @@ class PGDialect(default.DefaultDialect):
         self._json_serializer = json_serializer
 
     def initialize(self, connection):
-        super(PGDialect, self).initialize(connection)
+        super().initialize(connection)
 
         if self.server_version_info <= (8, 2):
             self.full_returning = self.implicit_returning = False
@@ -3442,7 +3440,7 @@ class PGDialect(default.DefaultDialect):
             raise AssertionError(
                 "Could not determine version from string '%s'" % v
             )
-        return tuple([int(x) for x in m.group(1, 2, 3) if x is not None])
+        return tuple(int(x) for x in m.group(1, 2, 3) if x is not None)
 
     @reflection.cache
     def get_table_oid(self, connection, table_name, schema=None, **kw):
@@ -3646,15 +3644,15 @@ class PGDialect(default.DefaultDialect):
               a.attnotnull,
               a.attrelid as table_oid,
               pgd.description as comment,
-              %s,
-              %s
+              {},
+              {}
             FROM pg_catalog.pg_attribute a
             LEFT JOIN pg_catalog.pg_description pgd ON (
                 pgd.objoid = a.attrelid AND pgd.objsubid = a.attnum)
             WHERE a.attrelid = :table_oid
             AND a.attnum > 0 AND NOT a.attisdropped
             ORDER BY a.attnum
-        """ % (
+        """.format(
             generated,
             identity,
         )
@@ -3827,7 +3825,7 @@ class PGDialect(default.DefaultDialect):
                 coltype = self.ischema_names["_array"](coltype)
         else:
             util.warn(
-                "Did not recognize type '%s' of column '%s'" % (attype, name)
+                f"Did not recognize type '{attype}' of column '{name}'"
             )
             coltype = sqltypes.NULLTYPE
 
@@ -4055,7 +4053,7 @@ class PGDialect(default.DefaultDialect):
                 "%s[%d] = %s" % (compare_to, ind, col) for ind in range(0, 10)
             )
         else:
-            return "%s = ANY(%s)" % (col, compare_to)
+            return f"{col} = ANY({compare_to})"
 
     @reflection.cache
     def get_indexes(self, connection, table_name, schema, **kw):
@@ -4071,8 +4069,8 @@ class PGDialect(default.DefaultDialect):
               SELECT
                   i.relname as relname,
                   ix.indisunique, ix.indexprs, ix.indpred,
-                  a.attname, a.attnum, NULL, ix.indkey%s,
-                  %s, %s, am.amname,
+                  a.attname, a.attnum, NULL, ix.indkey{},
+                  {}, {}, am.amname,
                   NULL as indnkeyatts
               FROM
                   pg_class t
@@ -4080,7 +4078,7 @@ class PGDialect(default.DefaultDialect):
                         join pg_class i on i.oid = ix.indexrelid
                         left outer join
                             pg_attribute a
-                            on t.oid = a.attrelid and %s
+                            on t.oid = a.attrelid and {}
                         left outer join
                             pg_am am
                             on i.relam = am.oid
@@ -4091,7 +4089,7 @@ class PGDialect(default.DefaultDialect):
               ORDER BY
                   t.relname,
                   i.relname
-            """ % (
+            """.format(
                 # version 8.3 here was based on observing the
                 # cast does not work in PG 8.2.4, does work in 8.3.0.
                 # nothing in PG changelogs regarding this.
@@ -4112,7 +4110,7 @@ class PGDialect(default.DefaultDialect):
                   a.attname, a.attnum, c.conrelid, ix.indkey::varchar,
                   ix.indoption::varchar, i.reloptions, am.amname,
                   pg_get_expr(ix.indpred, ix.indrelid),
-                  %s as indnkeyatts
+                  {} as indnkeyatts
               FROM
                   pg_class t
                         join pg_index ix on t.oid = ix.indrelid
@@ -4135,7 +4133,7 @@ class PGDialect(default.DefaultDialect):
               ORDER BY
                   t.relname,
                   i.relname
-            """ % (
+            """.format(
                 "ix.indnkeyatts"
                 if self.server_version_info >= (11, 0)
                 else "NULL",
@@ -4248,10 +4246,10 @@ class PGDialect(default.DefaultDialect):
             if "duplicates_constraint" in idx:
                 entry["duplicates_constraint"] = idx["duplicates_constraint"]
             if "sorting" in idx:
-                entry["column_sorting"] = dict(
-                    (idx["cols"][idx["key"][i]], value)
+                entry["column_sorting"] = {
+                    idx["cols"][idx["key"][i]]: value
                     for i, value in idx["sorting"].items()
-                )
+                }
             if "include_columns" in entry:
                 entry.setdefault("dialect_options", {})[
                     "postgresql_include"

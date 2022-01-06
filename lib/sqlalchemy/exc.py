@@ -28,7 +28,7 @@ class HasDescriptionCode:
         code = kw.pop("code", None)
         if code is not None:
             self.code = code
-        super(HasDescriptionCode, self).__init__(*arg, **kw)
+        super().__init__(*arg, **kw)
 
     def _code_str(self):
         if not self.code:
@@ -44,9 +44,9 @@ class HasDescriptionCode:
             )
 
     def __str__(self):
-        message = super(HasDescriptionCode, self).__str__()
+        message = super().__str__()
         if self.code:
-            message = "%s %s" % (message, self._code_str())
+            message = f"{message} {self._code_str()}"
         return message
 
 
@@ -86,7 +86,7 @@ class SQLAlchemyError(HasDescriptionCode, Exception):
         message = self._message()
 
         if self.code:
-            message = "%s %s" % (message, self._code_str())
+            message = f"{message} {self._code_str()}"
 
         return message
 
@@ -111,7 +111,7 @@ class ObjectNotExecutableError(ArgumentError):
     """
 
     def __init__(self, target):
-        super(ObjectNotExecutableError, self).__init__(
+        super().__init__(
             "Not an executable object: %r" % target
         )
         self.target = target
@@ -188,7 +188,7 @@ class UnsupportedCompilationError(CompileError):
     code = "l7de"
 
     def __init__(self, compiler, element_type, message=None):
-        super(UnsupportedCompilationError, self).__init__(
+        super().__init__(
             "Compiler %r can't render element of type %s%s"
             % (compiler, element_type, ": %s" % message if message else "")
         )
@@ -696,7 +696,7 @@ class Base20DeprecationWarning(SADeprecationWarning):
 
     def __str__(self):
         return (
-            super(Base20DeprecationWarning, self).__str__()
+            super().__str__()
             + " (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)"
         )
 

@@ -277,11 +277,11 @@ class index_property(hybrid_property):  # noqa
         """
 
         if mutable:
-            super(index_property, self).__init__(
+            super().__init__(
                 self.fget, self.fset, self.fdel, self.expr
             )
         else:
-            super(index_property, self).__init__(
+            super().__init__(
                 self.fget, None, None, self.expr
             )
         self.attr_name = attr_name

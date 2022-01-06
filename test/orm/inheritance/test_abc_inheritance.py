@@ -18,7 +18,7 @@ def _combinations():
         for child in ["a", "b", "c"]:
             for direction in [ONETOMANY, MANYTOONE]:
 
-                name = "Test%sTo%s%s" % (
+                name = "Test{}To{}{}".format(
                     parent,
                     child,
                     (direction is ONETOMANY and "O2M" or "M2O"),

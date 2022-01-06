@@ -17,7 +17,7 @@ class GisElement:
         return self.desc
 
     def __repr__(self):
-        return "<%s at 0x%x; %r>" % (
+        return "<{} at 0x{:x}; {!r}>".format(
             self.__class__.__name__,
             id(self),
             self.desc,

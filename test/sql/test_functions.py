@@ -122,7 +122,7 @@ class CompileTest(fixtures.TestBase, AssertsCompiledSQL):
 
         self.assert_compile(
             select(1).where(expr),
-            "SELECT 1 WHERE %s" % (expected,),
+            f"SELECT 1 WHERE {expected}",
             literal_binds=True,
             render_postcompile=True,
             dialect="default_enhanced",
@@ -386,7 +386,7 @@ class CompileTest(fixtures.TestBase, AssertsCompiledSQL):
 
             def __init__(self, *args):
                 args = args + (3,)
-                super(MyFunction, self).__init__(*args)
+                super().__init__(*args)
 
         self.assert_compile(
             func.my_func(1, 2), "my_func(:my_func_1, :my_func_2, :my_func_3)"
@@ -472,7 +472,7 @@ class CompileTest(fixtures.TestBase, AssertsCompiledSQL):
                     sqltypes.DateTime,
                 ),
             ]:
-                assert isinstance(fn(*args).type, type_), "%s / %r != %s" % (
+                assert isinstance(fn(*args).type, type_), "{} / {!r} != {}".format(
                     fn(),
                     fn(*args).type,
                     type_,

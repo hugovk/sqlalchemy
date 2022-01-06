@@ -94,7 +94,7 @@ class array(expression.ClauseList, expression.ColumnElement):
             coercions.expect(roles.ExpressionElementRole, c) for c in clauses
         ]
 
-        super(array, self).__init__(*clauses, **kw)
+        super().__init__(*clauses, **kw)
 
         self._type_tuple = [arg.type for arg in clauses]
         main_type = kw.pop(

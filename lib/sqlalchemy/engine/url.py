@@ -88,7 +88,7 @@ class URL(
 
     def __new__(self, *arg, **kw):
         if kw.pop("_new_ok", False):
-            return super(URL, self).__new__(self, *arg, **kw)
+            return super().__new__(self, *arg, **kw)
         else:
             util.warn_deprecated(
                 "Calling URL() directly is deprecated and will be disabled "
@@ -279,7 +279,7 @@ class URL(
         if "query" in kw:
             kw["query"] = self._str_dict(kw["query"])
 
-        return super(URL, self)._replace(**kw)
+        return super()._replace(**kw)
 
     def update_query_string(self, query_string, append=False):
         """Return a new :class:`_engine.URL` object with the :attr:`_engine.URL.query`
@@ -548,7 +548,7 @@ class URL(
             keys = list(self.query)
             keys.sort()
             s += "?" + "&".join(
-                "%s=%s" % (quote_plus(k), quote_plus(element))
+                f"{quote_plus(k)}={quote_plus(element)}"
                 for k in keys
                 for element in util.to_list(self.query[k])
             )

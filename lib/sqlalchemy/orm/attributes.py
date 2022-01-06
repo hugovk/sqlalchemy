@@ -337,7 +337,7 @@ class QueryableAttribute(
             ) from err
 
     def __str__(self):
-        return "%s.%s" % (self.class_.__name__, self.key)
+        return f"{self.class_.__name__}.{self.key}"
 
     @util.memoized_property
     def property(self):
@@ -583,7 +583,7 @@ def create_proxied_attribute(descriptor):
                 return retval
 
         def __str__(self):
-            return "%s.%s" % (self.class_.__name__, self.key)
+            return f"{self.class_.__name__}.{self.key}"
 
         def __getattr__(self, attribute):
             """Delegate __getattr__ to the original descriptor and/or
@@ -789,7 +789,7 @@ class AttributeImpl:
     )
 
     def __str__(self):
-        return "%s.%s" % (self.class_.__name__, self.key)
+        return f"{self.class_.__name__}.{self.key}"
 
     def _get_active_history(self):
         """Backwards compat for impl.active_history"""
@@ -1018,7 +1018,7 @@ class ScalarAttributeImpl(AttributeImpl):
     __slots__ = "_replace_token", "_append_token", "_remove_token"
 
     def __init__(self, *arg, **kw):
-        super(ScalarAttributeImpl, self).__init__(*arg, **kw)
+        super().__init__(*arg, **kw)
         self._replace_token = self._append_token = Event(self, OP_REPLACE)
         self._remove_token = Event(self, OP_REMOVE)
 
@@ -1320,7 +1320,7 @@ class CollectionAttributeImpl(AttributeImpl):
         compare_function=None,
         **kwargs,
     ):
-        super(CollectionAttributeImpl, self).__init__(
+        super().__init__(
             class_,
             key,
             callable_,

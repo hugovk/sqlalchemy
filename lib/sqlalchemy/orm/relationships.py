@@ -979,7 +979,7 @@ class RelationshipProperty(StrategizedProperty):
 
 
         """
-        super(RelationshipProperty, self).__init__()
+        super().__init__()
 
         self.uselist = uselist
         self.argument = argument
@@ -2153,7 +2153,7 @@ class RelationshipProperty(StrategizedProperty):
         self._post_init()
         self._generate_backref()
         self._join_condition._warn_for_conflicting_sync_targets()
-        super(RelationshipProperty, self).do_init()
+        super().do_init()
         self._lazy_strategy = self._get_strategy((("lazy", "select"),))
 
     def _setup_registry_dependencies(self):
@@ -2663,14 +2663,14 @@ class JoinCondition:
             "%s synchronize pairs [%s]",
             self.prop,
             ",".join(
-                "(%s => %s)" % (l, r) for (l, r) in self.synchronize_pairs
+                f"({l} => {r})" for (l, r) in self.synchronize_pairs
             ),
         )
         log.info(
             "%s secondary synchronize pairs [%s]",
             self.prop,
             ",".join(
-                "(%s => %s)" % (l, r)
+                f"({l} => {r})"
                 for (l, r) in self.secondary_synchronize_pairs or []
             ),
         )
@@ -2678,7 +2678,7 @@ class JoinCondition:
             "%s local/remote pairs [%s]",
             self.prop,
             ",".join(
-                "(%s / %s)" % (l, r) for (l, r) in self.local_remote_pairs
+                f"({l} / {r})" for (l, r) in self.local_remote_pairs
             ),
         )
         log.info(
@@ -3285,15 +3285,13 @@ class JoinCondition:
 
                 # 2. columns that are FK but are not remote (e.g. local)
                 # suggest manytoone.
-                manytoone_local = set(
-                    [
+                manytoone_local = {
                         c
                         for c in self._gather_columns_with_annotation(
                             self.primaryjoin, "foreign"
                         )
                         if "remote" not in c._annotations
-                    ]
-                )
+                }
 
                 # 3. if both collections are present, remove columns that
                 # refer to themselves.  This is for the case of
@@ -3466,7 +3464,7 @@ class JoinCondition:
                             to_,
                             ", ".join(
                                 sorted(
-                                    "'%s' (copies %s to %s)" % (pr, fr_, to_)
+                                    f"'{pr}' (copies {fr_} to {to_})"
                                     for (pr, fr_) in other_props
                                 )
                             ),
@@ -3503,13 +3501,11 @@ class JoinCondition:
 
     def _gather_columns_with_annotation(self, clause, *annotation):
         annotation = set(annotation)
-        return set(
-            [
+        return {
                 col
                 for col in visitors.iterate(clause, {})
                 if annotation.issubset(col._annotations)
-            ]
-        )
+        }
 
     def join_targets(
         self,

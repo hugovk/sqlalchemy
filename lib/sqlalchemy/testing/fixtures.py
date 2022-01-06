@@ -430,7 +430,7 @@ class TablesTest(TestBase):
                         conn.execute(table.delete())
                     except sa.exc.DBAPIError as ex:
                         print(
-                            ("Error emptying table %s: %r" % (table, ex)),
+                            (f"Error emptying table {table}: {ex!r}"),
                             file=sys.stderr,
                         )
 
@@ -717,7 +717,7 @@ class DeclarativeMappedTest(MappedTest):
 
         # sets up cls.Basic which is helpful for things like composite
         # classes
-        super(DeclarativeMappedTest, cls)._with_register_classes(fn)
+        super()._with_register_classes(fn)
 
         if cls._tables_metadata.tables and cls.run_create_tables:
             cls._tables_metadata.create_all(config.db)

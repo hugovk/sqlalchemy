@@ -15,13 +15,11 @@ class MypyPluginTest(fixtures.TestBase):
 
     @testing.fixture(scope="function")
     def per_func_cachedir(self):
-        for item in self._cachedir():
-            yield item
+        yield from self._cachedir()
 
     @testing.fixture(scope="class")
     def cachedir(self):
-        for item in self._cachedir():
-            yield item
+        yield from self._cachedir()
 
     def _cachedir(self):
         with tempfile.TemporaryDirectory() as cachedir:

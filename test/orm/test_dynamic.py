@@ -407,13 +407,11 @@ class DynamicTest(_DynamicFixture, _fixtures.FixtureTest, AssertsCompiledSQL):
         # test cancellation of None, replacement with nothing
         eq_(
             set(u.addresses.order_by(None)),
-            set(
-                [
+            {
                     Address(email_address="ed@bettyboop.com"),
                     Address(email_address="ed@lala.com"),
                     Address(email_address="ed@wood.com"),
-                ]
-            ),
+            },
         )
 
     def test_count(self):
@@ -1025,8 +1023,8 @@ class UOWTest(
             u.addresses.remove(a)
 
         eq_(
-            set(ad for ad, in sess.query(Address.email_address)),
-            set(["a", "b", "d"]),
+            {ad for ad, in sess.query(Address.email_address)},
+            {"a", "b", "d"},
         )
 
     def _backref_test(self, autoflush, saveuser):

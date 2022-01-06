@@ -58,7 +58,7 @@ class _MSNumeric_pymssql(sqltypes.Numeric):
 
 class MSIdentifierPreparer_pymssql(MSIdentifierPreparer):
     def __init__(self, dialect):
-        super(MSIdentifierPreparer_pymssql, self).__init__(dialect)
+        super().__init__(dialect)
         # pymssql has the very unusual behavior that it uses pyformat
         # yet does not require that percent signs be doubled
         self._double_percents = False
@@ -105,7 +105,7 @@ class MSDialect_pymssql(MSDialect):
         opts.update(url.query)
         port = opts.pop("port", None)
         if port and "host" in opts:
-            opts["host"] = "%s:%s" % (opts["host"], port)
+            opts["host"] = "{}:{}".format(opts["host"], port)
         return [[], opts]
 
     def is_disconnect(self, e, connection, cursor):
@@ -135,7 +135,7 @@ class MSDialect_pymssql(MSDialect):
             dbapi_connection.autocommit(True)
         else:
             dbapi_connection.autocommit(False)
-            super(MSDialect_pymssql, self).set_isolation_level(
+            super().set_isolation_level(
                 dbapi_connection, level
             )
 

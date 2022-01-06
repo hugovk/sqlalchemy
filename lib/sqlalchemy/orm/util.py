@@ -587,7 +587,7 @@ class AliasedClass:
         return attr
 
     def __repr__(self):
-        return "<AliasedClass at 0x%x; %s>" % (
+        return "<AliasedClass at 0x{:x}; {}>".format(
             id(self),
             self._aliased_insp._target.__name__,
         )
@@ -800,7 +800,7 @@ class AliasedInsp(
         our_classes = util.to_set(
             mp.class_ for mp in self.with_polymorphic_mappers
         )
-        new_classes = set([mp.class_ for mp in other.with_polymorphic_mappers])
+        new_classes = {mp.class_ for mp in other.with_polymorphic_mappers}
         if our_classes == new_classes:
             return other
         else:
@@ -847,7 +847,7 @@ class AliasedInsp(
         elif mapper.isa(self.mapper):
             return self
         else:
-            assert False, "mapper %s doesn't correspond to %s" % (mapper, self)
+            assert False, f"mapper {mapper} doesn't correspond to {self}"
 
     @util.memoized_property
     def _get_clause(self):
@@ -893,7 +893,7 @@ class AliasedInsp(
             )
         else:
             with_poly = ""
-        return "<AliasedInsp at 0x%x; %s%s>" % (
+        return "<AliasedInsp at 0x{:x}; {}{}>".format(
             id(self),
             self.class_.__name__,
             with_poly,
@@ -901,7 +901,7 @@ class AliasedInsp(
 
     def __str__(self):
         if self._is_with_polymorphic:
-            return "with_polymorphic(%s, [%s])" % (
+            return "with_polymorphic({}, [{}])".format(
                 self._target.__name__,
                 ", ".join(
                     mp.class_.__name__
@@ -910,7 +910,7 @@ class AliasedInsp(
                 ),
             )
         else:
-            return "aliased(%s)" % (self._target.__name__,)
+            return f"aliased({self._target.__name__})"
 
 
 class _WrapUserEntity:
@@ -1177,8 +1177,7 @@ class LoaderCriteriaOption(CriteriaOption):
                 subclass = stack.pop(0)
                 ent = inspection.inspect(subclass, raiseerr=False)
                 if ent:
-                    for mp in ent.mapper.self_and_descendants:
-                        yield mp
+                    yield from ent.mapper.self_and_descendants
                 else:
                     stack.extend(subclass.__subclasses__())
 
@@ -1512,7 +1511,7 @@ class Bundle(
 
     def _gen_cache_key(self, anon_map, bindparams):
         return (self.__class__, self.name, self.single_entity) + tuple(
-            [expr._gen_cache_key(anon_map, bindparams) for expr in self.exprs]
+            expr._gen_cache_key(anon_map, bindparams) for expr in self.exprs
         )
 
     @property

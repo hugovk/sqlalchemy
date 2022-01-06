@@ -130,7 +130,7 @@ class FunctionElement(Executable, ColumnElement, FromClause, Generative):
 
     @property
     def _proxy_key(self):
-        return super(FunctionElement, self)._proxy_key or getattr(
+        return super()._proxy_key or getattr(
             self, "name", None
         )
 
@@ -593,7 +593,7 @@ class FunctionElement(Executable, ColumnElement, FromClause, Generative):
         ):
             return Grouping(self)
         else:
-            return super(FunctionElement, self).self_group(against=against)
+            return super().self_group(against=against)
 
     @property
     def entity_namespace(self):
@@ -891,7 +891,7 @@ class _GenericMeta(TraversibleType):
                 # Set _register to True to register child classes by default
                 cls._register = True
 
-        super(_GenericMeta, cls).__init__(clsname, bases, clsdict)
+        super().__init__(clsname, bases, clsdict)
 
 
 class GenericFunction(Function, metaclass=_GenericMeta):
@@ -1078,7 +1078,7 @@ class ReturnTypeFromArgs(GenericFunction):
         ]
         kwargs.setdefault("type_", _type_from_args(args))
         kwargs["_parsed_args"] = args
-        super(ReturnTypeFromArgs, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
 
 class coalesce(ReturnTypeFromArgs):
@@ -1182,7 +1182,7 @@ class count(GenericFunction):
     def __init__(self, expression=None, **kwargs):
         if expression is None:
             expression = literal_column("*")
-        super(count, self).__init__(expression, **kwargs)
+        super().__init__(expression, **kwargs)
 
 
 class current_date(AnsiFunction):
@@ -1288,7 +1288,7 @@ class array_agg(GenericFunction):
             else:
                 kwargs["type_"] = default_array_type(type_from_args)
         kwargs["_parsed_args"] = args
-        super(array_agg, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
 
 class OrderedSetAgg(GenericFunction):

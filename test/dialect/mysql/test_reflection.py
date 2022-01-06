@@ -1,5 +1,3 @@
-# coding: utf-8
-
 import re
 
 from sqlalchemy import BigInteger
@@ -593,7 +591,7 @@ class ReflectionTest(fixtures.TestBase, AssertsCompiledSQL):
         dialect = testing.db.dialect
         connection = testing.db.connect()
         view_names = dialect.get_view_names(connection, "information_schema")
-        self.assert_("TABLES" in view_names)
+        self.assertTrue("TABLES" in view_names)
 
     def test_nullable_reflection(self, metadata, connection):
         """test reflection of NULL/NOT NULL, in particular with TIMESTAMP
@@ -708,25 +706,25 @@ class ReflectionTest(fixtures.TestBase, AssertsCompiledSQL):
 
         # MySQL converts unique constraints into unique indexes.
         # separately we get both
-        indexes = dict((i["name"], i) for i in insp.get_indexes("mysql_uc"))
-        constraints = set(
+        indexes = {i["name"]: i for i in insp.get_indexes("mysql_uc")}
+        constraints = {
             i["name"] for i in insp.get_unique_constraints("mysql_uc")
-        )
+        }
 
-        self.assert_("uc_a" in indexes)
-        self.assert_(indexes["uc_a"]["unique"])
-        self.assert_("uc_a" in constraints)
+        self.assertTrue("uc_a" in indexes)
+        self.assertTrue(indexes["uc_a"]["unique"])
+        self.assertTrue("uc_a" in constraints)
 
         # reflection here favors the unique index, as that's the
         # more "official" MySQL construct
         reflected = Table("mysql_uc", MetaData(), autoload_with=testing.db)
 
-        indexes = dict((i.name, i) for i in reflected.indexes)
-        constraints = set(uc.name for uc in reflected.constraints)
+        indexes = {i.name: i for i in reflected.indexes}
+        constraints = {uc.name for uc in reflected.constraints}
 
-        self.assert_("uc_a" in indexes)
-        self.assert_(indexes["uc_a"].unique)
-        self.assert_("uc_a" not in constraints)
+        self.assertTrue("uc_a" in indexes)
+        self.assertTrue(indexes["uc_a"].unique)
+        self.assertTrue("uc_a" not in constraints)
 
     def test_reflect_fulltext(self, metadata, connection):
         mt = Table(
@@ -949,7 +947,7 @@ class ReflectionTest(fixtures.TestBase, AssertsCompiledSQL):
             Column(
                 "TTrackID",
                 ForeignKey(
-                    "%s.Track.TrackID" % (testing.config.test_schema,),
+                    f"{testing.config.test_schema}.Track.TrackID",
                     name="FK_PlaylistTTrackId",
                 ),
             ),
@@ -1092,10 +1090,10 @@ class ReflectionTest(fixtures.TestBase, AssertsCompiledSQL):
         m.create_all(connection)
 
         eq_(
-            dict(
-                (rec["name"], rec)
+            {
+                rec["name"]: rec
                 for rec in inspect(connection).get_foreign_keys("t2")
-            ),
+            },
             {
                 "cap_t1id_fk": {
                     "name": "cap_t1id_fk",

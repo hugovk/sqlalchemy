@@ -469,12 +469,12 @@ class ShardTest:
         sess = self._fixture_data()
 
         eq_(
-            set(row.temperature for row in sess.query(Report.temperature)),
+            {row.temperature for row in sess.query(Report.temperature)},
             {80.0, 75.0, 85.0},
         )
 
         temps = sess.query(Report).all()
-        eq_(set(t.temperature for t in temps), {80.0, 75.0, 85.0})
+        eq_({t.temperature for t in temps}, {80.0, 75.0, 85.0})
 
         sess.query(Report).filter(Report.temperature >= 80).update(
             {"temperature": Report.temperature + 6},
@@ -482,23 +482,23 @@ class ShardTest:
         )
 
         eq_(
-            set(row.temperature for row in sess.query(Report.temperature)),
+            {row.temperature for row in sess.query(Report.temperature)},
             {86.0, 75.0, 91.0},
         )
 
         # test synchronize session as well
-        eq_(set(t.temperature for t in temps), {86.0, 75.0, 91.0})
+        eq_({t.temperature for t in temps}, {86.0, 75.0, 91.0})
 
     def test_bulk_update_synchronize_fetch(self):
         sess = self._fixture_data()
 
         eq_(
-            set(row.temperature for row in sess.query(Report.temperature)),
+            {row.temperature for row in sess.query(Report.temperature)},
             {80.0, 75.0, 85.0},
         )
 
         temps = sess.query(Report).all()
-        eq_(set(t.temperature for t in temps), {80.0, 75.0, 85.0})
+        eq_({t.temperature for t in temps}, {80.0, 75.0, 85.0})
 
         sess.query(Report).filter(Report.temperature >= 80).update(
             {"temperature": Report.temperature + 6},
@@ -506,25 +506,25 @@ class ShardTest:
         )
 
         eq_(
-            set(row.temperature for row in sess.query(Report.temperature)),
+            {row.temperature for row in sess.query(Report.temperature)},
             {86.0, 75.0, 91.0},
         )
 
         # test synchronize session as well
-        eq_(set(t.temperature for t in temps), {86.0, 75.0, 91.0})
+        eq_({t.temperature for t in temps}, {86.0, 75.0, 91.0})
 
     def test_bulk_delete_synchronize_evaluate(self):
         sess = self._fixture_data()
 
         temps = sess.query(Report).all()
-        eq_(set(t.temperature for t in temps), {80.0, 75.0, 85.0})
+        eq_({t.temperature for t in temps}, {80.0, 75.0, 85.0})
 
         sess.query(Report).filter(Report.temperature >= 80).delete(
             synchronize_session="evaluate"
         )
 
         eq_(
-            set(row.temperature for row in sess.query(Report.temperature)),
+            {row.temperature for row in sess.query(Report.temperature)},
             {75.0},
         )
 
@@ -536,14 +536,14 @@ class ShardTest:
         sess = self._fixture_data()
 
         temps = sess.query(Report).all()
-        eq_(set(t.temperature for t in temps), {80.0, 75.0, 85.0})
+        eq_({t.temperature for t in temps}, {80.0, 75.0, 85.0})
 
         sess.query(Report).filter(Report.temperature >= 80).delete(
             synchronize_session="fetch"
         )
 
         eq_(
-            set(row.temperature for row in sess.query(Report.temperature)),
+            {row.temperature for row in sess.query(Report.temperature)},
             {75.0},
         )
 
@@ -555,15 +555,15 @@ class ShardTest:
         sess = self._fixture_data()
 
         eq_(
-            set(
+            {
                 row.temperature
                 for row in sess.execute(select(Report.temperature))
-            ),
+            },
             {80.0, 75.0, 85.0},
         )
 
         temps = sess.execute(select(Report)).scalars().all()
-        eq_(set(t.temperature for t in temps), {80.0, 75.0, 85.0})
+        eq_({t.temperature for t in temps}, {80.0, 75.0, 85.0})
 
         sess.execute(
             update(Report)
@@ -575,29 +575,29 @@ class ShardTest:
         )
 
         eq_(
-            set(
+            {
                 row.temperature
                 for row in sess.execute(select(Report.temperature))
-            ),
+            },
             {86.0, 75.0, 91.0},
         )
 
         # test synchronize session as well
-        eq_(set(t.temperature for t in temps), {86.0, 75.0, 91.0})
+        eq_({t.temperature for t in temps}, {86.0, 75.0, 91.0})
 
     def test_bulk_update_future_synchronize_fetch(self):
         sess = self._fixture_data()
 
         eq_(
-            set(
+            {
                 row.temperature
                 for row in sess.execute(select(Report.temperature))
-            ),
+            },
             {80.0, 75.0, 85.0},
         )
 
         temps = sess.execute(select(Report)).scalars().all()
-        eq_(set(t.temperature for t in temps), {80.0, 75.0, 85.0})
+        eq_({t.temperature for t in temps}, {80.0, 75.0, 85.0})
 
         # MARKMARK
         # omitting the criteria so that the UPDATE affects three out of
@@ -611,21 +611,21 @@ class ShardTest:
         )
 
         eq_(
-            set(
+            {
                 row.temperature
                 for row in sess.execute(select(Report.temperature))
-            ),
+            },
             {86.0, 81.0, 91.0},
         )
 
         # test synchronize session as well
-        eq_(set(t.temperature for t in temps), {86.0, 81.0, 91.0})
+        eq_({t.temperature for t in temps}, {86.0, 81.0, 91.0})
 
     def test_bulk_delete_future_synchronize_evaluate(self):
         sess = self._fixture_data()
 
         temps = sess.execute(select(Report)).scalars().all()
-        eq_(set(t.temperature for t in temps), {80.0, 75.0, 85.0})
+        eq_({t.temperature for t in temps}, {80.0, 75.0, 85.0})
 
         sess.execute(
             delete(Report)
@@ -634,10 +634,10 @@ class ShardTest:
         )
 
         eq_(
-            set(
+            {
                 row.temperature
                 for row in sess.execute(select(Report.temperature))
-            ),
+            },
             {75.0},
         )
 
@@ -649,7 +649,7 @@ class ShardTest:
         sess = self._fixture_data()
 
         temps = sess.execute(select(Report)).scalars().all()
-        eq_(set(t.temperature for t in temps), {80.0, 75.0, 85.0})
+        eq_({t.temperature for t in temps}, {80.0, 75.0, 85.0})
 
         sess.execute(
             delete(Report)
@@ -658,10 +658,10 @@ class ShardTest:
         )
 
         eq_(
-            set(
+            {
                 row.temperature
                 for row in sess.execute(select(Report.temperature))
-            ),
+            },
             {75.0},
         )
 
@@ -809,7 +809,7 @@ class MultipleDialectShardTest(ShardTest, fixtures.MappedTest):
         with e2.begin() as conn:
             for i in [2, 4]:
                 conn.exec_driver_sql(
-                    "CREATE SCHEMA IF NOT EXISTS shard%s" % (i,)
+                    f"CREATE SCHEMA IF NOT EXISTS shard{i}"
                 )
 
         db1 = e1.execution_options(schema_translate_map={"changeme": "shard1"})
@@ -834,7 +834,7 @@ class MultipleDialectShardTest(ShardTest, fixtures.MappedTest):
         with self.postgresql_engine.begin() as conn:
             self.tables_test_metadata.drop_all(conn)
             for i in [2, 4]:
-                conn.exec_driver_sql("DROP SCHEMA shard%s CASCADE" % (i,))
+                conn.exec_driver_sql(f"DROP SCHEMA shard{i} CASCADE")
         self.postgresql_engine.dispose()
 
 

@@ -2796,12 +2796,10 @@ class FromStatement(GroupedElement, SelectBase, Executable):
         return self
 
     def get_children(self, **kw):
-        for elem in itertools.chain.from_iterable(
+        yield from itertools.chain.from_iterable(
             element._from_objects for element in self._raw_columns
-        ):
-            yield elem
-        for elem in super(FromStatement, self).get_children(**kw):
-            yield elem
+        )
+        yield from super().get_children(**kw)
 
     @property
     def _returning(self):
@@ -2879,7 +2877,7 @@ class BulkUpdate(BulkUD):
     """BulkUD which handles UPDATEs."""
 
     def __init__(self, query, values, update_kwargs):
-        super(BulkUpdate, self).__init__(query)
+        super().__init__(query)
         self.values = values
         self.update_kwargs = update_kwargs
 

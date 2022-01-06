@@ -91,7 +91,7 @@ class HasTableTest(fixtures.TablesTest):
     @testing.requires.views
     @testing.requires.schemas
     def test_has_table_view_schema(self, connection):
-        query = "CREATE VIEW %s.vv AS SELECT * FROM %s.test_table_s" % (
+        query = "CREATE VIEW {}.vv AS SELECT * FROM {}.test_table_s".format(
             config.test_schema,
             config.test_schema,
         )
@@ -233,7 +233,7 @@ class QuotedNameArgumentTest(fixtures.TablesTest):
                     "quote ' one",
                 ]
             for name in names:
-                query = "CREATE VIEW %s AS SELECT * FROM %s" % (
+                query = "CREATE VIEW {} AS SELECT * FROM {}".format(
                     config.db.dialect.identifier_preparer.quote(
                         "view %s" % name
                     ),
@@ -521,9 +521,9 @@ class ComponentReflectionTest(fixtures.TablesTest):
         for table_name in ("users", "email_addresses"):
             fullname = table_name
             if schema:
-                fullname = "%s.%s" % (schema, table_name)
+                fullname = f"{schema}.{table_name}"
             view_name = fullname + "_v"
-            query = "CREATE VIEW %s AS SELECT * FROM %s" % (
+            query = "CREATE VIEW {} AS SELECT * FROM {}".format(
                 view_name,
                 fullname,
             )
@@ -537,7 +537,7 @@ class ComponentReflectionTest(fixtures.TablesTest):
     def test_get_schema_names(self):
         insp = inspect(self.bind)
 
-        self.assert_(testing.config.test_schema in insp.get_schema_names())
+        self.assertTrue(testing.config.test_schema in insp.get_schema_names())
 
     @testing.requires.schema_reflection
     def test_get_schema_names_w_translate_map(self, connection):
@@ -551,7 +551,7 @@ class ComponentReflectionTest(fixtures.TablesTest):
         )
         insp = inspect(connection)
 
-        self.assert_(testing.config.test_schema in insp.get_schema_names())
+        self.assertTrue(testing.config.test_schema in insp.get_schema_names())
 
     @testing.requires.schema_reflection
     def test_dialect_initialize(self):
@@ -697,7 +697,7 @@ class ComponentReflectionTest(fixtures.TablesTest):
         for table_name, table in zip(table_names, (users, addresses)):
             schema_name = schema
             cols = insp.get_columns(table_name, schema=schema_name)
-            self.assert_(len(cols) > 0, len(cols))
+            self.assertTrue(len(cols) > 0, len(cols))
 
             # should be in order
 
@@ -719,7 +719,7 @@ class ComponentReflectionTest(fixtures.TablesTest):
                 # assert that the desired type and return type share
                 # a base within one of the generic types.
 
-                self.assert_(
+                self.assertTrue(
                     len(
                         set(ctype.__mro__)
                         .intersection(ctype_def.__mro__)
@@ -751,7 +751,7 @@ class ComponentReflectionTest(fixtures.TablesTest):
         user_tmp = self.tables[table_name]
         insp = inspect(self.bind)
         cols = insp.get_columns(table_name)
-        self.assert_(len(cols) > 0, len(cols))
+        self.assertTrue(len(cols) > 0, len(cols))
 
         for i, col in enumerate(user_tmp.columns):
             eq_(col.name, cols[i]["name"])
@@ -821,7 +821,7 @@ class ComponentReflectionTest(fixtures.TablesTest):
         fkey1 = addr_fkeys[0]
 
         with testing.requires.implicitly_named_constraints.fail_if():
-            self.assert_(fkey1["name"] is not None)
+            self.assertTrue(fkey1["name"] is not None)
 
         eq_(fkey1["referred_schema"], expected_schema)
         eq_(fkey1["referred_table"], users.name)
@@ -1031,14 +1031,12 @@ class ComponentReflectionTest(fixtures.TablesTest):
         # "unique constraints" are actually unique indexes (with possible
         # exception of a unique that is a dupe of another one in the case
         # of Oracle).  make sure # they aren't duplicated.
-        idx_names = set([idx.name for idx in reflected.indexes])
-        uq_names = set(
-            [
+        idx_names = {idx.name for idx in reflected.indexes}
+        uq_names = {
                 uq.name
                 for uq in reflected.constraints
                 if isinstance(uq, sa.UniqueConstraint)
-            ]
-        ).difference(["unique_c_a_b"])
+        }.difference(["unique_c_a_b"])
 
         assert not idx_names.intersection(uq_names)
         if names_that_duplicate_index:
@@ -1058,9 +1056,9 @@ class ComponentReflectionTest(fixtures.TablesTest):
         view_name2 = "email_addresses_v"
         insp = inspect(connection)
         v1 = insp.get_view_definition(view_name1, schema=schema)
-        self.assert_(v1)
+        self.assertTrue(v1)
         v2 = insp.get_view_definition(view_name2, schema=schema)
-        self.assert_(v2)
+        self.assertTrue(v2)
 
     # why is this here if it's PG specific ?
     @testing.combinations(
@@ -1076,7 +1074,7 @@ class ComponentReflectionTest(fixtures.TablesTest):
             schema = None
         insp = inspect(connection)
         oid = insp.get_table_oid(table_name, schema)
-        self.assert_(isinstance(oid, int))
+        self.assertTrue(isinstance(oid, int))
 
     @testing.requires.table_reflection
     def test_autoincrement_col(self):
@@ -1319,10 +1317,10 @@ class ComponentReflectionTestExtra(fixtures.TestBase):
         )
         t.create(connection)
         eq_(
-            dict(
-                (col["name"], col["nullable"])
+            {
+                col["name"]: col["nullable"]
                 for col in inspect(connection).get_columns("t")
-            ),
+            },
             {"a": True, "b": False},
         )
 
@@ -1413,7 +1411,7 @@ class ComponentReflectionTestExtra(fixtures.TestBase):
         # that can reflect these, since alembic looks for this
         opts = insp.get_foreign_keys("table")[0]["options"]
 
-        eq_(dict((k, opts[k]) for k in opts if opts[k]), {})
+        eq_({k: opts[k] for k in opts if opts[k]}, {})
 
         opts = insp.get_foreign_keys("user")[0]["options"]
         eq_(opts, expected)

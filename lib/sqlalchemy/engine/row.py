@@ -158,7 +158,7 @@ class Row(BaseRow, collections_abc.Sequence):
             :attr:`.Row._mapping`
 
         """
-        return tuple([k for k in self._parent.keys if k is not None])
+        return tuple(k for k in self._parent.keys if k is not None)
 
     def _asdict(self):
         """Return a new dict which maps field names to their corresponding

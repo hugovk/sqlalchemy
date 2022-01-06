@@ -1033,7 +1033,7 @@ class ExternalType:
                 code="cprf",
             )
         elif cache_ok is True:
-            return super(ExternalType, self)._static_cache_key
+            return super()._static_cache_key
 
         return NO_CACHE
 
@@ -1146,7 +1146,7 @@ class Emulated:
         e.g.: sqltypes.Enum adapts to the Enum class.
 
         """
-        return super(Emulated, self).adapt(impltype, **kw)
+        return super().adapt(impltype, **kw)
 
     def adapt(self, impltype, **kw):
         if hasattr(impltype, "adapt_emulated_to_native"):
@@ -1163,7 +1163,7 @@ class Emulated:
             if issubclass(impltype, self.__class__):
                 return self.adapt_to_emulated(impltype, **kw)
             else:
-                return super(Emulated, self).adapt(impltype, **kw)
+                return super().adapt(impltype, **kw)
 
 
 class NativeForEmulated:
@@ -1431,7 +1431,7 @@ class TypeDecorator(ExternalType, SchemaEventTarget, TypeEngine):
     def _set_parent(self, column, outer=False, **kw):
         """Support SchemaEventTarget"""
 
-        super(TypeDecorator, self)._set_parent(column)
+        super()._set_parent(column)
 
         if not outer and isinstance(self.impl, SchemaEventTarget):
             self.impl._set_parent(column, outer=False, **kw)
@@ -1439,7 +1439,7 @@ class TypeDecorator(ExternalType, SchemaEventTarget, TypeEngine):
     def _set_parent_with_dispatch(self, parent):
         """Support SchemaEventTarget"""
 
-        super(TypeDecorator, self)._set_parent_with_dispatch(
+        super()._set_parent_with_dispatch(
             parent, outer=True
         )
 

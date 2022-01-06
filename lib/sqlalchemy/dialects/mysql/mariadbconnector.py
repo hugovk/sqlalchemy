@@ -80,18 +80,18 @@ class MySQLDialect_mariadbconnector(MySQLDialect):
     def _dbapi_version(self):
         if self.dbapi and hasattr(self.dbapi, "__version__"):
             return tuple(
-                [
+                
                     int(x)
                     for x in re.findall(
                         r"(\d+)(?:[-\.]?|$)", self.dbapi.__version__
                     )
-                ]
+                
             )
         else:
             return (99, 99, 99)
 
     def __init__(self, **kwargs):
-        super(MySQLDialect_mariadbconnector, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.paramstyle = "qmark"
         if self.dbapi is not None:
             if self._dbapi_version < mariadb_cpy_minimum_version:
@@ -106,7 +106,7 @@ class MySQLDialect_mariadbconnector(MySQLDialect):
         return __import__("mariadb")
 
     def is_disconnect(self, e, connection, cursor):
-        if super(MySQLDialect_mariadbconnector, self).is_disconnect(
+        if super().is_disconnect(
             e, connection, cursor
         ):
             return True
@@ -163,22 +163,20 @@ class MySQLDialect_mariadbconnector(MySQLDialect):
     def _detect_charset(self, connection):
         return "utf8mb4"
 
-    _isolation_lookup = set(
-        [
+    _isolation_lookup = {
             "SERIALIZABLE",
             "READ UNCOMMITTED",
             "READ COMMITTED",
             "REPEATABLE READ",
             "AUTOCOMMIT",
-        ]
-    )
+    }
 
     def _set_isolation_level(self, connection, level):
         if level == "AUTOCOMMIT":
             connection.autocommit = True
         else:
             connection.autocommit = False
-            super(MySQLDialect_mariadbconnector, self)._set_isolation_level(
+            super()._set_isolation_level(
                 connection, level
             )
 

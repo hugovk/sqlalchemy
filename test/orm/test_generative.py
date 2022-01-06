@@ -28,7 +28,7 @@ class GenerativeQueryTest(fixtures.MappedTest):
 
     @classmethod
     def fixtures(cls):
-        rows = tuple([(i, i % 10) for i in range(100)])
+        rows = tuple((i, i % 10) for i in range(100))
         foo_data = (("bar", "range"),) + rows
         return dict(foo=foo_data)
 
@@ -290,7 +290,7 @@ class RelationshipsTest(_fixtures.FixtureTest):
             .outerjoin(Order.addresses)
             .filter(sa.or_(Order.id == None, Address.id == 1))
         )  # noqa
-        eq_(set([User(id=7), User(id=8), User(id=10)]), set(q.all()))
+        eq_({User(id=7), User(id=8), User(id=10)}, set(q.all()))
 
     def test_outer_join_count(self):
         """test the join and outerjoin functions on Query"""
@@ -331,7 +331,7 @@ class RelationshipsTest(_fixtures.FixtureTest):
             .select_from(sel)
             .filter(sa.or_(Order.id == None, Address.id == 1))
         )  # noqa
-        eq_(set([User(id=7), User(id=8), User(id=10)]), set(q.all()))
+        eq_({User(id=7), User(id=8), User(id=10)}, set(q.all()))
 
 
 class CaseSensitiveTest(fixtures.MappedTest):

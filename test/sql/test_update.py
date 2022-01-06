@@ -1484,7 +1484,7 @@ class UpdateFromMultiTableUpdateDefaultsTest(
             .where(users.c.name == "ed")
         )
 
-        eq_(set(ret.prefetch_cols()), set([users.c.some_update]))
+        eq_(set(ret.prefetch_cols()), {users.c.some_update})
 
         expected = [
             (2, 8, "updated"),
@@ -1511,7 +1511,7 @@ class UpdateFromMultiTableUpdateDefaultsTest(
 
         eq_(
             set(ret.prefetch_cols()),
-            set([users.c.some_update, foobar.c.some_update]),
+            {users.c.some_update, foobar.c.some_update},
         )
 
         expected = [

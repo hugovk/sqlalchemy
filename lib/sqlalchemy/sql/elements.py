@@ -590,7 +590,7 @@ class ClauseElement(
         if friendly is None:
             return object.__repr__(self)
         else:
-            return "<%s.%s at 0x%x; %s>" % (
+            return "<{}.{} at 0x{:x}; {}>".format(
                 self.__module__,
                 self.__class__.__name__,
                 id(self),
@@ -838,7 +838,7 @@ class ColumnElement(
         if self.type._type_affinity is type_api.BOOLEANTYPE._type_affinity:
             return AsBoolean(self, operators.is_false, operators.is_true)
         else:
-            return super(ColumnElement, self)._negate()
+            return super()._negate()
 
     @util.memoized_property
     def type(self):
@@ -1203,7 +1203,7 @@ class WrapsColumnExpression:
                 return nal
             elif hasattr(wce, "_anon_name_label"):
                 return wce._anon_name_label
-        return super(WrapsColumnExpression, self)._anon_name_label
+        return super()._anon_name_label
 
     def _dedupe_anon_label_idx(self, idx):
         wce = self.wrapped_column_expression
@@ -1697,7 +1697,7 @@ class BindParameter(roles.InElementRole, ColumnElement):
         self.__dict__.update(state)
 
     def __repr__(self):
-        return "%s(%r, %r, type_=%r)" % (
+        return "{}({!r}, {!r}, type_={!r})".format(
             self.__class__.__name__,
             self.key,
             self.value,
@@ -2651,7 +2651,7 @@ class BooleanClauseList(ClauseList, ColumnElement):
         if not self.clauses:
             return self
         else:
-            return super(BooleanClauseList, self).self_group(against=against)
+            return super().self_group(against=against)
 
     def _negate(self):
         return ClauseList._negate(self)
@@ -2716,7 +2716,7 @@ class Tuple(ClauseList, ColumnElement):
             ]
 
         self.type = sqltypes.TupleType(*[arg.type for arg in clauses])
-        super(Tuple, self).__init__(*clauses, **kw)
+        super().__init__(*clauses, **kw)
 
     @property
     def _select_iterable(self):
@@ -3899,7 +3899,7 @@ class BinaryExpression(ColumnElement):
                 modifiers=self.modifiers,
             )
         else:
-            return super(BinaryExpression, self)._negate()
+            return super()._negate()
 
 
 class Slice(ColumnElement):
@@ -4854,7 +4854,7 @@ class ColumnClause(
         if self.table is not None:
             return self.table.entity_namespace
         else:
-            return super(ColumnClause, self).entity_namespace
+            return super().entity_namespace
 
     def _clone(self, detect_subquery_cols=False, **kw):
         if (
@@ -4867,7 +4867,7 @@ class ColumnClause(
             new = table.c.corresponding_column(self)
             return new
 
-        return super(ColumnClause, self)._clone(**kw)
+        return super()._clone(**kw)
 
     @HasMemoized.memoized_attribute
     def _from_objects(self):
@@ -5119,7 +5119,7 @@ class quoted_name(util.MemoizedSlots, str):
             quote is None or value.quote == quote
         ):
             return value
-        self = super(quoted_name, cls).__new__(cls, value)
+        self = super().__new__(cls, value)
 
         self.quote = quote
         return self
@@ -5185,7 +5185,7 @@ class AnnotatedColumnElement(Annotated):
                 self.__dict__.pop(attr)
 
     def _with_annotations(self, values):
-        clone = super(AnnotatedColumnElement, self)._with_annotations(values)
+        clone = super()._with_annotations(values)
         clone.__dict__.pop("comparator", None)
         return clone
 
@@ -5222,7 +5222,7 @@ class _truncated_label(quoted_name):
     def __new__(cls, value, quote=None):
         quote = getattr(value, "quote", quote)
         # return super(_truncated_label, cls).__new__(cls, value, quote, True)
-        return super(_truncated_label, cls).__new__(cls, value, quote)
+        return super().__new__(cls, value, quote)
 
     def __reduce__(self):
         return self.__class__, (str(self), self.quote)
@@ -5305,7 +5305,7 @@ class _anonymous_label(_truncated_label):
 
         label = "%%(%d %s)s" % (seed, body.replace("%", "%%"))
         if enclosing_label:
-            label = "%s%s" % (enclosing_label, label)
+            label = f"{enclosing_label}{label}"
 
         return _anonymous_label(label)
 

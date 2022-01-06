@@ -264,18 +264,18 @@ class RoleImpl:
         err=None,
     ):
         if resolved is not None and resolved is not element:
-            got = "%r object resolved from %r object" % (resolved, element)
+            got = f"{resolved!r} object resolved from {element!r} object"
         else:
             got = repr(element)
 
         if argname:
-            msg = "%s expected for argument %r; got %s." % (
+            msg = "{} expected for argument {!r}; got {}.".format(
                 self.name,
                 argname,
                 got,
             )
         else:
-            msg = "%s expected, got %s." % (self.name, got)
+            msg = f"{self.name} expected, got {got}."
 
         if advice:
             msg += " " + advice
@@ -350,7 +350,7 @@ def _no_text_coercion(
         "explicitly declared as text(%(expr)r)"
         % {
             "expr": util.ellipses_string(element),
-            "argname": "for argument %s" % (argname,) if argname else "",
+            "argname": f"for argument {argname}" if argname else "",
             "extra": "%s " % extra if extra else "",
         }
     ) from err
@@ -435,7 +435,7 @@ class _SelectIsNotFrom:
         else:
             code = None
 
-        return super(_SelectIsNotFrom, self)._raise_for_expected(
+        return super()._raise_for_expected(
             element,
             argname=argname,
             resolved=resolved,
@@ -508,7 +508,7 @@ class ExpressionElementImpl(_ColumnCoercions, RoleImpl):
         else:
             advice = None
 
-        return super(ExpressionElementImpl, self)._raise_for_expected(
+        return super()._raise_for_expected(
             element, argname=argname, resolved=resolved, advice=advice, **kw
         )
 
@@ -794,7 +794,7 @@ class LabeledColumnExprImpl(ExpressionElementImpl):
         if isinstance(resolved, roles.ExpressionElementRole):
             return resolved.label(None)
         else:
-            new = super(LabeledColumnExprImpl, self)._implicit_coercions(
+            new = super()._implicit_coercions(
                 original_element, resolved, argname=argname, **kw
             )
             if isinstance(new, roles.ExpressionElementRole):
@@ -821,7 +821,7 @@ class ColumnsClauseImpl(_SelectIsNotFrom, _CoerceLiterals, RoleImpl):
                 f"{', '.join(repr(e) for e in element)})?"
             )
 
-        return super(ColumnsClauseImpl, self)._raise_for_expected(
+        return super()._raise_for_expected(
             element, argname=argname, resolved=resolved, advice=advice, **kw
         )
 
@@ -836,7 +836,7 @@ class ColumnsClauseImpl(_SelectIsNotFrom, _CoerceLiterals, RoleImpl):
             "for more specificity"
             % {
                 "column": util.ellipses_string(element),
-                "argname": "for argument %s" % (argname,) if argname else "",
+                "argname": f"for argument {argname}" if argname else "",
                 "literal_column": "literal_column"
                 if guess_is_literal
                 else "column",
@@ -879,7 +879,7 @@ class StatementImpl(_CoerceLiterals, RoleImpl):
         if resolved._is_lambda_element:
             return resolved
         else:
-            return super(StatementImpl, self)._implicit_coercions(
+            return super()._implicit_coercions(
                 original_element, resolved, argname=argname, **kw
             )
 
@@ -1059,7 +1059,7 @@ class CompoundElementImpl(_NoTextCoercion, RoleImpl):
                 )
         else:
             advice = None
-        return super(CompoundElementImpl, self)._raise_for_expected(
+        return super()._raise_for_expected(
             element, argname=argname, resolved=resolved, advice=advice, **kw
         )
 

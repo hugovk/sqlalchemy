@@ -496,7 +496,7 @@ class SQLiteDialect_pysqlite(SQLiteDialect):
             dbapi_connection.isolation_level = None
         else:
             dbapi_connection.isolation_level = ""
-            return super(SQLiteDialect_pysqlite, self).set_isolation_level(
+            return super().set_isolation_level(
                 dbapi_connection, level
             )
 
@@ -577,7 +577,7 @@ class SQLiteDialect_pysqlite(SQLiteDialect):
                 # sorting of keys is for unit test support
                 filename += "?" + (
                     "&".join(
-                        "%s=%s" % (key, uri_opts[key])
+                        f"{key}={uri_opts[key]}"
                         for key in sorted(uri_opts)
                     )
                 )

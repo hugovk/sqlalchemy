@@ -180,7 +180,7 @@ def generate_driver_url(url, driver, query_str):
     backend = url.get_backend_name()
 
     new_url = url.set(
-        drivername="%s+%s" % (backend, driver),
+        drivername=f"{backend}+{driver}",
     )
     if query_str:
         new_url = new_url.update_query_string(query_str)

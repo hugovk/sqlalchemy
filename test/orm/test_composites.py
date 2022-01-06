@@ -665,7 +665,7 @@ class DefaultsTest(fixtures.MappedTest):
                 return not self.__eq__(other)
 
             def __repr__(self):
-                return "FBComposite(%r, %r, %r, %r)" % (
+                return "FBComposite({!r}, {!r}, {!r}, {!r})".format(
                     self.goofy_x1,
                     self.x2,
                     self.x3,

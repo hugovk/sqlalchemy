@@ -303,12 +303,12 @@ class MySQLDialect_asyncmy(MySQLDialect_pymysql):
             return pool.AsyncAdaptedQueuePool
 
     def create_connect_args(self, url):
-        return super(MySQLDialect_asyncmy, self).create_connect_args(
+        return super().create_connect_args(
             url, _translate_args=dict(username="user", database="db")
         )
 
     def is_disconnect(self, e, connection, cursor):
-        if super(MySQLDialect_asyncmy, self).is_disconnect(
+        if super().is_disconnect(
             e, connection, cursor
         ):
             return True

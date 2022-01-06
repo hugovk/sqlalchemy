@@ -43,7 +43,7 @@ class DependencyProcessor:
         else:
             self._passive_update_flag = attributes.PASSIVE_OFF
 
-        self.sort_key = "%s_%s" % (self.parent._sort_key, prop.key)
+        self.sort_key = f"{self.parent._sort_key}_{prop.key}"
         self.key = prop.key
         if not self.prop.synchronize_pairs:
             raise sa_exc.ArgumentError(
@@ -317,7 +317,7 @@ class DependencyProcessor:
         raise NotImplementedError()
 
     def __repr__(self):
-        return "%s(%s)" % (self.__class__.__name__, self.prop)
+        return f"{self.__class__.__name__}({self.prop})"
 
 
 class OneToManyDP(DependencyProcessor):

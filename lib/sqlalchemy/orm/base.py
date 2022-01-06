@@ -269,7 +269,7 @@ def state_str(state):
     if state is None:
         return "None"
     else:
-        return "<%s at 0x%x>" % (state.class_.__name__, id(state.obj()))
+        return f"<{state.class_.__name__} at 0x{id(state.obj()):x}>"
 
 
 def state_class_str(state):
@@ -280,7 +280,7 @@ def state_class_str(state):
     if state is None:
         return "None"
     else:
-        return "<%s>" % (state.class_.__name__,)
+        return f"<{state.class_.__name__}>"
 
 
 def attribute_str(instance, attribute):
@@ -411,7 +411,7 @@ def _entity_descriptor(entity, key):
         return getattr(entity, key)
     except AttributeError as err:
         raise sa_exc.InvalidRequestError(
-            "Entity '%s' has no property '%s'" % (description, key)
+            f"Entity '{description}' has no property '{key}'"
         ) from err
 
 
@@ -454,7 +454,7 @@ def class_mapper(class_, configure=True):
     if mapper is None:
         if not isinstance(class_, type):
             raise sa_exc.ArgumentError(
-                "Class object expected, got '%r'." % (class_,)
+                f"Class object expected, got '{class_!r}'."
             )
         raise exc.UnmappedClassError(class_)
     else:

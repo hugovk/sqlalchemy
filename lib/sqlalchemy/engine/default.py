@@ -1039,15 +1039,15 @@ class DefaultExecutionContext(interfaces.ExecutionContext):
         ch = self.cache_hit
 
         if ch is NO_CACHE_KEY:
-            return "no key %.5fs" % (now - self.compiled._gen_time,)
+            return f"no key {now - self.compiled._gen_time:.5f}s"
         elif ch is CACHE_HIT:
-            return "cached since %.4gs ago" % (now - self.compiled._gen_time,)
+            return f"cached since {now - self.compiled._gen_time:.4g}s ago"
         elif ch is CACHE_MISS:
-            return "generated in %.5fs" % (now - self.compiled._gen_time,)
+            return f"generated in {now - self.compiled._gen_time:.5f}s"
         elif ch is CACHING_DISABLED:
-            return "caching disabled %.5fs" % (now - self.compiled._gen_time,)
+            return f"caching disabled {now - self.compiled._gen_time:.5f}s"
         elif ch is NO_DIALECT_SUPPORT:
-            return "dialect %s+%s does not support caching %.5fs" % (
+            return "dialect {}+{} does not support caching {:.5f}s".format(
                 self.dialect.name,
                 self.dialect.driver,
                 now - self.compiled._gen_time,
@@ -1141,7 +1141,6 @@ class DefaultExecutionContext(interfaces.ExecutionContext):
             use_server_side = self.execution_options.get(
                 "stream_results", True
             ) and (
-                (
                     self.compiled
                     and isinstance(
                         self.compiled.statement, expression.Selectable
@@ -1156,7 +1155,6 @@ class DefaultExecutionContext(interfaces.ExecutionContext):
                         and self.unicode_statement
                         and SERVER_SIDE_CURSOR_RE.match(self.unicode_statement)
                     )
-                )
             )
         else:
             use_server_side = self.execution_options.get(
@@ -1551,15 +1549,13 @@ class DefaultExecutionContext(interfaces.ExecutionContext):
                 ]
             )
         else:
-            parameters = dict(
-                (
-                    key,
+            parameters = {
+                    key:
                     processors[key](compiled_params[key])
                     if key in processors
-                    else compiled_params[key],
-                )
+                    else compiled_params[key]
                 for key in compiled_params
-            )
+            }
         return self._execute_scalar(
             str(compiled), type_, parameters=parameters
         )

@@ -28,7 +28,7 @@ class PyODBCConnector(Connector):
     pyodbc_driver_name = None
 
     def __init__(self, use_setinputsizes=False, **kw):
-        super(PyODBCConnector, self).__init__(**kw)
+        super().__init__(**kw)
         if use_setinputsizes:
             self.bind_typing = interfaces.BindTyping.SETINPUTSIZES
 
@@ -58,7 +58,7 @@ class PyODBCConnector(Connector):
                     token = "{%s}" % token.replace("}", "}}")
                 return token
 
-            keys = dict((k, check_quote(v)) for k, v in keys.items())
+            keys = {k: check_quote(v) for k, v in keys.items()}
 
             dsn_connection = "dsn" in keys or (
                 "host" in keys and "database" not in keys
@@ -86,7 +86,7 @@ class PyODBCConnector(Connector):
 
                 connectors.extend(
                     [
-                        "Server=%s%s" % (keys.pop("host", ""), port),
+                        "Server={}{}".format(keys.pop("host", ""), port),
                         "Database=%s" % keys.pop("database", ""),
                     ]
                 )
@@ -113,7 +113,7 @@ class PyODBCConnector(Connector):
                     "AutoTranslate=%s" % keys.pop("odbc_autotranslate")
                 )
 
-            connectors.extend(["%s=%s" % (k, v) for k, v in keys.items()])
+            connectors.extend([f"{k}={v}" for k, v in keys.items()])
 
         return [[";".join(connectors)], connect_args]
 
@@ -134,7 +134,7 @@ class PyODBCConnector(Connector):
         m = re.match(r"(?:py.*-)?([\d\.]+)(?:-(\w+))?", vers)
         if not m:
             return ()
-        vers = tuple([int(x) for x in m.group(1).split(".")])
+        vers = tuple(int(x) for x in m.group(1).split("."))
         if m.group(2):
             vers += (m.group(2),)
         return vers
@@ -188,6 +188,6 @@ class PyODBCConnector(Connector):
             dbapi_connection.autocommit = True
         else:
             dbapi_connection.autocommit = False
-            super(PyODBCConnector, self).set_isolation_level(
+            super().set_isolation_level(
                 dbapi_connection, level
             )

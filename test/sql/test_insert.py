@@ -1,5 +1,3 @@
-#! coding:utf-8
-
 from sqlalchemy import bindparam
 from sqlalchemy import Column
 from sqlalchemy import column
@@ -1377,14 +1375,12 @@ class MultirowTest(_InsertTestBase, fixtures.TablesTest, AssertsCompiledSQL):
         stmt = table.insert().values(values)
 
         eq_(
-            dict(
-                [
-                    (k, v.type._type_affinity)
+            {
+                    k: v.type._type_affinity
                     for (k, v) in stmt.compile(
                         dialect=postgresql.dialect()
                     ).binds.items()
-                ]
-            ),
+            },
             {
                 "foo": Integer,
                 "data_m2": String,
@@ -1523,14 +1519,12 @@ class MultirowTest(_InsertTestBase, fixtures.TablesTest, AssertsCompiledSQL):
 
         stmt = table.insert().values(values)
         eq_(
-            dict(
-                [
-                    (k, v.type._type_affinity)
+            {
+                    k: v.type._type_affinity
                     for (k, v) in stmt.compile(
                         dialect=postgresql.dialect()
                     ).binds.items()
-                ]
-            ),
+            },
             {
                 "foo": Integer,
                 "data_m2": String,

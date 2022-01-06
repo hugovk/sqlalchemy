@@ -83,7 +83,7 @@ class Manager(Person):
     __mapper_args__ = {"polymorphic_identity": "manager", "concrete": True}
 
     def __repr__(self):
-        return "Manager %s, status %s, manager_name %s" % (
+        return "Manager {}, status {}, manager_name {}".format(
             self.name,
             self.status,
             self.manager_name,
@@ -124,9 +124,9 @@ session.commit()
 c = session.query(Company).get(1)
 for e in c.employees:
     print(e, inspect(e).key, e.company)
-assert set([e.name for e in c.employees]) == set(
-    ["pointy haired boss", "dilbert", "joesmith", "wally", "jsmith"]
-)
+assert {e.name for e in c.employees} == {
+    "pointy haired boss", "dilbert", "joesmith", "wally", "jsmith"
+}
 print("\n")
 
 dilbert = session.query(Person).filter_by(name="dilbert").one()
